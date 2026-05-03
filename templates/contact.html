@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - ATS{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold mb-3">Contact Us</h1>
+                <p class="lead text-muted">We are here to help! Reach out to us for any queries or support regarding your applications.</p>
+            </div>
+            
+            <div class="card shadow-sm border-0 rounded-4 p-4 p-md-5">
+                <form action="#" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control form-control-lg" id="name" placeholder="John Doe" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control form-control-lg" id="email" placeholder="name@example.com" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control form-control-lg" id="subject" placeholder="How can we help you?" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control form-control-lg" id="message" rows="5" placeholder="Enter your message here..." required></textarea>
+                        </div>
+                        <div class="col-12 mt-4 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">Send Message</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

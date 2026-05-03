@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}FAQs - ATS{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold mb-3">Frequently Asked Questions</h1>
+                <p class="lead text-muted">Find answers to the most common questions about the Application Tracking System.</p>
+            </div>
+            
+            <div class="accordion" id="faqAccordion">
+                <!-- FAQ 1 -->
+                <div class="accordion-item mb-3 border-0 shadow-sm rounded-3 overflow-hidden">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            How do I track my application?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            You can track your application by navigating to the <strong>Track Application</strong> page from the main menu. Enter your unique 12-character alphanumeric Tracking ID (e.g. CCN123456789) and click 'Track'.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="accordion-item mb-3 border-0 shadow-sm rounded-3 overflow-hidden">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            How long does it take for an application to be processed?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Processing times vary depending on the department and the nature of the request. Generally, it takes between 3 to 7 business days for an initial review. You can monitor the real-time status via your dashboard or the tracking page.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="accordion-item mb-3 border-0 shadow-sm rounded-3 overflow-hidden">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            What do the different status levels mean?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            <ul>
+                                <li><strong>Submitted:</strong> Your application has been received successfully.</li>
+                                <li><strong>Pending:</strong> Awaiting assignment to an officer.</li>
+                                <li><strong>Under Review:</strong> Being evaluated by the concerned department.</li>
+                                <li><strong>Approved:</strong> The request has been accepted.</li>
+                                <li><strong>Completed:</strong> All actions are finished.</li>
+                                <li><strong>Closed:</strong> The ticket is formally closed.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 4 -->
+                <div class="accordion-item mb-3 border-0 shadow-sm rounded-3 overflow-hidden">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            Can I edit my application after submitting?
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Currently, submitted applications cannot be edited directly to ensure data integrity. If you made a mistake, please use the Contact Us page or submit a new application and reference the old tracking ID.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

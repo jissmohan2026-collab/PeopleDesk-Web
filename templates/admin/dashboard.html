@@ -1,0 +1,75 @@
+{% extends "dash_base.html" %}
+
+{% block title %}Admin Dashboard - ATS{% endblock %}
+{% block header %}Assigned Applications{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">Tracking ID</th>
+                                <th class="py-3">Title</th>
+                                <th class="py-3">Description</th>
+                                <th class="py-3">Current Status</th>
+                                <th class="pe-4 py-3 text-end">Update Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if consignments %}
+                                {% for con in consignments %}
+                                <tr>
+                                    <td class="ps-4 py-3 fw-bold text-primary">{{ con.tracking_id }}</td>
+                                    <td class="py-3 fw-semibold">{{ con.title }}</td>
+                                    <td class="py-3 text-muted" style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ con.description }}
+                                    </td>
+                                    <td class="py-3">
+                                        {% if con.status == 'Pending' %}
+                                            <span class="badge bg-warning text-dark rounded-pill">{{ con.status }}</span>
+                                        {% elif con.status == 'Under Review' %}
+                                            <span class="badge bg-info text-dark rounded-pill">{{ con.status }}</span>
+                                        {% elif con.status == 'Approved' %}
+                                            <span class="badge bg-success rounded-pill">{{ con.status }}</span>
+                                        {% elif con.status == 'Completed' %}
+                                            <span class="badge bg-primary rounded-pill">{{ con.status }}</span>
+                                        {% elif con.status == 'Closed' %}
+                                            <span class="badge bg-dark rounded-pill">{{ con.status }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary rounded-pill">{{ con.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="pe-4 py-3 text-end">
+                                        <form action="{{ url_for('admin_update_status', id=con.id) }}" method="POST" class="d-flex align-items-center justify-content-end gap-2">
+                                            <select name="status" class="form-select form-select-sm w-auto" required>
+                                                <option value="Pending" {% if con.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                                <option value="Under Review" {% if con.status == 'Under Review' %}selected{% endif %}>Under Review</option>
+                                                <option value="Approved" {% if con.status == 'Approved' %}selected{% endif %}>Approved</option>
+                                                <option value="Completed" {% if con.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                                <option value="Closed" {% if con.status == 'Closed' %}selected{% endif %}>Closed</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endendfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-inbox fs-1 text-light mb-3 d-block"></i>
+                                        No applications assigned to you yet.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

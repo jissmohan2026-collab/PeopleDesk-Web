@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}User Dashboard - ATS{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-3">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h2 class="fw-bold mb-0">My Applications</h2>
+            <p class="text-muted">View and track all your submitted applications.</p>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <a href="{{ url_for('submit_issue') }}" class="btn btn-primary btn-lg shadow-sm">
+                <i class="fa-solid fa-plus me-2"></i>New Application
+            </a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-lg shadow-sm ms-2">
+                <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light text-muted">
+                        <tr>
+                            <th class="ps-4 py-3">Tracking ID</th>
+                            <th class="py-3">Title</th>
+                            <th class="py-3">Department</th>
+                            <th class="py-3">Status</th>
+                            <th class="pe-4 py-3 text-end">Submitted On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if consignments %}
+                            {% for con in consignments %}
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold text-primary">{{ con.tracking_id }}</td>
+                                <td class="py-3">{{ con.title }}</td>
+                                <td class="py-3">
+                                    {% if con.department %}
+                                        {{ con.department.name }}
+                                    {% else %}
+                                        <span class="text-muted">Not Specified</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3">
+                                    {% if con.status == 'Submitted' %}
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2">{{ con.status }}</span>
+                                    {% elif con.status == 'Pending' %}
+                                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2">{{ con.status }}</span>
+                                    {% elif con.status == 'Under Review' %}
+                                        <span class="badge bg-info text-dark rounded-pill px-3 py-2">{{ con.status }}</span>
+                                    {% elif con.status == 'Approved' %}
+                                        <span class="badge bg-success rounded-pill px-3 py-2">{{ con.status }}</span>
+                                    {% elif con.status == 'Completed' %}
+                                        <span class="badge bg-primary rounded-pill px-3 py-2">{{ con.status }}</span>
+                                    {% elif con.status == 'Closed' %}
+                                        <span class="badge bg-dark rounded-pill px-3 py-2">{{ con.status }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2">{{ con.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="pe-4 py-3 text-end text-muted small">
+                                    {{ con.created_at.strftime('%d %b, %Y') if con.created_at else 'N/A' }}
+                                </td>
+                            </tr>
+                            {% endendfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-folder-open fs-1 text-light mb-3 d-block"></i>
+                                    You haven't submitted any applications yet.<br>
+                                    <a href="{{ url_for('submit_issue') }}" class="btn btn-sm btn-outline-primary mt-3">Submit One Now</a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

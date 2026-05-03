@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Track Application - ATS{% endblock %}
+{% block content %}
+<section class="py-5 bg-light min-vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Track Application</h2>
+                        <p class="text-muted">Enter your Consignment ID below to see its current status</p>
+                    </div>
+                    
+                    <form action="{{ url_for('track') }}" method="POST" class="tracking-form mx-auto border mb-4" style="max-width: 600px;">
+                        <input type="text" name="tracking_id" placeholder="e.g. CCN123456789" required>
+                        <button type="submit" class="btn btn-primary px-4">Track</button>
+                    </form>
+                </div>
+
+                {% if consignment %}
+                <div class="card border-0 shadow rounded-4 p-4">
+                    <h4 class="fw-bold mb-4 border-bottom pb-3">Status Details</h4>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Tracking ID</div>
+                        <div class="col-sm-8 fw-bold">{{ consignment.tracking_id }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Title</div>
+                        <div class="col-sm-8">{{ consignment.title }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Department</div>
+                        <div class="col-sm-8">{{ consignment.department.name if consignment.department else 'N/A' }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Status</div>
+                        <div class="col-sm-8">
+                            {% set badge_class = 'bg-secondary' %}
+                            {% if consignment.status == 'Pending' %}{% set badge_class = 'badge-status-pending' %}
+                            {% elif consignment.status == 'Under Review' %}{% set badge_class = 'badge-status-review' %}
+                            {% elif consignment.status == 'Approved' %}{% set badge_class = 'badge-status-approved' %}
+                            {% elif consignment.status == 'Completed' %}{% set badge_class = 'badge-status-completed' %}
+                            {% elif consignment.status == 'Closed' %}{% set badge_class = 'badge-status-closed' %}
+                            {% endif %}
+                            <span class="badge {{ badge_class }} fs-6">{{ consignment.status }}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Last Updated</div>
+                        <div class="col-sm-8">{{ consignment.updated_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-top">
+                        <h5 class="fw-bold mb-3">Description</h5>
+                        <p class="text-muted">{{ consignment.description }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
