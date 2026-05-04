@@ -1,9 +1,15 @@
+
+
+
+from dotenv import load_dotenv
+load_dotenv()
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
 from models import db, bcrypt, User, Department, Consignment
 import uuid
 from datetime import datetime
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
