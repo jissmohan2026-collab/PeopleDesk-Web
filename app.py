@@ -340,4 +340,5 @@ def init_db():
     print("Database initialized.")
 
 if __name__ == '__main__':
+    print("DB URI:", app.config['SQLALCHEMY_DATABASE_URI'])
     app.run(debug=True)
