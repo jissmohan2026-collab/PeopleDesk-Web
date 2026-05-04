@@ -6,6 +6,34 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
+        <!-- Filter Form -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('admin_dashboard') }}" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="status" class="form-label fw-semibold">Filter by Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Submitted" {% if status_filter == 'Submitted' %}selected{% endif %}>Submitted</option>
+                            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>Under Review</option>
+                            <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
+                            <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>Completed</option>
+                            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>Closed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="date" class="form-label fw-semibold">Filter by Date</label>
+                        <input type="date" name="date" id="date" class="form-control" value="{{ date_filter or '' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-filter me-1"></i> Apply Filters</button>
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-rotate-right me-1"></i> Reset</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -15,6 +43,7 @@
                                 <th class="ps-4 py-3">Tracking ID</th>
                                 <th class="py-3">Title</th>
                                 <th class="py-3">Description</th>
+                                <th class="py-3">Created Date</th>
                                 <th class="py-3">Current Status</th>
                                 <th class="pe-4 py-3 text-end">Update Status</th>
                             </tr>
@@ -27,6 +56,9 @@
                                     <td class="py-3 fw-semibold">{{ con.title }}</td>
                                     <td class="py-3 text-muted" style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         {{ con.description }}
+                                    </td>
+                                    <td class="py-3 text-muted small">
+                                        {{ con.created_at.strftime('%Y-%m-%d') if con.created_at else 'N/A' }}
                                     </td>
                                     <td class="py-3">
                                         {% if con.status == 'Pending' %}
@@ -56,12 +88,12 @@
                                         </form>
                                     </td>
                                 </tr>
-                                {% endendfor %}
+                                {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="5" class="text-center py-5 text-muted">
+                                    <td colspan="6" class="text-center py-5 text-muted">
                                         <i class="fa-solid fa-inbox fs-1 text-light mb-3 d-block"></i>
-                                        No applications assigned to you yet.
+                                        No applications found.
                                     </td>
                                 </tr>
                             {% endif %}

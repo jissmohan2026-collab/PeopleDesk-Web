@@ -34,47 +34,48 @@
                     </thead>
                     <tbody>
                         {% if consignments %}
-                            {% for con in consignments %}
-                            <tr>
-                                <td class="ps-4 py-3 fw-bold text-primary">{{ con.tracking_id }}</td>
-                                <td class="py-3">{{ con.title }}</td>
-                                <td class="py-3">
-                                    {% if con.department %}
-                                        {{ con.department.name }}
-                                    {% else %}
-                                        <span class="text-muted">Not Specified</span>
-                                    {% endif %}
-                                </td>
-                                <td class="py-3">
-                                    {% if con.status == 'Submitted' %}
-                                        <span class="badge bg-secondary rounded-pill px-3 py-2">{{ con.status }}</span>
-                                    {% elif con.status == 'Pending' %}
-                                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2">{{ con.status }}</span>
-                                    {% elif con.status == 'Under Review' %}
-                                        <span class="badge bg-info text-dark rounded-pill px-3 py-2">{{ con.status }}</span>
-                                    {% elif con.status == 'Approved' %}
-                                        <span class="badge bg-success rounded-pill px-3 py-2">{{ con.status }}</span>
-                                    {% elif con.status == 'Completed' %}
-                                        <span class="badge bg-primary rounded-pill px-3 py-2">{{ con.status }}</span>
-                                    {% elif con.status == 'Closed' %}
-                                        <span class="badge bg-dark rounded-pill px-3 py-2">{{ con.status }}</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary rounded-pill px-3 py-2">{{ con.status }}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="pe-4 py-3 text-end text-muted small">
-                                    {{ con.created_at.strftime('%d %b, %Y') if con.created_at else 'N/A' }}
-                                </td>
-                            </tr>
-                            {% endendfor %}
+                        {% for con in consignments %}
+                        <tr>
+                            <td class="ps-4 py-3 fw-bold text-primary">{{ con.tracking_id }}</td>
+                            <td class="py-3">{{ con.title }}</td>
+                            <td class="py-3">
+                                {% if con.department %}
+                                {{ con.department.name }}
+                                {% else %}
+                                <span class="text-muted">Not Specified</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3">
+                                {% if con.status == 'Submitted' %}
+                                <span class="badge bg-secondary rounded-pill px-3 py-2">{{ con.status }}</span>
+                                {% elif con.status == 'Pending' %}
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">{{ con.status }}</span>
+                                {% elif con.status == 'Under Review' %}
+                                <span class="badge bg-info text-dark rounded-pill px-3 py-2">{{ con.status }}</span>
+                                {% elif con.status == 'Approved' %}
+                                <span class="badge bg-success rounded-pill px-3 py-2">{{ con.status }}</span>
+                                {% elif con.status == 'Completed' %}
+                                <span class="badge bg-primary rounded-pill px-3 py-2">{{ con.status }}</span>
+                                {% elif con.status == 'Closed' %}
+                                <span class="badge bg-dark rounded-pill px-3 py-2">{{ con.status }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary rounded-pill px-3 py-2">{{ con.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="pe-4 py-3 text-end text-muted small">
+                                {{ con.created_at.strftime('%d %b, %Y') if con.created_at else 'N/A' }}
+                            </td>
+                        </tr>
+                        {% endfor %}
                         {% else %}
-                            <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="fa-solid fa-folder-open fs-1 text-light mb-3 d-block"></i>
-                                    You haven't submitted any applications yet.<br>
-                                    <a href="{{ url_for('submit_issue') }}" class="btn btn-sm btn-outline-primary mt-3">Submit One Now</a>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-folder-open fs-1 text-light mb-3 d-block"></i>
+                                You haven't submitted any applications yet.<br>
+                                <a href="{{ url_for('submit_issue') }}"
+                                    class="btn btn-sm btn-outline-primary mt-3">Submit One Now</a>
+                            </td>
+                        </tr>
                         {% endif %}
                     </tbody>
                 </table>

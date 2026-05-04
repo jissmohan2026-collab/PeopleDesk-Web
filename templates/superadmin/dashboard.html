@@ -5,8 +5,36 @@
 
 {% block content %}
 <div class="row g-4 mb-4">
-    <!-- Manage Applications Section -->
-    <div class="col-xl-8 col-lg-12">
+    <div class="col-12">
+        <!-- Filter Form -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('superadmin_dashboard') }}" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="status" class="form-label fw-semibold">Filter by Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Submitted" {% if status_filter == 'Submitted' %}selected{% endif %}>Submitted</option>
+                            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>Under Review</option>
+                            <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
+                            <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>Completed</option>
+                            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>Closed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="date" class="form-label fw-semibold">Filter by Date</label>
+                        <input type="date" name="date" id="date" class="form-control" value="{{ date_filter or '' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-filter me-1"></i> Apply Filters</button>
+                        <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-rotate-right me-1"></i> Reset</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Manage Applications Section -->
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-header bg-white border-0 pt-4 pb-0">
                 <h5 class="fw-bold mb-0">All Applications</h5>
@@ -19,6 +47,7 @@
                                 <th class="ps-4 py-3">Tracking ID</th>
                                 <th class="py-3">Title</th>
                                 <th class="py-3">Status</th>
+                                <th class="py-3">Created Date</th>
                                 <th class="py-3">Assigned To</th>
                                 <th class="pe-4 py-3 text-end">Action</th>
                             </tr>
@@ -34,6 +63,9 @@
                                     </td>
                                     <td class="py-3">
                                         <span class="badge bg-secondary rounded-pill">{{ con.status }}</span>
+                                    </td>
+                                    <td class="py-3 text-muted small">
+                                        {{ con.created_at.strftime('%Y-%m-%d') if con.created_at else 'N/A' }}
                                     </td>
                                     <td class="py-3">
                                         {% if con.assigned_admin_id %}
@@ -54,55 +86,17 @@
                                         </form>
                                     </td>
                                 </tr>
-                                {% endendfor %}
+                                {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="5" class="text-center py-5 text-muted">
-                                        No applications in the system yet.
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        No applications found.
                                     </td>
                                 </tr>
                             {% endif %}
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Create Admin Section -->
-    <div class="col-xl-4 col-lg-12">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-white border-0 pt-4 pb-0">
-                <h5 class="fw-bold mb-0">Create New Admin</h5>
-            </div>
-            <div class="card-body mt-3">
-                <form action="{{ url_for('superadmin_create_admin') }}" method="POST">
-                    <div class="mb-3">
-                        <label for="username" class="form-label fw-semibold">Admin Username</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-user text-muted"></i></span>
-                            <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" placeholder="e.g. admin_hr" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label fw-semibold">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock text-muted"></i></span>
-                            <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" placeholder="Create a secure password" required>
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label for="department_id" class="form-label fw-semibold">Assign Department ID</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-building text-muted"></i></span>
-                            <input type="number" class="form-control border-start-0 ps-0" id="department_id" name="department_id" placeholder="Enter Department ID">
-                        </div>
-                        <div class="form-text mt-2">Leave blank if not assigning to a specific department yet.</div>
-                    </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary py-2 fw-semibold">Create Admin Account</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

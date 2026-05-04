@@ -23,11 +23,20 @@
             
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="{{ url_for('superadmin_dashboard') }}" class="nav-link text-white active" style="background-color: var(--primary-color);">
-                        <i class="fa-solid fa-gauge me-2"></i> Dashboard
+                    <a href="{{ url_for('superadmin_dashboard') }}" class="nav-link text-white {% if request.endpoint == 'superadmin_dashboard' %}active{% endif %}" {% if request.endpoint == 'superadmin_dashboard' %}style="background-color: var(--primary-color);"{% endif %}>
+                        <i class="fa-solid fa-gauge me-2"></i> Applications
                     </a>
                 </li>
-                <!-- We can add links to Manage Departments etc -->
+                <li class="nav-item mt-2">
+                    <a href="{{ url_for('superadmin_users') }}" class="nav-link text-white {% if request.endpoint == 'superadmin_users' %}active{% endif %}" {% if request.endpoint == 'superadmin_users' %}style="background-color: var(--primary-color);"{% endif %}>
+                        <i class="fa-solid fa-users me-2"></i> Manage Users
+                    </a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a href="{{ url_for('superadmin_departments') }}" class="nav-link text-white {% if request.endpoint == 'superadmin_departments' %}active{% endif %}" {% if request.endpoint == 'superadmin_departments' %}style="background-color: var(--primary-color);"{% endif %}>
+                        <i class="fa-solid fa-building me-2"></i> Manage Departments
+                    </a>
+                </li>
             </ul>
             
             <hr>

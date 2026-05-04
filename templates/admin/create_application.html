@@ -1,0 +1,40 @@
+{% extends "dash_base.html" %}
+
+{% block title %}Create Application - Admin{% endblock %}
+{% block header %}Create Application{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 pb-0">
+                <h5 class="fw-bold mb-0">Submit New Application</h5>
+            </div>
+            <div class="card-body mt-3">
+                <form action="{{ url_for('admin_create_application') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-semibold">Application Title</label>
+                        <input type="text" class="form-control bg-light" id="title" name="title" required placeholder="e.g. Server Upgrade Request">
+                    </div>
+                    <div class="mb-3">
+                        <label for="department_id" class="form-label fw-semibold">Assign Department</label>
+                        <select name="department_id" id="department_id" class="form-select bg-light">
+                            <option value="">Select Department (Optional)</option>
+                            {% for dept in departments %}
+                                <option value="{{ dept.id }}">{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="description" class="form-label fw-semibold">Description / Details</label>
+                        <textarea class="form-control bg-light" id="description" name="description" rows="5" required placeholder="Describe the application details..."></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold"><i class="fa-solid fa-paper-plane me-2"></i> Submit Application</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

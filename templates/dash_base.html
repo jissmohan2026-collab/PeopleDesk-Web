@@ -23,11 +23,25 @@
             
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="{{ url_for('admin_dashboard') }}" class="nav-link active">
-                        <i class="fa-solid fa-gauge me-2"></i> Dashboard
+                    <a href="{{ url_for('admin_dashboard') }}" class="nav-link text-dark {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                        <i class="fa-solid fa-gauge me-2"></i> Applications
                     </a>
                 </li>
-                <!-- Add more admin links here -->
+                <li class="nav-item mt-2">
+                    <a href="{{ url_for('admin_create_application') }}" class="nav-link text-dark {% if request.endpoint == 'admin_create_application' %}active{% endif %}">
+                        <i class="fa-solid fa-plus-circle me-2"></i> Create Application
+                    </a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a href="{{ url_for('admin_profile') }}" class="nav-link text-dark {% if request.endpoint == 'admin_profile' %}active{% endif %}">
+                        <i class="fa-solid fa-user me-2"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a href="{{ url_for('admin_contact') }}" class="nav-link text-dark {% if request.endpoint == 'admin_contact' %}active{% endif %}">
+                        <i class="fa-solid fa-address-book me-2"></i> Contact Info
+                    </a>
+                </li>
             </ul>
             
             <hr>
