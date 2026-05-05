@@ -2,7 +2,7 @@
 
 
 
-
+python-3.11.9
 gunicorn
 Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
@@ -11,6 +11,5 @@ Flask-Bcrypt==1.0.1
 python-dotenv==1.0.1
 cloudinary
 werkzeug
-
 Flask-Babel
 deep-translator

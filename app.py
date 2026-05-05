@@ -4,7 +4,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_babel import Babel
+from flask_babel import Babel, _
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
 from models import db, bcrypt, User, Department, Consignment
@@ -91,12 +91,14 @@ def login():
             user = User.query.filter_by(username=username).first()
             if user and user.check_password(password):
                 login_user(user)
-            if user.role == 'superadmin':
-                return redirect(url_for('superadmin_dashboard'))
-            elif user.role == 'admin':
-                return redirect(url_for('admin_dashboard'))
+                if user.role == 'superadmin':
+                    return redirect(url_for('superadmin_dashboard'))
+                elif user.role == 'admin':
+                    return redirect(url_for('admin_dashboard'))
+                else:
+                    return redirect(url_for('user_dashboard'))
             else:
-                return redirect(url_for('user_dashboard'))
+                flash('Invalid credentials', 'danger')
         except Exception as e:
             flash(str(e), 'danger')
     return render_template('login.html')
