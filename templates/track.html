@@ -30,7 +30,27 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-4 text-muted">Department</div>
-                        <div class="col-sm-8">{{ consignment.department.name if consignment.department else 'N/A' }}</div>
+                        <div class="col-sm-8">
+                            {{ consignment.department.name if consignment.department else 'N/A' }}
+                            {% if consignment.department and consignment.department.officer_name %}
+                            <div class="small text-muted mt-2 border-start border-2 border-primary ps-2">
+                                <strong>Department Head:</strong> {{ consignment.department.officer_name }}<br>
+                                <i class="fa-solid fa-phone small"></i> {{ consignment.department.officer_phone }}<br>
+                                <i class="fa-solid fa-envelope small"></i> <a href="mailto:{{ consignment.department.officer_email }}" class="text-decoration-none">{{ consignment.department.officer_email }}</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Assigned Officer</div>
+                        <div class="col-sm-8">
+                            {% if consignment.admin %}
+                                <strong>{{ consignment.admin.name or consignment.admin.username }}</strong><br>
+                                {% if consignment.admin.phone_no %}<i class="fa-solid fa-phone small text-muted"></i> {{ consignment.admin.phone_no }}{% endif %}
+                            {% else %}
+                                <span class="text-muted fst-italic">Pending Assignment</span>
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-4 text-muted">Status</div>
@@ -53,6 +73,11 @@
                     <div class="mt-4 pt-4 border-top">
                         <h5 class="fw-bold mb-3">Description</h5>
                         <p class="text-muted">{{ consignment.description }}</p>
+                        {% if consignment.attachment_url %}
+                        <div class="mt-3">
+                            <a href="{{ consignment.attachment_url }}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-paperclip me-1"></i> View Attached Document</a>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% endif %}

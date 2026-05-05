@@ -377,6 +377,19 @@ def superadmin_departments():
     departments = Department.query.all()
     return render_template('superadmin/departments.html', departments=departments)
 
+@app.route('/superadmin/delete_department/<int:dept_id>', methods=['POST'])
+@login_required
+def superadmin_delete_department(dept_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    dept = Department.query.get_or_404(dept_id)
+    User.query.filter_by(department_id=dept.id).update({User.department_id: None})
+    Consignment.query.filter_by(department_id=dept.id).update({Consignment.department_id: None})
+    db.session.delete(dept)
+    db.session.commit()
+    flash('Department deleted successfully.', 'success')
+    return redirect(url_for('superadmin_departments'))
+
 @app.route('/superadmin/user/<int:user_id>')
 @login_required
 def superadmin_user_profile(user_id):

@@ -45,12 +45,19 @@
                             </td>
                             <td class="py-3">
                                 {% if con.department %}
-                                {{ con.department.name }}
+                                <div class="fw-semibold">{{ con.department.name }}</div>
                                 {% if con.department.officer_name %}
-                                <div class="small text-muted mt-1"><i class="fa-solid fa-user-tie"></i> {{ con.department.officer_name }}<br><i class="fa-solid fa-phone"></i> {{ con.department.officer_phone }}</div>
+                                <div class="small text-muted mt-1"><i class="fa-solid fa-building-user"></i> {{ con.department.officer_name }}<br><i class="fa-solid fa-phone"></i> {{ con.department.officer_phone }}</div>
                                 {% endif %}
                                 {% else %}
                                 <span class="text-muted">Not Specified</span>
+                                {% endif %}
+                                {% if con.admin %}
+                                <div class="small mt-2 pt-1 border-top">
+                                    <span class="text-primary fw-semibold d-block" style="font-size: 0.8rem;">Assigned Officer</span>
+                                    <i class="fa-solid fa-user-tie"></i> {{ con.admin.name or con.admin.username }}<br>
+                                    {% if con.admin.phone_no %}<i class="fa-solid fa-phone"></i> {{ con.admin.phone_no }}{% endif %}
+                                </div>
                                 {% endif %}
                             </td>
                             <td class="py-3">
