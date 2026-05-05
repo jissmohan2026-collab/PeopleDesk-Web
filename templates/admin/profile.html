@@ -8,23 +8,23 @@
     <div class="col-md-6 col-lg-4">
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-header bg-white border-0 pt-4 pb-0">
-                <h5 class="fw-bold mb-0">Change Password</h5>
+                <h5 class="fw-bold mb-0">{{ _('Change Password') }}</h5>
             </div>
             <div class="card-body mt-3">
                 <form action="{{ url_for('admin_profile') }}" method="POST">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Username</label>
+                        <label class="form-label fw-semibold">{{ _('Username') }}</label>
                         <input type="text" class="form-control bg-light" value="{{ current_user.username }}" disabled>
                     </div>
                     <div class="mb-4">
-                        <label for="password" class="form-label fw-semibold">New Password</label>
+                        <label for="password" class="form-label fw-semibold">{{ _('New Password') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock text-muted"></i></span>
                             <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" required>
                         </div>
                     </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary py-2 fw-semibold">Update Password</button>
+                        <button type="submit" class="btn btn-primary py-2 fw-semibold">{{ _('Update Password') }}</button>
                     </div>
                 </form>
             </div>

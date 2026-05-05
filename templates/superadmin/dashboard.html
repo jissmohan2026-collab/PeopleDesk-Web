@@ -11,24 +11,24 @@
             <div class="card-body">
                 <form method="GET" action="{{ url_for('superadmin_dashboard') }}" class="row g-3 align-items-end">
                     <div class="col-md-4">
-                        <label for="status" class="form-label fw-semibold">Filter by Status</label>
+                        <label for="status" class="form-label fw-semibold">{{ _('Filter by Status') }}</label>
                         <select name="status" id="status" class="form-select">
-                            <option value="">All Statuses</option>
-                            <option value="Submitted" {% if status_filter == 'Submitted' %}selected{% endif %}>Submitted</option>
-                            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
-                            <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>Under Review</option>
-                            <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
-                            <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>Completed</option>
-                            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>Closed</option>
+                            <option value="">{{ _('All Statuses') }}</option>
+                            <option value="Submitted" {% if status_filter == 'Submitted' %}selected{% endif %}>{{ _('Submitted') }}</option>
+                            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>{{ _('Pending') }}</option>
+                            <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>{{ _('Under Review') }}</option>
+                            <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>{{ _('Approved') }}</option>
+                            <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>{{ _('Completed') }}</option>
+                            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>{{ _('Closed') }}</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="date" class="form-label fw-semibold">Filter by Date</label>
+                        <label for="date" class="form-label fw-semibold">{{ _('Filter by Date') }}</label>
                         <input type="date" name="date" id="date" class="form-control" value="{{ date_filter or '' }}">
                     </div>
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-filter me-1"></i> Apply Filters</button>
-                        <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-rotate-right me-1"></i> Reset</a>
+                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-filter me-1"></i> {{ _('Apply Filters') }}</button>
+                        <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-rotate-right me-1"></i> {{ _('Reset') }}</a>
                     </div>
                 </form>
             </div>
@@ -37,10 +37,10 @@
         <!-- Manage Applications Section -->
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0">All Applications</h5>
+                <h5 class="fw-bold mb-0">{{ _('All Applications') }}</h5>
                 <div>
-                    <a href="{{ url_for('superadmin_export_csv') }}" class="btn btn-success btn-sm"><i class="fa-solid fa-file-csv me-1"></i> Export CSV</a>
-                    <a href="{{ url_for('superadmin_export_xml') }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-file-code me-1"></i> Export XML</a>
+                    <a href="{{ url_for('superadmin_export_csv') }}" class="btn btn-success btn-sm"><i class="fa-solid fa-file-csv me-1"></i> {{ _('Export CSV') }}</a>
+                    <a href="{{ url_for('superadmin_export_xml') }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-file-code me-1"></i> {{ _('Export XML') }}</a>
                 </div>
             </div>
             <div class="card-body p-0 mt-3">
@@ -48,12 +48,12 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light sticky-top">
                             <tr>
-                                <th class="ps-4 py-3">Tracking ID</th>
-                                <th class="py-3">Title</th>
-                                <th class="py-3">Status</th>
-                                <th class="py-3">Created Date</th>
-                                <th class="py-3">Assigned To</th>
-                                <th class="pe-4 py-3 text-end">Action</th>
+                                <th class="ps-4 py-3">{{ _('Tracking ID') }}</th>
+                                <th class="py-3">{{ _('Title') }}</th>
+                                <th class="py-3">{{ _('Status') }}</th>
+                                <th class="py-3">{{ _('Created Date') }}</th>
+                                <th class="py-3">{{ _('Assigned To') }}</th>
+                                <th class="pe-4 py-3 text-end">{{ _('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,11 +64,11 @@
                                     <td class="py-3">
                                         {{ con.title }}
                                         <div class="text-muted small">
-                                            By: <a href="{{ url_for('superadmin_user_profile', user_id=con.user_id) }}" class="text-decoration-none" title="View Profile">
+                                            {{ _('By:') }} <a href="{{ url_for('superadmin_user_profile', user_id=con.user_id) }}" class="text-decoration-none" title="{{ _('View Profile') }}">
                                                 {% if con.submitter and con.submitter.name %}{{ con.submitter.name }}{% else %}User ID: {{ con.user_id }}{% endif %}
                                             </a>
                                             {% if con.attachment_url %}
-                                            <br><a href="{{ con.attachment_url }}" target="_blank" class="text-info"><i class="fa-solid fa-paperclip"></i> Attachment</a>
+                                            <br><a href="{{ con.attachment_url }}" target="_blank" class="text-info"><i class="fa-solid fa-paperclip"></i> {{ _('Attachment') }}</a>
                                             {% endif %}
                                         </div>
                                     </td>
@@ -82,25 +82,25 @@
                                         {% if con.assigned_admin_id %}
                                             <span class="text-success"><i class="fa-solid fa-check-circle me-1"></i> Admin ID: {{ con.assigned_admin_id }}</span>
                                         {% else %}
-                                            <span class="text-warning"><i class="fa-solid fa-clock me-1"></i> Unassigned</span>
+                                            <span class="text-warning"><i class="fa-solid fa-clock me-1"></i> {{ _('Unassigned') }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="pe-4 py-3 text-end">
                                         <div class="d-flex align-items-center justify-content-end gap-2 mb-2">
                                             <form action="{{ url_for('superadmin_assign', con_id=con.id) }}" method="POST" class="d-flex gap-1">
                                                 <select name="admin_id" class="form-select form-select-sm w-auto" required>
-                                                    <option value="" disabled selected>Admin</option>
+                                                    <option value="" disabled selected>{{ _('Admin') }}</option>
                                                     {% for admin in admins %}
                                                         <option value="{{ admin.id }}" {% if con.assigned_admin_id == admin.id %}selected{% endif %}>{{ admin.username }}</option>
                                                     {% endfor %}
                                                 </select>
-                                                <button type="submit" class="btn btn-sm btn-primary">Assign</button>
+                                                <button type="submit" class="btn btn-sm btn-primary">{{ _('Assign') }}</button>
                                             </form>
                                         </div>
                                         <div class="d-flex justify-content-end gap-2">
-                                            <a href="{{ url_for('superadmin_edit_application', con_id=con.id) }}" class="btn btn-sm btn-outline-secondary" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                                            <a href="{{ url_for('superadmin_edit_application', con_id=con.id) }}" class="btn btn-sm btn-outline-secondary" title="{{ _('Edit') }}"><i class="fa-solid fa-pen"></i></a>
                                             <form action="{{ url_for('superadmin_delete_application', con_id=con.id) }}" method="POST" onsubmit="return confirm('Delete this application?');">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ _('Delete') }}"><i class="fa-solid fa-trash"></i></button>
                                             </form>
                                         </div>
                                     </td>
@@ -109,7 +109,7 @@
                             {% else %}
                                 <tr>
                                     <td colspan="6" class="text-center py-5 text-muted">
-                                        No applications found.
+                                        {{ _('No applications found.') }}
                                     </td>
                                 </tr>
                             {% endif %}

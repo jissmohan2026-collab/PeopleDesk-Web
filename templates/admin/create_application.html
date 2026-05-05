@@ -8,78 +8,78 @@
     <div class="col-md-10 col-lg-8">
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-header bg-white border-0 pt-4 pb-0">
-                <h5 class="fw-bold mb-0">Submit New Application</h5>
+                <h5 class="fw-bold mb-0">{{ _('Submit New Application') }}</h5>
             </div>
             <div class="card-body mt-3">
                 <form action="{{ url_for('admin_create_application') }}" method="POST" enctype="multipart/form-data">
-                    <h6 class="text-primary mt-3 mb-3 border-bottom pb-2">User Details</h6>
-                    <p class="text-muted small mb-3">If the phone number exists, the application will be linked to that user. Otherwise, a new user account will be created automatically.</p>
+                    <h6 class="text-primary mt-3 mb-3 border-bottom pb-2">{{ _('User Details') }}</h6>
+                    <p class="text-muted small mb-3">{{ _('If the phone number exists, the application will be linked to that user. Otherwise, a new user account will be created automatically.') }}</p>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Phone No (Identifier)</label>
+                            <label class="form-label fw-semibold">{{ _('Phone No (Identifier)') }}</label>
                             <input type="tel" name="phone_no" class="form-control bg-light" required placeholder="User's Phone Number">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Name</label>
+                            <label class="form-label fw-semibold">{{ _('Name') }}</label>
                             <input type="text" name="name" class="form-control bg-light" required placeholder="User's Full Name">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Address</label>
+                        <label class="form-label fw-semibold">{{ _('Address') }}</label>
                         <textarea name="address" class="form-control bg-light" rows="2" required placeholder="User's Full Address"></textarea>
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Place</label>
-                            <input type="text" name="place" class="form-control bg-light" required placeholder="City or Town">
+                            <label class="form-label fw-semibold">{{ _('Place') }}</label>
+                            <input type="text" name="place" class="form-control bg-light" required placeholder="{{ _('City or Town') }}">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">District</label>
+                            <label class="form-label fw-semibold">{{ _('District') }}</label>
                             <select name="district" class="form-select bg-light" required>
-                                <option value="">Select District</option>
-                                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                                <option value="Kollam">Kollam</option>
-                                <option value="Pathanamthitta">Pathanamthitta</option>
-                                <option value="Alappuzha">Alappuzha</option>
-                                <option value="Kottayam">Kottayam</option>
-                                <option value="Idukki">Idukki</option>
-                                <option value="Ernakulam">Ernakulam</option>
-                                <option value="Thrissur">Thrissur</option>
-                                <option value="Palakkad">Palakkad</option>
-                                <option value="Malappuram">Malappuram</option>
-                                <option value="Kozhikode">Kozhikode</option>
-                                <option value="Wayanad">Wayanad</option>
-                                <option value="Kannur">Kannur</option>
-                                <option value="Kasaragod">Kasaragod</option>
-                                <option value="Other">Other</option>
+                                <option value="">{{ _('Select District') }}</option>
+                                <option value="Thiruvananthapuram">{{ _('Thiruvananthapuram') }}</option>
+                                <option value="Kollam">{{ _('Kollam') }}</option>
+                                <option value="Pathanamthitta">{{ _('Pathanamthitta') }}</option>
+                                <option value="Alappuzha">{{ _('Alappuzha') }}</option>
+                                <option value="Kottayam">{{ _('Kottayam') }}</option>
+                                <option value="Idukki">{{ _('Idukki') }}</option>
+                                <option value="Ernakulam">{{ _('Ernakulam') }}</option>
+                                <option value="Thrissur">{{ _('Thrissur') }}</option>
+                                <option value="Palakkad">{{ _('Palakkad') }}</option>
+                                <option value="Malappuram">{{ _('Malappuram') }}</option>
+                                <option value="Kozhikode">{{ _('Kozhikode') }}</option>
+                                <option value="Wayanad">{{ _('Wayanad') }}</option>
+                                <option value="Kannur">{{ _('Kannur') }}</option>
+                                <option value="Kasaragod">{{ _('Kasaragod') }}</option>
+                                <option value="Other">{{ _('Other') }}</option>
                             </select>
                         </div>
                     </div>
 
-                    <h6 class="text-primary mt-4 mb-3 border-bottom pb-2">Application Details</h6>
+                    <h6 class="text-primary mt-4 mb-3 border-bottom pb-2">{{ _('Application Details') }}</h6>
                     <div class="mb-3">
-                        <label for="title" class="form-label fw-semibold">Application Title</label>
-                        <input type="text" class="form-control bg-light" id="title" name="title" required placeholder="e.g. Server Upgrade Request">
+                        <label for="title" class="form-label fw-semibold">{{ _('Application Title') }}</label>
+                        <input type="text" class="form-control bg-light" id="title" name="title" required placeholder="{{ _('e.g. Server Upgrade Request') }}">
                     </div>
                     <div class="mb-3">
-                        <label for="department_id" class="form-label fw-semibold">Assign Department</label>
+                        <label for="department_id" class="form-label fw-semibold">{{ _('Assign Department') }}</label>
                         <select name="department_id" id="department_id" class="form-select bg-light">
-                            <option value="">Select Department (Optional)</option>
+                            <option value="">{{ _('Select Department (Optional)') }}</option>
                             {% for dept in departments %}
                                 <option value="{{ dept.id }}">{{ dept.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="attachment" class="form-label fw-semibold">Attachment (Optional)</label>
+                        <label for="attachment" class="form-label fw-semibold">{{ _('Attachment (Optional)') }}</label>
                         <input type="file" class="form-control bg-light" id="attachment" name="attachment" accept=".pdf, image/*">
                     </div>
                     <div class="mb-4">
-                        <label for="description" class="form-label fw-semibold">Description / Details</label>
-                        <textarea class="form-control bg-light" id="description" name="description" rows="5" required placeholder="Describe the application details..."></textarea>
+                        <label for="description" class="form-label fw-semibold">{{ _('Description / Details') }}</label>
+                        <textarea class="form-control bg-light" id="description" name="description" rows="5" required placeholder="{{ _('Describe the application details...') }}"></textarea>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold"><i class="fa-solid fa-paper-plane me-2"></i> Submit Application</button>
+                        <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold"><i class="fa-solid fa-paper-plane me-2"></i> {{ _('Submit Application') }}</button>
                     </div>
                 </form>
             </div>

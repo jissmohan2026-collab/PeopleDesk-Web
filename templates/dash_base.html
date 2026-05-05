@@ -18,28 +18,28 @@
         <div class="sidebar d-flex flex-column">
             <a href="{{ url_for('index') }}" class="text-decoration-none text-dark mb-4 mt-2 d-flex align-items-center gap-2">
                 <i class="fa-solid fa-clipboard-check text-primary fs-4"></i>
-                <span class="fs-5 fw-bold">Admin ATS</span>
+                <span class="fs-5 fw-bold">{{ _('Admin ATS') }}</span>
             </a>
             
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a href="{{ url_for('admin_dashboard') }}" class="nav-link text-dark {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
-                        <i class="fa-solid fa-gauge me-2"></i> Applications
+                        <i class="fa-solid fa-gauge me-2"></i> {{ _('Applications') }}
                     </a>
                 </li>
                 <li class="nav-item mt-2">
                     <a href="{{ url_for('admin_create_application') }}" class="nav-link text-dark {% if request.endpoint == 'admin_create_application' %}active{% endif %}">
-                        <i class="fa-solid fa-plus-circle me-2"></i> Create Application
+                        <i class="fa-solid fa-plus-circle me-2"></i> {{ _('Create Application') }}
                     </a>
                 </li>
                 <li class="nav-item mt-2">
                     <a href="{{ url_for('admin_profile') }}" class="nav-link text-dark {% if request.endpoint == 'admin_profile' %}active{% endif %}">
-                        <i class="fa-solid fa-user me-2"></i> Profile
+                        <i class="fa-solid fa-user me-2"></i> {{ _('Profile') }}
                     </a>
                 </li>
                 <li class="nav-item mt-2">
                     <a href="{{ url_for('admin_contact') }}" class="nav-link text-dark {% if request.endpoint == 'admin_contact' %}active{% endif %}">
-                        <i class="fa-solid fa-address-book me-2"></i> Contact Info
+                        <i class="fa-solid fa-address-book me-2"></i> {{ _('Contact Info') }}
                     </a>
                 </li>
             </ul>
@@ -51,9 +51,9 @@
                     <strong>{{ current_user.username }}</strong>
                 </a>
                 <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">{{ _('Profile') }}</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">Sign out</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">{{ _('Sign out') }}</a></li>
                 </ul>
             </div>
         </div>
@@ -62,6 +62,10 @@
         <div class="main-content">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">{% block header %}Dashboard{% endblock %}</h1>
+                <div class="btn-group" role="group">
+                    <a href="{{ url_for('set_language', lang='en') }}" class="btn btn-sm {% if session.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-outline-primary{% endif %}">{{ _('English') }}</a>
+                    <a href="{{ url_for('set_language', lang='ml') }}" class="btn btn-sm {% if session.get('lang') == 'ml' %}btn-primary{% else %}btn-outline-primary{% endif %}">മലയാളം</a>
+                </div>
             </div>
 
             <!-- Flash Messages -->

@@ -7,34 +7,34 @@
             <div class="col-lg-8">
                 <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-5">
                     <div class="text-center mb-4">
-                        <h2 class="fw-bold">Track Application</h2>
-                        <p class="text-muted">Enter your Consignment ID below to see its current status</p>
+                        <h2 class="fw-bold">{{ _('Track Application') }}</h2>
+                        <p class="text-muted">{{ _('Enter your Consignment ID below to see its current status') }}</p>
                     </div>
                     
                     <form action="{{ url_for('track') }}" method="POST" class="tracking-form mx-auto border mb-4" style="max-width: 600px;">
-                        <input type="text" name="tracking_id" placeholder="e.g. CCN123456789" required>
-                        <button type="submit" class="btn btn-primary px-4">Track</button>
+                        <input type="text" name="tracking_id" placeholder="{{ _('e.g. CCN123456789') }}" required>
+                        <button type="submit" class="btn btn-primary px-4">{{ _('Track') }}</button>
                     </form>
                 </div>
 
                 {% if consignment %}
                 <div class="card border-0 shadow rounded-4 p-4">
-                    <h4 class="fw-bold mb-4 border-bottom pb-3">Status Details</h4>
+                    <h4 class="fw-bold mb-4 border-bottom pb-3">{{ _('Status Details') }}</h4>
                     <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Tracking ID</div>
+                        <div class="col-sm-4 text-muted">{{ _('Tracking ID') }}</div>
                         <div class="col-sm-8 fw-bold">{{ consignment.tracking_id }}</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Title</div>
+                        <div class="col-sm-4 text-muted">{{ _('Title') }}</div>
                         <div class="col-sm-8">{{ consignment.title }}</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Department</div>
+                        <div class="col-sm-4 text-muted">{{ _('Department') }}</div>
                         <div class="col-sm-8">
                             {{ consignment.department.name if consignment.department else 'N/A' }}
                             {% if consignment.department and consignment.department.officer_name %}
                             <div class="small text-muted mt-2 border-start border-2 border-primary ps-2">
-                                <strong>Department Head:</strong> {{ consignment.department.officer_name }}<br>
+                                <strong>{{ _('Department Head:') }}</strong> {{ consignment.department.officer_name }}<br>
                                 <i class="fa-solid fa-phone small"></i> {{ consignment.department.officer_phone }}<br>
                                 <i class="fa-solid fa-envelope small"></i> <a href="mailto:{{ consignment.department.officer_email }}" class="text-decoration-none">{{ consignment.department.officer_email }}</a>
                             </div>
@@ -42,18 +42,18 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Assigned Officer</div>
+                        <div class="col-sm-4 text-muted">{{ _('Assigned Officer') }}</div>
                         <div class="col-sm-8">
                             {% if consignment.admin %}
                                 <strong>{{ consignment.admin.name or consignment.admin.username }}</strong><br>
                                 {% if consignment.admin.phone_no %}<i class="fa-solid fa-phone small text-muted"></i> {{ consignment.admin.phone_no }}{% endif %}
                             {% else %}
-                                <span class="text-muted fst-italic">Pending Assignment</span>
+                                <span class="text-muted fst-italic">{{ _('Pending Assignment') }}</span>
                             {% endif %}
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Status</div>
+                        <div class="col-sm-4 text-muted">{{ _('Status') }}</div>
                         <div class="col-sm-8">
                             {% set badge_class = 'bg-secondary' %}
                             {% if consignment.status == 'Pending' %}{% set badge_class = 'badge-status-pending' %}
@@ -66,16 +66,16 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Last Updated</div>
+                        <div class="col-sm-4 text-muted">{{ _('Last Updated') }}</div>
                         <div class="col-sm-8">{{ consignment.updated_at.strftime('%Y-%m-%d %H:%M') }}</div>
                     </div>
                     
                     <div class="mt-4 pt-4 border-top">
-                        <h5 class="fw-bold mb-3">Description</h5>
+                        <h5 class="fw-bold mb-3">{{ _('Description') }}</h5>
                         <p class="text-muted">{{ consignment.description }}</p>
                         {% if consignment.attachment_url %}
                         <div class="mt-3">
-                            <a href="{{ consignment.attachment_url }}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-paperclip me-1"></i> View Attached Document</a>
+                            <a href="{{ consignment.attachment_url }}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-paperclip me-1"></i> {{ _('View Attached Document') }}</a>
                         </div>
                         {% endif %}
                     </div>

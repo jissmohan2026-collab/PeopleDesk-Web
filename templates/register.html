@@ -8,62 +8,62 @@
                 <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
                     <div class="text-center mb-4">
                         <i class="fa-solid fa-user-plus text-primary mb-3" style="font-size: 3rem;"></i>
-                        <h3 class="fw-bold">Create an Account</h3>
-                        <p class="text-muted">Register to submit and track applications easily</p>
+                        <h3 class="fw-bold">{{ _('Create an Account') }}</h3>
+                        <p class="text-muted">{{ _('Register to submit and track applications easily') }}</p>
                     </div>
                     
                     <form action="{{ url_for('register') }}" method="POST">
                         <div class="mb-3">
-                            <label class="form-label">Username</label>
+                            <label class="form-label">{{ _('Username') }}</label>
                             <input type="text" name="username" class="form-control form-control-lg bg-light border-0" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Name</label>
+                            <label class="form-label">{{ _('Name') }}</label>
                             <input type="text" name="name" class="form-control form-control-lg bg-light border-0" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Phone No</label>
+                            <label class="form-label">{{ _('Phone No') }}</label>
                             <input type="tel" name="phone_no" class="form-control form-control-lg bg-light border-0" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Address</label>
+                            <label class="form-label">{{ _('Address') }}</label>
                             <textarea name="address" class="form-control bg-light border-0" rows="2" required></textarea>
                         </div>
                         <div class="row mb-3">
                             <div class="col-6">
-                                <label class="form-label">Place</label>
+                                <label class="form-label">{{ _('Place') }}</label>
                                 <input type="text" name="place" class="form-control form-control-lg bg-light border-0" required>
                             </div>
                             <div class="col-6">
-                                <label class="form-label">District</label>
+                                <label class="form-label">{{ _('District') }}</label>
                                 <select name="district" class="form-select form-select-lg bg-light border-0" required>
-                                    <option value="">Select District</option>
-                                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                                    <option value="Kollam">Kollam</option>
-                                    <option value="Pathanamthitta">Pathanamthitta</option>
-                                    <option value="Alappuzha">Alappuzha</option>
-                                    <option value="Kottayam">Kottayam</option>
-                                    <option value="Idukki">Idukki</option>
-                                    <option value="Ernakulam">Ernakulam</option>
-                                    <option value="Thrissur">Thrissur</option>
-                                    <option value="Palakkad">Palakkad</option>
-                                    <option value="Malappuram">Malappuram</option>
-                                    <option value="Kozhikode">Kozhikode</option>
-                                    <option value="Wayanad">Wayanad</option>
-                                    <option value="Kannur">Kannur</option>
-                                    <option value="Kasaragod">Kasaragod</option>
-                                    <option value="Other">Other</option>
+                                    <option value="">{{ _('Select District') }}</option>
+                                    <option value="Thiruvananthapuram">{{ _('Thiruvananthapuram') }}</option>
+                                    <option value="Kollam">{{ _('Kollam') }}</option>
+                                    <option value="Pathanamthitta">{{ _('Pathanamthitta') }}</option>
+                                    <option value="Alappuzha">{{ _('Alappuzha') }}</option>
+                                    <option value="Kottayam">{{ _('Kottayam') }}</option>
+                                    <option value="Idukki">{{ _('Idukki') }}</option>
+                                    <option value="Ernakulam">{{ _('Ernakulam') }}</option>
+                                    <option value="Thrissur">{{ _('Thrissur') }}</option>
+                                    <option value="Palakkad">{{ _('Palakkad') }}</option>
+                                    <option value="Malappuram">{{ _('Malappuram') }}</option>
+                                    <option value="Kozhikode">{{ _('Kozhikode') }}</option>
+                                    <option value="Wayanad">{{ _('Wayanad') }}</option>
+                                    <option value="Kannur">{{ _('Kannur') }}</option>
+                                    <option value="Kasaragod">{{ _('Kasaragod') }}</option>
+                                    <option value="Other">{{ _('Other') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">{{ _('Password') }}</label>
                             <input type="password" name="password" class="form-control form-control-lg bg-light border-0" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">Register</button>
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">{{ _('Register') }}</button>
                     </form>
                     <div class="text-center">
-                        <p class="text-muted">Already have an account? <a href="{{ url_for('login') }}" class="text-decoration-none">Login here</a></p>
+                        <p class="text-muted">{{ _('Already have an account?') }} <a href="{{ url_for('login') }}" class="text-decoration-none">{{ _('Login here') }}</a></p>
                     </div>
                 </div>
             </div>

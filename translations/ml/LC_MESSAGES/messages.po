@@ -1,0 +1,1252 @@
+# Malayalam translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-05 12:58+0530\n"
+"PO-Revision-Date: 2026-05-05 12:59+0530\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ml\n"
+"Language-Team: ml <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app.py:57
+msgid "No consignment found with that tracking ID.), "
+msgstr "ആ ട്രാക്കിംഗ് ഐഡിയിൽ ചരക്കൊന്നും കണ്ടെത്തിയില്ല.),"
+
+#: app.py:119 app.py:339
+msgid "Username already exists.), "
+msgstr "ഉപയോക്തൃനാമം ഇതിനകം നിലവിലുണ്ട്.),"
+
+#: app.py:122
+msgid "Phone number already registered.), "
+msgstr "ഇതിനകം രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ.)"
+
+#: app.py:221
+msgid "Password updated successfully.), "
+msgstr "പാസ്‌വേഡ് വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്‌തു.)"
+
+#: app.py:257
+msgid "New user account created automatically.), "
+msgstr "പുതിയ ഉപയോക്തൃ അക്കൗണ്ട് സ്വയമേവ സൃഷ്‌ടിച്ചു.),"
+
+#: app.py:289
+msgid "Not authorized.), "
+msgstr "അധികാരപ്പെടുത്തിയിട്ടില്ല.)"
+
+#: app.py:296
+msgid "Status updated.), "
+msgstr "സ്റ്റാറ്റസ് അപ്ഡേറ്റ് ചെയ്തു.)"
+
+#: app.py:345
+msgid "User created successfully.), "
+msgstr "ഉപയോക്താവ് വിജയകരമായി സൃഷ്‌ടിച്ചു.)"
+
+#: app.py:381
+msgid "Department already exists.), "
+msgstr "വകുപ്പ് ഇതിനകം നിലവിലുണ്ട്.)"
+
+#: app.py:386
+msgid "Department created successfully.), "
+msgstr "വകുപ്പ് വിജയകരമായി സൃഷ്ടിച്ചു.)"
+
+#: app.py:402
+msgid "Department deleted successfully.), "
+msgstr "വകുപ്പ് വിജയകരമായി ഇല്ലാതാക്കി.)"
+
+#: app.py:419
+msgid "You cannot delete your own profile.), "
+msgstr "നിങ്ങൾക്ക് നിങ്ങളുടെ സ്വന്തം പ്രൊഫൈൽ ഇല്ലാതാക്കാൻ കഴിയില്ല.)"
+
+#: app.py:426
+msgid "User deleted successfully.), "
+msgstr "ഉപയോക്താവിനെ വിജയകരമായി ഇല്ലാതാക്കി.)"
+
+#: app.py:437
+msgid "Application deleted successfully.), "
+msgstr "അപ്ലിക്കേഷൻ വിജയകരമായി ഇല്ലാതാക്കി.)"
+
+#: app.py:450
+msgid "Application updated successfully.), "
+msgstr "ആപ്ലിക്കേഷൻ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു.)"
+
+#: app.py:515
+msgid "Admin assigned successfully.), "
+msgstr "അഡ്മിൻ വിജയകരമായി ചുമതലപ്പെടുത്തി.)"
+
+#: templates/base.html:23 templates/base.html:89
+msgid "PeopleDesk.in"
+msgstr "PeopleDesk.in"
+
+#: templates/base.html:31 templates/base.html:103
+msgid "Home"
+msgstr "വീട്"
+
+#: templates/base.html:34 templates/base.html:104 templates/faq.html:24
+#: templates/index.html:107 templates/index.html:134 templates/track.html:10
+msgid "Track Application"
+msgstr "ആപ്ലിക്കേഷൻ ട്രാക്ക് ചെയ്യുക"
+
+#: templates/base.html:37 templates/base.html:105
+msgid "About Us"
+msgstr "ഞങ്ങളേക്കുറിച്ച്"
+
+#: templates/base.html:40 templates/base.html:106
+msgid "Departments"
+msgstr "വകുപ്പുകൾ"
+
+#: templates/base.html:43 templates/base.html:107 templates/base.html:120
+#: templates/contact.html:10
+msgid "Contact Us"
+msgstr "ഞങ്ങളെ സമീപിക്കുക"
+
+#: templates/base.html:48 templates/dash_base.html:66
+#: templates/dash_base_admin.html:61
+msgid "English"
+msgstr "ഇംഗ്ലീഷ്"
+
+#: templates/base.html:55
+msgid "Dashboard"
+msgstr "ഡാഷ്ബോർഡ്"
+
+#: templates/base.html:58 templates/login.html:24
+msgid "Login"
+msgstr "ലോഗിൻ"
+
+#: templates/base.html:91
+msgid ""
+"A secure and reliable platform to track your applications in real time.\n"
+"                        Stay informed at every step."
+msgstr ""
+
+#: templates/base.html:101
+msgid "Quick Links"
+msgstr "ദ്രുത ലിങ്കുകൾ"
+
+#: templates/base.html:111
+msgid "Support"
+msgstr "പിന്തുണ"
+
+#: templates/base.html:113
+msgid "FAQs"
+msgstr "പതിവുചോദ്യങ്ങൾ"
+
+#: templates/base.html:114
+msgid "Help Center"
+msgstr "സഹായ കേന്ദ്രം"
+
+#: templates/base.html:115 templates/privacy.html:9
+msgid "Privacy Policy"
+msgstr "സ്വകാര്യതാ നയം"
+
+#: templates/base.html:116
+msgid "Terms & Conditions"
+msgstr "നിബന്ധനകളും വ്യവസ്ഥകളും"
+
+#: templates/base.html:123
+msgid "support@atsystem.gov.in"
+msgstr "support@atsystem.gov.in"
+
+#: templates/base.html:125
+msgid ""
+"123,\n"
+"                            Government Complex, New Delhi, India - 110001"
+msgstr ""
+
+#: templates/base.html:132
+msgid "&copy; 2026 PeopleDesk.in . All rights reserved."
+msgstr "© 2026 PeopleDesk.in . എല്ലാ അവകാശങ്ങളും നിക്ഷിപ്തം."
+
+#: templates/contact.html:11
+msgid ""
+"We are here to help! Reach out to us for any queries or support regarding"
+" your applications."
+msgstr ""
+
+#: templates/contact.html:18 templates/superadmin/user_profile.html:28
+msgid "Full Name"
+msgstr "പൂർണ്ണമായ പേര്"
+
+#: templates/contact.html:19
+msgid "John Doe"
+msgstr "ജോൺ ഡോ"
+
+#: templates/contact.html:22
+msgid "Email address"
+msgstr "ഇമെയിൽ വിലാസം"
+
+#: templates/contact.html:23
+msgid "name@example.com"
+msgstr "name@example.com"
+
+#: templates/contact.html:26
+msgid "Subject"
+msgstr "വിഷയം"
+
+#: templates/contact.html:27
+msgid "How can we help you?"
+msgstr "ഞങ്ങൾക്ക് നിങ്ങളെ എങ്ങനെ സഹായിക്കാനാകും?"
+
+#: templates/contact.html:30
+msgid "Message"
+msgstr "സന്ദേശം"
+
+#: templates/contact.html:31
+msgid "Enter your message here..."
+msgstr "നിങ്ങളുടെ സന്ദേശം ഇവിടെ നൽകുക..."
+
+#: templates/contact.html:34
+msgid "Send Message"
+msgstr "സന്ദേശം അയയ്‌ക്കുക"
+
+#: templates/dash_base.html:21
+msgid "Admin ATS"
+msgstr "അഡ്മിൻ എ.ടി.എസ്"
+
+#: templates/dash_base.html:27 templates/dash_base_admin.html:27
+msgid "Applications"
+msgstr "അപേക്ഷകൾ"
+
+#: templates/dash_base.html:32
+msgid "Create Application"
+msgstr "ആപ്ലിക്കേഷൻ സൃഷ്ടിക്കുക"
+
+#: templates/dash_base.html:37 templates/dash_base.html:54
+#: templates/dash_base_admin.html:49
+msgid "Profile"
+msgstr "പ്രൊഫൈൽ"
+
+#: templates/dash_base.html:42
+msgid "Contact Info"
+msgstr "ബന്ധപ്പെടാനുള്ള വിവരങ്ങൾ"
+
+#: templates/dash_base.html:56 templates/dash_base_admin.html:51
+msgid "Sign out"
+msgstr "സൈൻ ഔട്ട്"
+
+#: templates/dash_base_admin.html:21
+msgid "SuperAdmin ATS"
+msgstr "സൂപ്പർഅഡ്മിൻ എ.ടി.എസ്"
+
+#: templates/dash_base_admin.html:32
+msgid "Manage Users"
+msgstr "ഉപയോക്താക്കളെ നിയന്ത്രിക്കുക"
+
+#: templates/dash_base_admin.html:37
+msgid "Manage Departments"
+msgstr "വകുപ്പുകൾ കൈകാര്യം ചെയ്യുക"
+
+#: templates/faq.html:10
+msgid "Frequently Asked Questions"
+msgstr "പതിവായി ചോദിക്കുന്ന ചോദ്യങ്ങൾ"
+
+#: templates/faq.html:11
+msgid ""
+"Find answers to the most common questions about the Application Tracking "
+"System."
+msgstr ""
+
+#: templates/faq.html:19
+msgid "How do I track my application?"
+msgstr "എൻ്റെ അപേക്ഷ എങ്ങനെ ട്രാക്ക് ചെയ്യാം?"
+
+#: templates/faq.html:24
+msgid "You can track your application by navigating to the"
+msgstr "എന്നതിലേക്ക് നാവിഗേറ്റ് ചെയ്തുകൊണ്ട് നിങ്ങളുടെ ആപ്ലിക്കേഷൻ ട്രാക്ക് ചെയ്യാം"
+
+#: templates/faq.html:24
+msgid ""
+"page from the main menu. Enter your unique 12-character alphanumeric "
+"Tracking ID (e.g. CCN123456789) and click 'Track'."
+msgstr ""
+
+#: templates/faq.html:33
+msgid "How long does it take for an application to be processed?"
+msgstr "ഒരു അപേക്ഷ പ്രോസസ്സ് ചെയ്യാൻ എത്ര സമയമെടുക്കും?"
+
+#: templates/faq.html:38
+msgid ""
+"Processing times vary depending on the department and the nature of the "
+"request. Generally, it takes between 3 to 7 business days for an initial "
+"review. You can monitor the real-time status via your dashboard or the "
+"tracking page."
+msgstr ""
+
+#: templates/faq.html:47
+msgid "What do the different status levels mean?"
+msgstr "വ്യത്യസ്ത സ്റ്റാറ്റസ് ലെവലുകൾ എന്താണ് അർത്ഥമാക്കുന്നത്?"
+
+#: templates/faq.html:53
+msgid "Submitted:"
+msgstr "സമർപ്പിച്ചത്:"
+
+#: templates/faq.html:53
+msgid "Your application has been received successfully."
+msgstr "നിങ്ങളുടെ അപേക്ഷ വിജയകരമായി സ്വീകരിച്ചു."
+
+#: templates/faq.html:54
+msgid "Pending:"
+msgstr "തീർച്ചപ്പെടുത്താത്തത്:"
+
+#: templates/faq.html:54
+msgid "Awaiting assignment to an officer."
+msgstr "ഒരു ഉദ്യോഗസ്ഥൻ്റെ നിയമനത്തിനായി കാത്തിരിക്കുന്നു."
+
+#: templates/faq.html:55
+msgid "Under Review:"
+msgstr "അവലോകനത്തിലാണ്:"
+
+#: templates/faq.html:55
+msgid "Being evaluated by the concerned department."
+msgstr "ബന്ധപ്പെട്ട വകുപ്പിൻ്റെ വിലയിരുത്തൽ."
+
+#: templates/faq.html:56
+msgid "Approved:"
+msgstr "അംഗീകരിച്ചത്:"
+
+#: templates/faq.html:56
+msgid "The request has been accepted."
+msgstr "അപേക്ഷ സ്വീകരിച്ചു."
+
+#: templates/faq.html:57
+msgid "Completed:"
+msgstr "പൂർത്തിയായി:"
+
+#: templates/faq.html:57
+msgid "All actions are finished."
+msgstr "എല്ലാ പ്രവർത്തനങ്ങളും പൂർത്തിയായി."
+
+#: templates/faq.html:58
+msgid "Closed:"
+msgstr "അടച്ചു:"
+
+#: templates/faq.html:58
+msgid "The ticket is formally closed."
+msgstr "ടിക്കറ്റ് ഔപചാരികമായി അടച്ചിരിക്കുന്നു."
+
+#: templates/faq.html:68
+msgid "Can I edit my application after submitting?"
+msgstr "സമർപ്പിച്ചതിന് ശേഷം എനിക്ക് എൻ്റെ അപേക്ഷ എഡിറ്റ് ചെയ്യാൻ കഴിയുമോ?"
+
+#: templates/faq.html:73
+msgid ""
+"Currently, submitted applications cannot be edited directly to ensure "
+"data integrity. If you made a mistake, please use the Contact Us page or "
+"submit a new application and reference the old tracking ID."
+msgstr ""
+
+#: templates/index.html:9
+msgid "Track, Monitor, Stay Updated."
+msgstr "ട്രാക്ക് ചെയ്യുക, നിരീക്ഷിക്കുക, അപ്ഡേറ്റ് ചെയ്യുക."
+
+#: templates/index.html:10
+msgid "Track Your Application in"
+msgstr "നിങ്ങളുടെ അപേക്ഷ ട്രാക്ക് ചെയ്യുക"
+
+#: templates/index.html:10
+msgid "Real Time"
+msgstr "തൽസമയം"
+
+#: templates/index.html:11
+msgid ""
+"Easily track the status of your application using your Consignment ID. "
+"Stay informed at every step of the process."
+msgstr ""
+
+#: templates/index.html:14 templates/index.html:101 templates/index.html:226
+msgid "Enter Consignment ID"
+msgstr "ചരക്ക് ഐഡി നൽകുക"
+
+#: templates/index.html:16 templates/index.html:228
+msgid "Track Now"
+msgstr "ഇപ്പോൾ ട്രാക്ക് ചെയ്യുക"
+
+#: templates/index.html:19 templates/index.html:231
+msgid "Example: CCN123456789"
+msgstr "ഉദാഹരണം: CCN123456789"
+
+#: templates/index.html:25
+msgid "Application Status"
+msgstr "അപേക്ഷാ നില"
+
+#: templates/admin/dashboard.html:18 templates/admin/dashboard.html:89
+#: templates/index.html:30 templates/superadmin/dashboard.html:18
+msgid "Pending"
+msgstr "തീർപ്പാക്കാത്തത്"
+
+#: templates/index.html:31
+msgid "Application Received"
+msgstr "അപേക്ഷ ലഭിച്ചു"
+
+#: templates/admin/dashboard.html:19 templates/admin/dashboard.html:90
+#: templates/index.html:37 templates/superadmin/dashboard.html:19
+msgid "Under Review"
+msgstr "അവലോകനത്തിന് കീഴിൽ"
+
+#: templates/index.html:38 templates/index.html:45
+msgid "By Department"
+msgstr "വകുപ്പ് പ്രകാരം"
+
+#: templates/admin/dashboard.html:20 templates/admin/dashboard.html:91
+#: templates/index.html:44 templates/superadmin/dashboard.html:20
+msgid "Approved"
+msgstr "അംഗീകരിച്ചു"
+
+#: templates/index.html:61
+msgid "Easy Tracking"
+msgstr "എളുപ്പമുള്ള ട്രാക്കിംഗ്"
+
+#: templates/index.html:62
+msgid "Track your application status using your unique Consignment ID."
+msgstr "നിങ്ങളുടെ അദ്വിതീയ ചരക്ക് ഐഡി ഉപയോഗിച്ച് നിങ്ങളുടെ അപേക്ഷയുടെ നില ട്രാക്ക് ചെയ്യുക."
+
+#: templates/index.html:68
+msgid "Real Time Updates"
+msgstr "തത്സമയ അപ്ഡേറ്റുകൾ"
+
+#: templates/index.html:69
+msgid "Get real time updates on your application at every stage."
+msgstr "ഓരോ ഘട്ടത്തിലും നിങ്ങളുടെ അപേക്ഷയിൽ തത്സമയ അപ്ഡേറ്റുകൾ നേടുക."
+
+#: templates/index.html:75
+msgid "Department Status"
+msgstr "വകുപ്പ് നില"
+
+#: templates/index.html:76
+msgid "See the approval status from each department involved."
+msgstr "ഉൾപ്പെട്ടിരിക്കുന്ന ഓരോ വകുപ്പിൽ നിന്നുമുള്ള അംഗീകാര നില കാണുക."
+
+#: templates/index.html:82
+msgid "Secure & Reliable"
+msgstr "സുരക്ഷിതവും വിശ്വസനീയവും"
+
+#: templates/index.html:83
+msgid "Your data is safe with us. We ensure privacy and security."
+msgstr "നിങ്ങളുടെ ഡാറ്റ ഞങ്ങളുടെ പക്കൽ സുരക്ഷിതമാണ്. ഞങ്ങൾ സ്വകാര്യതയും സുരക്ഷയും ഉറപ്പാക്കുന്നു."
+
+#: templates/index.html:94
+msgid "How It Works"
+msgstr "ഇത് എങ്ങനെ പ്രവർത്തിക്കുന്നു"
+
+#: templates/index.html:102
+msgid "Enter the Consignment ID provided to you."
+msgstr "നിങ്ങൾക്ക് നൽകിയിരിക്കുന്ന കൺസൈൻമെൻ്റ് ഐഡി നൽകുക."
+
+#: templates/index.html:108
+msgid "Click on 'Track Now' to view your application status."
+msgstr "നിങ്ങളുടെ അപേക്ഷയുടെ നില കാണുന്നതിന് 'ട്രാക്ക് നൗ' ക്ലിക്ക് ചെയ്യുക."
+
+#: templates/index.html:113
+msgid "View Status"
+msgstr "സ്റ്റാറ്റസ് കാണുക"
+
+#: templates/index.html:114
+msgid "See whether your application is Pending or Approved."
+msgstr "നിങ്ങളുടെ അപേക്ഷ തീർപ്പുകൽപ്പിക്കാത്തതാണോ അതോ അംഗീകരിച്ചതാണോ എന്ന് നോക്കുക."
+
+#: templates/index.html:119
+msgid "Get Notified"
+msgstr "അറിയിപ്പ് നേടുക"
+
+#: templates/index.html:120
+msgid "Receive updates and notifications at every important step."
+msgstr "ഓരോ സുപ്രധാന ഘട്ടത്തിലും അപ്‌ഡേറ്റുകളും അറിയിപ്പുകളും സ്വീകരിക്കുക."
+
+#: templates/index.html:131
+msgid "Stay Informed, Always"
+msgstr "എപ്പോഴും അറിഞ്ഞിരിക്കുക"
+
+#: templates/index.html:132
+msgid ""
+"We keep you updated on every change in your application status so you "
+"never miss an important update."
+msgstr ""
+
+#: templates/index.html:143
+msgid "Trusted by Thousands"
+msgstr "ആയിരങ്ങൾ വിശ്വസിച്ചു"
+
+#: templates/index.html:151
+msgid "Applications Tracked"
+msgstr "ആപ്ലിക്കേഷനുകൾ ട്രാക്ക് ചെയ്തു"
+
+#: templates/index.html:158
+msgid "Applications Approved"
+msgstr "അപേക്ഷകൾ അംഗീകരിച്ചു"
+
+#: templates/index.html:165
+msgid "Pending Applications"
+msgstr "തീർപ്പാക്കാത്ത അപേക്ഷകൾ"
+
+#: templates/index.html:172
+msgid "Departments Integrated"
+msgstr "വകുപ്പുകൾ സംയോജിപ്പിച്ചു"
+
+#: templates/index.html:183
+msgid "What Our Users Say"
+msgstr "ഞങ്ങളുടെ ഉപയോക്താക്കൾ എന്താണ് പറയുന്നത്"
+
+#: templates/index.html:190
+msgid ""
+"\"The application tracking system is very easy to use and helps me keep "
+"track of my application in real time.\""
+msgstr ""
+
+#: templates/index.html:192
+msgid "- Rahul Sharma"
+msgstr "- രാഹുൽ ശർമ്മ"
+
+#: templates/index.html:198
+msgid ""
+"\"I love how I can see the status from each department. It's transparent "
+"and reliable.\""
+msgstr ""
+
+#: templates/index.html:200
+msgid "- Priya Singh"
+msgstr "- പ്രിയ സിംഗ്"
+
+#: templates/index.html:206
+msgid ""
+"\"The real-time updates and notifications make the whole process smooth "
+"and hassle-free.\""
+msgstr ""
+
+#: templates/index.html:208
+msgid "- Amit Verma"
+msgstr "- അമിത് വർമ"
+
+#: templates/index.html:223
+msgid "Track Your Application Now"
+msgstr "നിങ്ങളുടെ അപേക്ഷ ഇപ്പോൾ ട്രാക്ക് ചെയ്യുക"
+
+#: templates/index.html:224
+msgid ""
+"Enter your Consignment ID and get real-time updates on your application "
+"status."
+msgstr ""
+
+#: templates/login.html:11
+msgid "Welcome Back"
+msgstr "തിരികെ സ്വാഗതം"
+
+#: templates/login.html:12
+msgid "Login to access your dashboard"
+msgstr "നിങ്ങളുടെ ഡാഷ്‌ബോർഡ് ആക്‌സസ് ചെയ്യാൻ ലോഗിൻ ചെയ്യുക"
+
+#: templates/admin/profile.html:16 templates/login.html:17
+#: templates/register.html:17 templates/superadmin/user_profile.html:24
+msgid "Username"
+msgstr "ഉപയോക്തൃനാമം"
+
+#: templates/login.html:21 templates/register.html:60
+msgid "Password"
+msgstr "രഹസ്യവാക്ക്"
+
+#: templates/login.html:27
+msgid "Don't have an account?"
+msgstr "അക്കൗണ്ട് ഇല്ലേ?"
+
+#: templates/login.html:27
+msgid "Register here"
+msgstr "ഇവിടെ രജിസ്റ്റർ ചെയ്യുക"
+
+#: templates/privacy.html:10 templates/terms.html:10
+msgid "Last updated: May 2026"
+msgstr "അവസാനം അപ്ഡേറ്റ് ചെയ്തത്: മെയ് 2026"
+
+#: templates/privacy.html:15
+msgid "1. Introduction"
+msgstr "1. ആമുഖം"
+
+#: templates/privacy.html:16
+msgid ""
+"Welcome to the Application Tracking System. We respect your privacy and "
+"are committed to protecting your personal data. This privacy policy will "
+"inform you as to how we look after your personal data when you visit our "
+"website (regardless of where you visit it from) and tell you about your "
+"privacy rights and how the law protects you."
+msgstr ""
+
+#: templates/privacy.html:18
+msgid "2. The Data We Collect About You"
+msgstr "2. നിങ്ങളെക്കുറിച്ച് ഞങ്ങൾ ശേഖരിക്കുന്ന ഡാറ്റ"
+
+#: templates/privacy.html:19
+msgid ""
+"Personal data, or personal information, means any information about an "
+"individual from which that person can be identified. It does not include "
+"data where the identity has been removed (anonymous data)."
+msgstr ""
+
+#: templates/privacy.html:21
+msgid "Identity Data"
+msgstr "ഐഡൻ്റിറ്റി ഡാറ്റ"
+
+#: templates/privacy.html:21
+msgid "includes first name, last name, username or similar identifier."
+msgstr "ആദ്യനാമം, അവസാന നാമം, ഉപയോക്തൃനാമം അല്ലെങ്കിൽ സമാനമായ ഐഡൻ്റിഫയർ എന്നിവ ഉൾപ്പെടുന്നു."
+
+#: templates/privacy.html:22
+msgid "Contact Data"
+msgstr "കോൺടാക്റ്റ് ഡാറ്റ"
+
+#: templates/privacy.html:22
+msgid "includes email address and telephone numbers."
+msgstr "ഇമെയിൽ വിലാസവും ടെലിഫോൺ നമ്പറുകളും ഉൾപ്പെടുന്നു."
+
+#: templates/privacy.html:23
+msgid "Technical Data"
+msgstr "സാങ്കേതിക ഡാറ്റ"
+
+#: templates/privacy.html:23
+msgid ""
+"includes internet protocol (IP) address, your login data, browser type "
+"and version, time zone setting and location."
+msgstr ""
+
+#: templates/privacy.html:26
+msgid "3. How We Use Your Personal Data"
+msgstr "3. നിങ്ങളുടെ സ്വകാര്യ ഡാറ്റ ഞങ്ങൾ എങ്ങനെ ഉപയോഗിക്കുന്നു"
+
+#: templates/privacy.html:27
+msgid ""
+"We will only use your personal data when the law allows us to. Most "
+"commonly, we will use your personal data in the following circumstances:"
+msgstr ""
+
+#: templates/privacy.html:29
+msgid ""
+"Where we need to perform the service we are about to enter into or have "
+"entered into with you (e.g., tracking applications)."
+msgstr ""
+
+#: templates/privacy.html:30
+msgid ""
+"Where it is necessary for our legitimate interests (or those of a third "
+"party) and your interests and fundamental rights do not override those "
+"interests."
+msgstr ""
+
+#: templates/privacy.html:31
+msgid "Where we need to comply with a legal or regulatory obligation."
+msgstr "നിയമപരമോ നിയന്ത്രണപരമോ ആയ ഒരു ബാധ്യത ഞങ്ങൾ പാലിക്കേണ്ടയിടത്ത്."
+
+#: templates/privacy.html:34
+msgid "4. Data Security"
+msgstr "4. ഡാറ്റ സുരക്ഷ"
+
+#: templates/privacy.html:35
+msgid ""
+"We have put in place appropriate security measures to prevent your "
+"personal data from being accidentally lost, used or accessed in an "
+"unauthorised way, altered or disclosed. In addition, we limit access to "
+"your personal data to those employees, agents, contractors and other "
+"third parties who have a business need to know. They will only process "
+"your personal data on our instructions and they are subject to a duty of "
+"confidentiality."
+msgstr ""
+
+#: templates/register.html:11
+msgid "Create an Account"
+msgstr "ഒരു അക്കൗണ്ട് സൃഷ്ടിക്കുക"
+
+#: templates/register.html:12
+msgid "Register to submit and track applications easily"
+msgstr "അപേക്ഷകൾ എളുപ്പത്തിൽ സമർപ്പിക്കാനും ട്രാക്ക് ചെയ്യാനും രജിസ്റ്റർ ചെയ്യുക"
+
+#: templates/admin/create_application.html:23 templates/register.html:21
+#: templates/superadmin/departments.html:19
+msgid "Name"
+msgstr "പേര്"
+
+#: templates/register.html:25 templates/superadmin/user_profile.html:32
+msgid "Phone No"
+msgstr "ഫോൺ നമ്പർ"
+
+#: templates/admin/create_application.html:28 templates/register.html:29
+#: templates/superadmin/user_profile.html:36
+msgid "Address"
+msgstr "വിലാസം"
+
+#: templates/admin/create_application.html:33 templates/register.html:34
+#: templates/superadmin/user_profile.html:40
+msgid "Place"
+msgstr "സ്ഥലം"
+
+#: templates/admin/create_application.html:37 templates/register.html:38
+#: templates/superadmin/user_profile.html:44
+msgid "District"
+msgstr "ജില്ല"
+
+#: templates/admin/create_application.html:39 templates/register.html:40
+msgid "Select District"
+msgstr "ജില്ല തിരഞ്ഞെടുക്കുക"
+
+#: templates/admin/create_application.html:40 templates/register.html:41
+msgid "Thiruvananthapuram"
+msgstr "തിരുവനന്തപുരം"
+
+#: templates/admin/create_application.html:41 templates/register.html:42
+msgid "Kollam"
+msgstr "കൊല്ലം"
+
+#: templates/admin/create_application.html:42 templates/register.html:43
+msgid "Pathanamthitta"
+msgstr "പത്തനംതിട്ട"
+
+#: templates/admin/create_application.html:43 templates/register.html:44
+msgid "Alappuzha"
+msgstr "ആലപ്പുഴ"
+
+#: templates/admin/create_application.html:44 templates/register.html:45
+msgid "Kottayam"
+msgstr "കോട്ടയം"
+
+#: templates/admin/create_application.html:45 templates/register.html:46
+msgid "Idukki"
+msgstr "ഇടുക്കി"
+
+#: templates/admin/create_application.html:46 templates/register.html:47
+msgid "Ernakulam"
+msgstr "എറണാകുളം"
+
+#: templates/admin/create_application.html:47 templates/register.html:48
+msgid "Thrissur"
+msgstr "തൃശൂർ"
+
+#: templates/admin/create_application.html:48 templates/register.html:49
+msgid "Palakkad"
+msgstr "പാലക്കാട്"
+
+#: templates/admin/create_application.html:49 templates/register.html:50
+msgid "Malappuram"
+msgstr "മലപ്പുറം"
+
+#: templates/admin/create_application.html:50 templates/register.html:51
+msgid "Kozhikode"
+msgstr "കോഴിക്കോട്"
+
+#: templates/admin/create_application.html:51 templates/register.html:52
+msgid "Wayanad"
+msgstr "വയനാട്"
+
+#: templates/admin/create_application.html:52 templates/register.html:53
+msgid "Kannur"
+msgstr "കണ്ണൂർ"
+
+#: templates/admin/create_application.html:53 templates/register.html:54
+msgid "Kasaragod"
+msgstr "കാസർഗോഡ്"
+
+#: templates/admin/create_application.html:54 templates/register.html:55
+msgid "Other"
+msgstr "മറ്റുള്ളവ"
+
+#: templates/register.html:63
+msgid "Register"
+msgstr "രജിസ്റ്റർ ചെയ്യുക"
+
+#: templates/register.html:66
+msgid "Already have an account?"
+msgstr "ഇതിനകം ഒരു അക്കൗണ്ട് ഉണ്ടോ?"
+
+#: templates/register.html:66
+msgid "Login here"
+msgstr "ഇവിടെ ലോഗിൻ ചെയ്യുക"
+
+#: templates/terms.html:9
+msgid "Terms and Conditions"
+msgstr "ഉപാധികളും നിബന്ധനകളും"
+
+#: templates/terms.html:15
+msgid "1. Agreement to Terms"
+msgstr "1. നിബന്ധനകൾക്കുള്ള കരാർ"
+
+#: templates/terms.html:16
+msgid ""
+"By accessing or using the Application Tracking System, you agree to be "
+"bound by these Terms and Conditions and all applicable laws and "
+"regulations. If you do not agree with any part of these terms, you may "
+"not use our services."
+msgstr ""
+
+#: templates/terms.html:18
+msgid "2. Use License"
+msgstr "2. ലൈസൻസ് ഉപയോഗിക്കുക"
+
+#: templates/terms.html:19
+msgid ""
+"Permission is granted to temporarily download one copy of the materials "
+"(information or software) on our website for personal, non-commercial "
+"transitory viewing only. This is the grant of a license, not a transfer "
+"of title, and under this license you may not:"
+msgstr ""
+
+#: templates/terms.html:21
+msgid "modify or copy the materials;"
+msgstr "മെറ്റീരിയലുകൾ പരിഷ്ക്കരിക്കുക അല്ലെങ്കിൽ പകർത്തുക;"
+
+#: templates/terms.html:22
+msgid ""
+"use the materials for any commercial purpose, or for any public display "
+"(commercial or non-commercial);"
+msgstr ""
+
+#: templates/terms.html:23
+msgid ""
+"attempt to decompile or reverse engineer any software contained on our "
+"website;"
+msgstr ""
+
+#: templates/terms.html:24
+msgid "remove any copyright or other proprietary notations from the materials; or"
+msgstr "മെറ്റീരിയലുകളിൽ നിന്ന് ഏതെങ്കിലും പകർപ്പവകാശം അല്ലെങ്കിൽ മറ്റ് ഉടമസ്ഥാവകാശ നൊട്ടേഷനുകൾ നീക്കം ചെയ്യുക; അല്ലെങ്കിൽ"
+
+#: templates/terms.html:25
+msgid ""
+"transfer the materials to another person or \"mirror\" the materials on "
+"any other server."
+msgstr ""
+
+#: templates/terms.html:28
+msgid "3. User Accounts"
+msgstr "3. ഉപയോക്തൃ അക്കൗണ്ടുകൾ"
+
+#: templates/terms.html:29
+msgid ""
+"When you create an account with us, you must provide us information that "
+"is accurate, complete, and current at all times. Failure to do so "
+"constitutes a breach of the Terms, which may result in immediate "
+"termination of your account on our Service. You are responsible for "
+"safeguarding the password that you use to access the Service and for any "
+"activities or actions under your password."
+msgstr ""
+
+#: templates/terms.html:31
+msgid "4. Limitations"
+msgstr "4. പരിമിതികൾ"
+
+#: templates/terms.html:32
+msgid ""
+"In no event shall the Application Tracking System or its suppliers be "
+"liable for any damages (including, without limitation, damages for loss "
+"of data or profit, or due to business interruption) arising out of the "
+"use or inability to use the materials on the website, even if an "
+"authorized representative has been notified orally or in writing of the "
+"possibility of such damage."
+msgstr ""
+
+#: templates/track.html:11
+msgid "Enter your Consignment ID below to see its current status"
+msgstr "നിലവിലെ നില കാണുന്നതിന് നിങ്ങളുടെ കൺസൈൻമെൻ്റ് ഐഡി ചുവടെ നൽകുക"
+
+#: templates/track.html:15
+msgid "e.g. CCN123456789"
+msgstr "ഉദാ. CCN123456789"
+
+#: templates/track.html:16
+msgid "Track"
+msgstr "ട്രാക്ക്"
+
+#: templates/track.html:22
+msgid "Status Details"
+msgstr "സ്റ്റാറ്റസ് വിശദാംശങ്ങൾ"
+
+#: templates/admin/dashboard.html:43 templates/superadmin/dashboard.html:51
+#: templates/track.html:24 templates/user/dashboard.html:28
+msgid "Tracking ID"
+msgstr "ട്രാക്കിംഗ് ഐഡി"
+
+#: templates/admin/dashboard.html:44 templates/superadmin/dashboard.html:52
+#: templates/track.html:28 templates/user/dashboard.html:29
+msgid "Title"
+msgstr "തലക്കെട്ട്"
+
+#: templates/superadmin/user_profile.html:49 templates/track.html:32
+#: templates/user/dashboard.html:30
+msgid "Department"
+msgstr "വകുപ്പ്"
+
+#: templates/track.html:37
+msgid "Department Head:"
+msgstr "വകുപ്പ് തലവൻ:"
+
+#: templates/track.html:45 templates/user/dashboard.html:57
+msgid "Assigned Officer"
+msgstr "ചുമതലപ്പെടുത്തിയ ഉദ്യോഗസ്ഥൻ"
+
+#: templates/track.html:51
+msgid "Pending Assignment"
+msgstr "തീർപ്പാക്കാത്ത അസൈൻമെൻ്റ്"
+
+#: templates/superadmin/dashboard.html:53 templates/track.html:56
+#: templates/user/dashboard.html:31
+msgid "Status"
+msgstr "നില"
+
+#: templates/track.html:69
+msgid "Last Updated"
+msgstr "അവസാനം അപ്ഡേറ്റ് ചെയ്തത്"
+
+#: templates/admin/dashboard.html:45 templates/track.html:74
+msgid "Description"
+msgstr "വിവരണം"
+
+#: templates/track.html:78
+msgid "View Attached Document"
+msgstr "അറ്റാച്ച് ചെയ്ത പ്രമാണം കാണുക"
+
+#: templates/admin/contact.html:11
+msgid "System Administrator Details"
+msgstr "സിസ്റ്റം അഡ്മിനിസ്ട്രേറ്റർ വിശദാംശങ്ങൾ"
+
+#: templates/admin/contact.html:14
+msgid ""
+"If you have any doubts or face technical issues, please contact the main "
+"support team directly using the details below."
+msgstr ""
+
+#: templates/admin/contact.html:20
+msgid "Phone Support"
+msgstr "ഫോൺ പിന്തുണ"
+
+#: templates/admin/contact.html:27
+msgid "Email Support"
+msgstr "ഇമെയിൽ പിന്തുണ"
+
+#: templates/admin/contact.html:28
+msgid "support@peopledesk.in"
+msgstr "support@peopledesk.in"
+
+#: templates/admin/contact.html:34
+msgid "Office Address"
+msgstr "ഓഫീസ് വിലാസം"
+
+#: templates/admin/contact.html:35
+msgid "123, Government Complex, New Delhi, India - 110001"
+msgstr "123, ഗവൺമെൻ്റ് കോംപ്ലക്സ്, ന്യൂഡൽഹി, ഇന്ത്യ - 110001"
+
+#: templates/admin/create_application.html:11
+msgid "Submit New Application"
+msgstr "പുതിയ അപേക്ഷ സമർപ്പിക്കുക"
+
+#: templates/admin/create_application.html:15
+#: templates/superadmin/user_profile.html:11
+msgid "User Details"
+msgstr "ഉപയോക്തൃ വിശദാംശങ്ങൾ"
+
+#: templates/admin/create_application.html:16
+msgid ""
+"If the phone number exists, the application will be linked to that user. "
+"Otherwise, a new user account will be created automatically."
+msgstr ""
+
+#: templates/admin/create_application.html:19
+msgid "Phone No (Identifier)"
+msgstr "ഫോൺ നമ്പർ (ഐഡൻ്റിഫയർ)"
+
+#: templates/admin/create_application.html:34
+msgid "City or Town"
+msgstr "നഗരം അല്ലെങ്കിൽ പട്ടണം"
+
+#: templates/admin/create_application.html:59
+msgid "Application Details"
+msgstr "അപേക്ഷയുടെ വിശദാംശങ്ങൾ"
+
+#: templates/admin/create_application.html:61
+#: templates/superadmin/edit_application.html:17 templates/user/submit.html:17
+msgid "Application Title"
+msgstr "അപേക്ഷയുടെ പേര്"
+
+#: templates/admin/create_application.html:62
+msgid "e.g. Server Upgrade Request"
+msgstr "ഉദാ. സെർവർ അപ്‌ഗ്രേഡ് അഭ്യർത്ഥന"
+
+#: templates/admin/create_application.html:65
+msgid "Assign Department"
+msgstr "വകുപ്പ് ഏൽപ്പിക്കുക"
+
+#: templates/admin/create_application.html:67
+msgid "Select Department (Optional)"
+msgstr "വകുപ്പ് തിരഞ്ഞെടുക്കുക (ഓപ്ഷണൽ)"
+
+#: templates/admin/create_application.html:74
+msgid "Attachment (Optional)"
+msgstr "അറ്റാച്ച്മെൻ്റ് (ഓപ്ഷണൽ)"
+
+#: templates/admin/create_application.html:78
+#: templates/superadmin/edit_application.html:21
+msgid "Description / Details"
+msgstr "വിവരണം / വിശദാംശങ്ങൾ"
+
+#: templates/admin/create_application.html:79
+msgid "Describe the application details..."
+msgstr "അപേക്ഷയുടെ വിശദാംശങ്ങൾ വിവരിക്കുക..."
+
+#: templates/admin/create_application.html:82 templates/user/submit.html:43
+msgid "Submit Application"
+msgstr "അപേക്ഷ സമർപ്പിക്കുക"
+
+#: templates/admin/dashboard.html:14 templates/superadmin/dashboard.html:14
+msgid "Filter by Status"
+msgstr "സ്റ്റാറ്റസ് അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
+
+#: templates/admin/dashboard.html:16 templates/superadmin/dashboard.html:16
+msgid "All Statuses"
+msgstr "എല്ലാ നിലകളും"
+
+#: templates/admin/dashboard.html:17 templates/superadmin/dashboard.html:17
+msgid "Submitted"
+msgstr "സമർപ്പിച്ചു"
+
+#: templates/admin/dashboard.html:21 templates/admin/dashboard.html:92
+#: templates/superadmin/dashboard.html:21
+msgid "Completed"
+msgstr "പൂർത്തിയാക്കി"
+
+#: templates/admin/dashboard.html:22 templates/admin/dashboard.html:93
+#: templates/superadmin/dashboard.html:22
+msgid "Closed"
+msgstr "അടച്ചു"
+
+#: templates/admin/dashboard.html:26 templates/superadmin/dashboard.html:26
+msgid "Filter by Date"
+msgstr "തീയതി പ്രകാരം ഫിൽട്ടർ ചെയ്യുക"
+
+#: templates/admin/dashboard.html:30 templates/superadmin/dashboard.html:30
+msgid "Apply Filters"
+msgstr "ഫിൽട്ടറുകൾ പ്രയോഗിക്കുക"
+
+#: templates/admin/dashboard.html:31 templates/superadmin/dashboard.html:31
+msgid "Reset"
+msgstr "പുനഃസജ്ജമാക്കുക"
+
+#: templates/admin/dashboard.html:46 templates/superadmin/dashboard.html:54
+msgid "Created Date"
+msgstr "സൃഷ്ടിച്ച തീയതി"
+
+#: templates/admin/dashboard.html:47
+msgid "Current Status"
+msgstr "നിലവിലെ നില"
+
+#: templates/admin/dashboard.html:48
+msgid "Update Status"
+msgstr "സ്റ്റാറ്റസ് അപ്ഡേറ്റ് ചെയ്യുക"
+
+#: templates/admin/dashboard.html:61 templates/user/dashboard.html:43
+msgid "View Attachment"
+msgstr "അറ്റാച്ച്മെൻ്റ് കാണുക"
+
+#: templates/admin/dashboard.html:95
+msgid "Update"
+msgstr "അപ്ഡേറ്റ്"
+
+#: templates/admin/dashboard.html:104 templates/superadmin/dashboard.html:112
+msgid "No applications found."
+msgstr "ആപ്ലിക്കേഷനുകളൊന്നും കണ്ടെത്തിയില്ല."
+
+#: templates/admin/profile.html:11
+msgid "Change Password"
+msgstr "പാസ്വേഡ് മാറ്റുക"
+
+#: templates/admin/profile.html:20
+msgid "New Password"
+msgstr "പുതിയ പാസ്വേഡ്"
+
+#: templates/admin/profile.html:27
+msgid "Update Password"
+msgstr "പാസ്‌വേഡ് അപ്‌ഡേറ്റ് ചെയ്യുക"
+
+#: templates/superadmin/dashboard.html:40
+msgid "All Applications"
+msgstr "എല്ലാ ആപ്ലിക്കേഷനുകളും"
+
+#: templates/superadmin/dashboard.html:42
+msgid "Export CSV"
+msgstr "CSV കയറ്റുമതി ചെയ്യുക"
+
+#: templates/superadmin/dashboard.html:43
+msgid "Export XML"
+msgstr "XML കയറ്റുമതി ചെയ്യുക"
+
+#: templates/superadmin/dashboard.html:55
+msgid "Assigned To"
+msgstr "ലേക്ക് അസൈൻ ചെയ്‌തു"
+
+#: templates/superadmin/dashboard.html:56
+#: templates/superadmin/departments.html:21
+msgid "Action"
+msgstr "ആക്ഷൻ"
+
+#: templates/superadmin/dashboard.html:67
+msgid "By:"
+msgstr "എഴുതിയത്:"
+
+#: templates/superadmin/dashboard.html:67
+msgid "View Profile"
+msgstr "പ്രൊഫൈൽ കാണുക"
+
+#: templates/superadmin/dashboard.html:71
+msgid "Attachment"
+msgstr "അറ്റാച്ച്മെൻ്റ്"
+
+#: templates/superadmin/dashboard.html:85
+msgid "Unassigned"
+msgstr "അസൈൻ ചെയ്തിട്ടില്ല"
+
+#: templates/superadmin/dashboard.html:92
+msgid "Admin"
+msgstr "അഡ്മിൻ"
+
+#: templates/superadmin/dashboard.html:97
+msgid "Assign"
+msgstr "അസൈൻ ചെയ്യുക"
+
+#: templates/superadmin/dashboard.html:101
+msgid "Edit"
+msgstr "എഡിറ്റ് ചെയ്യുക"
+
+#: templates/superadmin/dashboard.html:103
+msgid "Delete"
+msgstr "ഇല്ലാതാക്കുക"
+
+#: templates/superadmin/departments.html:11
+msgid "All Departments"
+msgstr "എല്ലാ വകുപ്പുകളും"
+
+#: templates/superadmin/departments.html:18
+msgid "ID"
+msgstr "ഐഡി"
+
+#: templates/superadmin/departments.html:20
+msgid "Officer Details"
+msgstr "ഉദ്യോഗസ്ഥൻ്റെ വിശദാംശങ്ങൾ"
+
+#: templates/superadmin/departments.html:36
+msgid "Not assigned"
+msgstr "ചുമതലപ്പെടുത്തിയിട്ടില്ല"
+
+#: templates/superadmin/departments.html:41
+msgid "Delete Department"
+msgstr "വകുപ്പ് ഇല്ലാതാക്കുക"
+
+#: templates/superadmin/departments.html:48
+msgid "No departments found."
+msgstr "വകുപ്പുകളൊന്നും കണ്ടെത്തിയില്ല."
+
+#: templates/superadmin/departments.html:61
+msgid "Add New Department"
+msgstr "പുതിയ വകുപ്പ് ചേർക്കുക"
+
+#: templates/superadmin/departments.html:66
+msgid "Department Name"
+msgstr "വകുപ്പിൻ്റെ പേര്"
+
+#: templates/superadmin/departments.html:72
+msgid "Officer Details (Optional)"
+msgstr "ഓഫീസർ വിശദാംശങ്ങൾ (ഓപ്ഷണൽ)"
+
+#: templates/superadmin/departments.html:74
+msgid "Officer Name"
+msgstr "ഉദ്യോഗസ്ഥൻ്റെ പേര്"
+
+#: templates/superadmin/departments.html:78
+msgid "Officer Phone"
+msgstr "ഓഫീസർ ഫോൺ"
+
+#: templates/superadmin/departments.html:82
+msgid "Officer Email"
+msgstr "ഓഫീസർ ഇമെയിൽ"
+
+#: templates/superadmin/departments.html:86
+msgid "Create Department"
+msgstr "വകുപ്പ് ഉണ്ടാക്കുക"
+
+#: templates/superadmin/edit_application.html:12
+#: templates/superadmin/user_profile.html:12
+msgid "Back to Dashboard"
+msgstr "ഡാഷ്‌ബോർഡിലേക്ക് മടങ്ങുക"
+
+#: templates/superadmin/edit_application.html:25 templates/user/submit.html:42
+msgid "Cancel"
+msgstr "റദ്ദാക്കുക"
+
+#: templates/superadmin/edit_application.html:26
+msgid "Save Changes"
+msgstr "മാറ്റങ്ങൾ സംരക്ഷിക്കുക"
+
+#: templates/user/dashboard.html:9
+msgid "My Applications"
+msgstr "എൻ്റെ അപേക്ഷകൾ"
+
+#: templates/user/dashboard.html:10
+msgid "View and track all your submitted applications."
+msgstr "നിങ്ങൾ സമർപ്പിച്ച എല്ലാ അപേക്ഷകളും കാണുക, ട്രാക്ക് ചെയ്യുക."
+
+#: templates/user/dashboard.html:14
+msgid "New Application"
+msgstr "പുതിയ ആപ്ലിക്കേഷൻ"
+
+#: templates/user/dashboard.html:17
+msgid "Logout"
+msgstr "പുറത്തുകടക്കുക"
+
+#: templates/user/dashboard.html:32
+msgid "Submitted On"
+msgstr "സമർപ്പിച്ചു"
+
+#: templates/user/dashboard.html:53
+msgid "Not Specified"
+msgstr "വ്യക്തമാക്കിയിട്ടില്ല"
+
+#: templates/user/dashboard.html:89
+msgid "You haven't submitted any applications yet."
+msgstr "You haven't submitted any applications yet."
+
+#: templates/user/dashboard.html:91
+msgid "Submit One Now"
+msgstr "ഒരെണ്ണം ഇപ്പോൾ സമർപ്പിക്കുക"
+
+#: templates/user/submit.html:11
+msgid "Submit a New Application"
+msgstr "ഒരു പുതിയ അപേക്ഷ സമർപ്പിക്കുക"
+
+#: templates/user/submit.html:12
+msgid ""
+"Fill out the details below to submit a new consignment/issue to the "
+"respective department."
+msgstr ""
+
+#: templates/user/submit.html:18
+msgid "Brief subject of your issue"
+msgstr "നിങ്ങളുടെ പ്രശ്നത്തിൻ്റെ സംക്ഷിപ്ത വിഷയം"
+
+#: templates/user/submit.html:22
+msgid "Related Department"
+msgstr "ബന്ധപ്പെട്ട വകുപ്പ്"
+
+#: templates/user/submit.html:24
+msgid "Select a department"
+msgstr "ഒരു വകുപ്പ് തിരഞ്ഞെടുക്കുക"
+
+#: templates/user/submit.html:32
+msgid "Attachment (Optional - Small PDF/Image)"
+msgstr "അറ്റാച്ച്മെൻ്റ് (ഓപ്ഷണൽ - ചെറിയ PDF/ചിത്രം)"
+
+#: templates/user/submit.html:37
+msgid "Detailed Description"
+msgstr "വിശദമായ വിവരണം"
+
+#: templates/user/submit.html:38
+msgid "Describe your issue or request in detail..."
+msgstr "നിങ്ങളുടെ പ്രശ്നം അല്ലെങ്കിൽ അഭ്യർത്ഥന വിശദമായി വിവരിക്കുക..."
+

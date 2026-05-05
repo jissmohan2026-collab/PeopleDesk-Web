@@ -8,8 +8,8 @@
     <div class="col-md-8 col-lg-6">
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0">User Details</h5>
-                <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-sm btn-outline-secondary">Back to Dashboard</a>
+                <h5 class="fw-bold mb-0">{{ _('User Details') }}</h5>
+                <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-sm btn-outline-secondary">{{ _('Back to Dashboard') }}</a>
             </div>
             <div class="card-body mt-3">
                 <div class="text-center mb-4">
@@ -21,32 +21,32 @@
                 <table class="table table-borderless">
                     <tbody>
                         <tr>
-                            <th class="ps-0 text-muted w-25">Username</th>
+                            <th class="ps-0 text-muted w-25">{{ _('Username') }}</th>
                             <td class="fw-semibold">{{ user.username }}</td>
                         </tr>
                         <tr>
-                            <th class="ps-0 text-muted">Full Name</th>
+                            <th class="ps-0 text-muted">{{ _('Full Name') }}</th>
                             <td class="fw-semibold">{{ user.name or 'N/A' }}</td>
                         </tr>
                         <tr>
-                            <th class="ps-0 text-muted">Phone No</th>
+                            <th class="ps-0 text-muted">{{ _('Phone No') }}</th>
                             <td class="fw-semibold">{{ user.phone_no or 'N/A' }}</td>
                         </tr>
                         <tr>
-                            <th class="ps-0 text-muted">Address</th>
+                            <th class="ps-0 text-muted">{{ _('Address') }}</th>
                             <td>{{ user.address or 'N/A' }}</td>
                         </tr>
                         <tr>
-                            <th class="ps-0 text-muted">Place</th>
+                            <th class="ps-0 text-muted">{{ _('Place') }}</th>
                             <td>{{ user.place or 'N/A' }}</td>
                         </tr>
                         <tr>
-                            <th class="ps-0 text-muted">District</th>
+                            <th class="ps-0 text-muted">{{ _('District') }}</th>
                             <td>{{ user.district or 'N/A' }}</td>
                         </tr>
                         {% if user.department %}
                         <tr>
-                            <th class="ps-0 text-muted">Department</th>
+                            <th class="ps-0 text-muted">{{ _('Department') }}</th>
                             <td>{{ user.department.name }}</td>
                         </tr>
                         {% endif %}

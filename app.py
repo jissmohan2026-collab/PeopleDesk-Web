@@ -3,7 +3,8 @@
 
 from dotenv import load_dotenv
 load_dotenv()
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask_babel import Babel, _
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
 from models import db, bcrypt, User, Department, Consignment
@@ -26,6 +27,17 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+def get_locale():
+    return session.get('lang', request.accept_languages.best_match(app.config['LANGUAGES']))
+
+babel = Babel(app, locale_selector=get_locale)
+
+@app.route('/set_language/<lang>')
+def set_language(lang):
+    if lang in app.config['LANGUAGES']:
+        session['lang'] = lang
+    return redirect(request.referrer or url_for('index'))
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -42,7 +54,7 @@ def track():
         tracking_id = request.form.get('tracking_id')
         consignment = Consignment.query.filter_by(tracking_id=tracking_id).first()
         if not consignment:
-            flash('No consignment found with that tracking ID.', 'danger')
+            flash(_('No consignment found with that tracking ID.), '), ')')
     return render_template('track.html', consignment=consignment)
 
 @app.route('/contact')
@@ -104,10 +116,10 @@ def register():
             district = request.form.get('district')
             
             if User.query.filter_by(username=username).first():
-                flash('Username already exists.', 'danger')
+                flash(_('Username already exists.), '), ')')
                 return redirect(url_for('register'))
             if phone_no and User.query.filter_by(phone_no=phone_no).first():
-                flash('Phone number already registered.', 'danger')
+                flash(_('Phone number already registered.), '), ')')
                 return redirect(url_for('register'))
                 
             new_user = User(
@@ -206,7 +218,7 @@ def admin_profile():
         if new_password:
             current_user.set_password(new_password)
             db.session.commit()
-            flash('Password updated successfully.', 'success')
+            flash(_('Password updated successfully.), '), ')')
             return redirect(url_for('admin_profile'))
     return render_template('admin/profile.html')
 
@@ -242,7 +254,7 @@ def admin_create_application():
                 user.set_password(phone_no)
                 db.session.add(user)
                 db.session.flush()
-                flash('New user account created automatically.', 'info')
+                flash(_('New user account created automatically.), '), ')')
         
         user_id = user.id if user else current_user.id
         
@@ -274,14 +286,14 @@ def admin_update_status(id):
         return redirect(url_for('index'))
     consignment = Consignment.query.get_or_404(id)
     if consignment.assigned_admin_id != current_user.id:
-        flash('Not authorized.', 'danger')
+        flash(_('Not authorized.), '), ')')
         return redirect(url_for('admin_dashboard'))
     
     new_status = request.form.get('status')
     if new_status in ['Pending', 'Under Review', 'Approved', 'Completed', 'Closed']:
         consignment.status = new_status
         db.session.commit()
-        flash('Status updated.', 'success')
+        flash(_('Status updated.), '), ')')
     return redirect(url_for('admin_dashboard'))
 
 # --- SuperAdmin Routes ---
@@ -324,13 +336,13 @@ def superadmin_users():
         department_id = request.form.get('department_id') or None
         
         if User.query.filter_by(username=username).first():
-            flash('Username already exists.', 'danger')
+            flash(_('Username already exists.), '), ')')
         else:
             new_user = User(username=username, role=role, department_id=department_id)
             new_user.set_password(password)
             db.session.add(new_user)
             db.session.commit()
-            flash('User created successfully.', 'success')
+            flash(_('User created successfully.), '), ')')
         return redirect(url_for('superadmin_users'))
         
     users = User.query.all()
@@ -366,12 +378,12 @@ def superadmin_departments():
         officer_phone = request.form.get('officer_phone')
         officer_email = request.form.get('officer_email')
         if Department.query.filter_by(name=name).first():
-            flash('Department already exists.', 'danger')
+            flash(_('Department already exists.), '), ')')
         else:
             new_dept = Department(name=name, officer_name=officer_name, officer_phone=officer_phone, officer_email=officer_email)
             db.session.add(new_dept)
             db.session.commit()
-            flash('Department created successfully.', 'success')
+            flash(_('Department created successfully.), '), ')')
         return redirect(url_for('superadmin_departments'))
         
     departments = Department.query.all()
@@ -387,7 +399,7 @@ def superadmin_delete_department(dept_id):
     Consignment.query.filter_by(department_id=dept.id).update({Consignment.department_id: None})
     db.session.delete(dept)
     db.session.commit()
-    flash('Department deleted successfully.', 'success')
+    flash(_('Department deleted successfully.), '), ')')
     return redirect(url_for('superadmin_departments'))
 
 @app.route('/superadmin/user/<int:user_id>')
@@ -404,14 +416,14 @@ def superadmin_delete_user(user_id):
     if current_user.role != 'superadmin':
         return redirect(url_for('index'))
     if current_user.id == user_id:
-        flash('You cannot delete your own profile.', 'danger')
+        flash(_('You cannot delete your own profile.), '), ')')
         return redirect(url_for('superadmin_users'))
     user = User.query.get_or_404(user_id)
     Consignment.query.filter_by(user_id=user.id).update({Consignment.user_id: None})
     Consignment.query.filter_by(assigned_admin_id=user.id).update({Consignment.assigned_admin_id: None})
     db.session.delete(user)
     db.session.commit()
-    flash('User deleted successfully.', 'success')
+    flash(_('User deleted successfully.), '), ')')
     return redirect(url_for('superadmin_users'))
 
 @app.route('/superadmin/delete_application/<int:con_id>', methods=['POST'])
@@ -422,7 +434,7 @@ def superadmin_delete_application(con_id):
     consignment = Consignment.query.get_or_404(con_id)
     db.session.delete(consignment)
     db.session.commit()
-    flash('Application deleted successfully.', 'success')
+    flash(_('Application deleted successfully.), '), ')')
     return redirect(url_for('superadmin_dashboard'))
 
 @app.route('/superadmin/edit_application/<int:con_id>', methods=['GET', 'POST'])
@@ -435,7 +447,7 @@ def superadmin_edit_application(con_id):
         consignment.title = request.form.get('title')
         consignment.description = request.form.get('description')
         db.session.commit()
-        flash('Application updated successfully.', 'success')
+        flash(_('Application updated successfully.), '), ')')
         return redirect(url_for('superadmin_dashboard'))
     return render_template('superadmin/edit_application.html', consignment=consignment)
 
@@ -500,7 +512,7 @@ def superadmin_assign(con_id):
     if admin_id:
         consignment.assigned_admin_id = admin_id
         db.session.commit()
-        flash('Admin assigned successfully.', 'success')
+        flash(_('Admin assigned successfully.), '), ')')
     return redirect(url_for('superadmin_dashboard'))
 
 # --- Setup Script ---

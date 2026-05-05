@@ -8,20 +8,20 @@
         <div class="col-lg-8">
             <div class="card border-0 shadow rounded-4 p-4 p-md-5">
                 <div class="mb-4">
-                    <h2 class="fw-bold">Submit a New Application</h2>
-                    <p class="text-muted">Fill out the details below to submit a new consignment/issue to the respective department.</p>
+                    <h2 class="fw-bold">{{ _('Submit a New Application') }}</h2>
+                    <p class="text-muted">{{ _('Fill out the details below to submit a new consignment/issue to the respective department.') }}</p>
                 </div>
                 
                 <form action="{{ url_for('submit_issue') }}" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label for="title" class="form-label fw-bold">Application Title</label>
-                        <input type="text" class="form-control form-control-lg" id="title" name="title" placeholder="Brief subject of your issue" required>
+                        <label for="title" class="form-label fw-bold">{{ _('Application Title') }}</label>
+                        <input type="text" class="form-control form-control-lg" id="title" name="title" placeholder="{{ _('Brief subject of your issue') }}" required>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="department_id" class="form-label fw-bold">Related Department</label>
+                        <label for="department_id" class="form-label fw-bold">{{ _('Related Department') }}</label>
                         <select class="form-select form-select-lg" id="department_id" name="department_id" required>
-                            <option value="" disabled selected>Select a department</option>
+                            <option value="" disabled selected>{{ _('Select a department') }}</option>
                             {% for dept in departments %}
                                 <option value="{{ dept.id }}">{{ dept.name }}</option>
                             {% endfor %}
@@ -29,18 +29,18 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="attachment" class="form-label fw-bold">Attachment (Optional - Small PDF/Image)</label>
+                        <label for="attachment" class="form-label fw-bold">{{ _('Attachment (Optional - Small PDF/Image)') }}</label>
                         <input type="file" class="form-control form-control-lg bg-light border-0" id="attachment" name="attachment" accept=".pdf, image/*">
                     </div>
                     
                     <div class="mb-4">
-                        <label for="description" class="form-label fw-bold">Detailed Description</label>
-                        <textarea class="form-control form-control-lg" id="description" name="description" rows="6" placeholder="Describe your issue or request in detail..." required></textarea>
+                        <label for="description" class="form-label fw-bold">{{ _('Detailed Description') }}</label>
+                        <textarea class="form-control form-control-lg" id="description" name="description" rows="6" placeholder="{{ _('Describe your issue or request in detail...') }}" required></textarea>
                     </div>
                     
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="{{ url_for('user_dashboard') }}" class="btn btn-light btn-lg px-4 border text-muted">Cancel</a>
-                        <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">Submit Application</button>
+                        <a href="{{ url_for('user_dashboard') }}" class="btn btn-light btn-lg px-4 border text-muted">{{ _('Cancel') }}</a>
+                        <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">{{ _('Submit Application') }}</button>
                     </div>
                 </form>
             </div>

@@ -11,24 +11,24 @@
             <div class="card-body">
                 <form method="GET" action="{{ url_for('admin_dashboard') }}" class="row g-3 align-items-end">
                     <div class="col-md-4">
-                        <label for="status" class="form-label fw-semibold">Filter by Status</label>
+                        <label for="status" class="form-label fw-semibold">{{ _('Filter by Status') }}</label>
                         <select name="status" id="status" class="form-select">
-                            <option value="">All Statuses</option>
-                            <option value="Submitted" {% if status_filter == 'Submitted' %}selected{% endif %}>Submitted</option>
-                            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
-                            <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>Under Review</option>
-                            <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
-                            <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>Completed</option>
-                            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>Closed</option>
+                            <option value="">{{ _('All Statuses') }}</option>
+                            <option value="Submitted" {% if status_filter == 'Submitted' %}selected{% endif %}>{{ _('Submitted') }}</option>
+                            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>{{ _('Pending') }}</option>
+                            <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>{{ _('Under Review') }}</option>
+                            <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>{{ _('Approved') }}</option>
+                            <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>{{ _('Completed') }}</option>
+                            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>{{ _('Closed') }}</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="date" class="form-label fw-semibold">Filter by Date</label>
+                        <label for="date" class="form-label fw-semibold">{{ _('Filter by Date') }}</label>
                         <input type="date" name="date" id="date" class="form-control" value="{{ date_filter or '' }}">
                     </div>
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-filter me-1"></i> Apply Filters</button>
-                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-rotate-right me-1"></i> Reset</a>
+                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-filter me-1"></i> {{ _('Apply Filters') }}</button>
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-rotate-right me-1"></i> {{ _('Reset') }}</a>
                     </div>
                 </form>
             </div>
@@ -40,12 +40,12 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4 py-3">Tracking ID</th>
-                                <th class="py-3">Title</th>
-                                <th class="py-3">Description</th>
-                                <th class="py-3">Created Date</th>
-                                <th class="py-3">Current Status</th>
-                                <th class="pe-4 py-3 text-end">Update Status</th>
+                                <th class="ps-4 py-3">{{ _('Tracking ID') }}</th>
+                                <th class="py-3">{{ _('Title') }}</th>
+                                <th class="py-3">{{ _('Description') }}</th>
+                                <th class="py-3">{{ _('Created Date') }}</th>
+                                <th class="py-3">{{ _('Current Status') }}</th>
+                                <th class="pe-4 py-3 text-end">{{ _('Update Status') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -58,7 +58,7 @@
                                         <div class="text-muted small fw-normal mt-1">
                                             By: {% if con.submitter and con.submitter.name %}{{ con.submitter.name }} ({{ con.submitter.phone_no }}){% else %}User ID: {{ con.user_id }}{% endif %}
                                             {% if con.attachment_url %}
-                                            <br><a href="{{ con.attachment_url }}" target="_blank" class="text-info text-decoration-none"><i class="fa-solid fa-paperclip"></i> View Attachment</a>
+                                            <br><a href="{{ con.attachment_url }}" target="_blank" class="text-info text-decoration-none"><i class="fa-solid fa-paperclip"></i> {{ _('View Attachment') }}</a>
                                             {% endif %}
                                         </div>
                                     </td>
@@ -86,13 +86,13 @@
                                     <td class="pe-4 py-3 text-end">
                                         <form action="{{ url_for('admin_update_status', id=con.id) }}" method="POST" class="d-flex align-items-center justify-content-end gap-2">
                                             <select name="status" class="form-select form-select-sm w-auto" required>
-                                                <option value="Pending" {% if con.status == 'Pending' %}selected{% endif %}>Pending</option>
-                                                <option value="Under Review" {% if con.status == 'Under Review' %}selected{% endif %}>Under Review</option>
-                                                <option value="Approved" {% if con.status == 'Approved' %}selected{% endif %}>Approved</option>
-                                                <option value="Completed" {% if con.status == 'Completed' %}selected{% endif %}>Completed</option>
-                                                <option value="Closed" {% if con.status == 'Closed' %}selected{% endif %}>Closed</option>
+                                                <option value="Pending" {% if con.status == 'Pending' %}selected{% endif %}>{{ _('Pending') }}</option>
+                                                <option value="Under Review" {% if con.status == 'Under Review' %}selected{% endif %}>{{ _('Under Review') }}</option>
+                                                <option value="Approved" {% if con.status == 'Approved' %}selected{% endif %}>{{ _('Approved') }}</option>
+                                                <option value="Completed" {% if con.status == 'Completed' %}selected{% endif %}>{{ _('Completed') }}</option>
+                                                <option value="Closed" {% if con.status == 'Closed' %}selected{% endif %}>{{ _('Closed') }}</option>
                                             </select>
-                                            <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">{{ _('Update') }}</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -101,7 +101,7 @@
                                 <tr>
                                     <td colspan="6" class="text-center py-5 text-muted">
                                         <i class="fa-solid fa-inbox fs-1 text-light mb-3 d-block"></i>
-                                        No applications found.
+                                        {{ _('No applications found.') }}
                                     </td>
                                 </tr>
                             {% endif %}

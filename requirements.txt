@@ -11,3 +11,6 @@ Flask-Bcrypt==1.0.1
 python-dotenv==1.0.1
 cloudinary
 werkzeug
+
+Flask-Babel
+deep-translator

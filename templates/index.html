@@ -6,43 +6,43 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-5 mb-lg-0">
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">Track, Monitor, Stay Updated.</span>
-                <h1 class="hero-title">Track Your Application in <span>Real Time</span></h1>
-                <p class="hero-subtitle">Easily track the status of your application using your Consignment ID. Stay informed at every step of the process.</p>
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">{{ _('Track, Monitor, Stay Updated.') }}</span>
+                <h1 class="hero-title">{{ _('Track Your Application in') }} <span>{{ _('Real Time') }}</span></h1>
+                <p class="hero-subtitle">{{ _('Easily track the status of your application using your Consignment ID. Stay informed at every step of the process.') }}</p>
                 
                 <form action="{{ url_for('track') }}" method="POST" class="tracking-form mb-3">
-                    <input type="text" name="tracking_id" placeholder="Enter Consignment ID" required>
+                    <input type="text" name="tracking_id" placeholder="{{ _('Enter Consignment ID') }}" required>
                     <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 text-nowrap">
-                        <i class="fa-solid fa-magnifying-glass"></i> Track Now
+                        <i class="fa-solid fa-magnifying-glass"></i> {{ _('Track Now') }}
                     </button>
                 </form>
-                <small class="text-muted ms-2">Example: CCN123456789</small>
+                <small class="text-muted ms-2">{{ _('Example: CCN123456789') }}</small>
             </div>
             <div class="col-lg-6 hero-image-wrapper">
                 <!-- Fallback to a styled div if image not provided, matching the mockup aesthetic -->
                 <div class="p-4 bg-white rounded-4 shadow-lg position-relative" style="border: 8px solid #333;">
                     <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
-                        <h5 class="mb-0 fw-bold">Application Status</h5>
+                        <h5 class="mb-0 fw-bold">{{ _('Application Status') }}</h5>
                     </div>
                     <div class="d-flex align-items-start mb-4">
                         <div class="rounded-circle bg-warning bg-opacity-10 text-warning p-3 me-3"><i class="fa-solid fa-clock fs-5"></i></div>
                         <div>
-                            <h6 class="fw-bold mb-1">Pending</h6>
-                            <small class="text-muted">Application Received</small>
+                            <h6 class="fw-bold mb-1">{{ _('Pending') }}</h6>
+                            <small class="text-muted">{{ _('Application Received') }}</small>
                         </div>
                     </div>
                     <div class="d-flex align-items-start mb-4">
                         <div class="rounded-circle bg-info bg-opacity-10 text-info p-3 me-3"><i class="fa-solid fa-user-tie fs-5"></i></div>
                         <div>
-                            <h6 class="fw-bold mb-1">Under Review</h6>
-                            <small class="text-muted">By Department</small>
+                            <h6 class="fw-bold mb-1">{{ _('Under Review') }}</h6>
+                            <small class="text-muted">{{ _('By Department') }}</small>
                         </div>
                     </div>
                     <div class="d-flex align-items-start">
                         <div class="rounded-circle bg-success bg-opacity-10 text-success p-3 me-3"><i class="fa-solid fa-check fs-5"></i></div>
                         <div>
-                            <h6 class="fw-bold mb-1">Approved</h6>
-                            <small class="text-muted">By Department</small>
+                            <h6 class="fw-bold mb-1">{{ _('Approved') }}</h6>
+                            <small class="text-muted">{{ _('By Department') }}</small>
                         </div>
                     </div>
                 </div>
@@ -58,29 +58,29 @@
             <div class="col-md-3">
                 <div class="feature-card text-center text-md-start">
                     <div class="feature-icon bg-primary bg-opacity-10 text-primary"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h5 class="fw-bold">Easy Tracking</h5>
-                    <p class="text-muted mb-0 fs-6">Track your application status using your unique Consignment ID.</p>
+                    <h5 class="fw-bold">{{ _('Easy Tracking') }}</h5>
+                    <p class="text-muted mb-0 fs-6">{{ _('Track your application status using your unique Consignment ID.') }}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="feature-card text-center text-md-start">
                     <div class="feature-icon bg-success bg-opacity-10 text-success"><i class="fa-solid fa-bolt"></i></div>
-                    <h5 class="fw-bold">Real Time Updates</h5>
-                    <p class="text-muted mb-0 fs-6">Get real time updates on your application at every stage.</p>
+                    <h5 class="fw-bold">{{ _('Real Time Updates') }}</h5>
+                    <p class="text-muted mb-0 fs-6">{{ _('Get real time updates on your application at every stage.') }}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="feature-card text-center text-md-start">
                     <div class="feature-icon bg-purple bg-opacity-10 text-purple" style="color:#6f42c1;"><i class="fa-solid fa-building-user"></i></div>
-                    <h5 class="fw-bold">Department Status</h5>
-                    <p class="text-muted mb-0 fs-6">See the approval status from each department involved.</p>
+                    <h5 class="fw-bold">{{ _('Department Status') }}</h5>
+                    <p class="text-muted mb-0 fs-6">{{ _('See the approval status from each department involved.') }}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="feature-card text-center text-md-start">
                     <div class="feature-icon bg-warning bg-opacity-10 text-warning"><i class="fa-solid fa-lock"></i></div>
-                    <h5 class="fw-bold">Secure & Reliable</h5>
-                    <p class="text-muted mb-0 fs-6">Your data is safe with us. We ensure privacy and security.</p>
+                    <h5 class="fw-bold">{{ _('Secure & Reliable') }}</h5>
+                    <p class="text-muted mb-0 fs-6">{{ _('Your data is safe with us. We ensure privacy and security.') }}</p>
                 </div>
             </div>
         </div>
@@ -91,33 +91,33 @@
 <section class="py-5 bg-white">
     <div class="container py-4">
         <div class="text-center mb-5">
-            <h2 class="fw-bold">How It Works</h2>
+            <h2 class="fw-bold">{{ _('How It Works') }}</h2>
             <div class="bg-primary mx-auto mt-2" style="height: 3px; width: 50px;"></div>
         </div>
         <div class="timeline">
             <div class="timeline-step">
                 <div class="timeline-icon"><i class="fa-solid fa-keyboard"></i></div>
                 <div class="text-primary fw-bold mb-2">01</div>
-                <h5>Enter Consignment ID</h5>
-                <p>Enter the Consignment ID provided to you.</p>
+                <h5>{{ _('Enter Consignment ID') }}</h5>
+                <p>{{ _('Enter the Consignment ID provided to you.') }}</p>
             </div>
             <div class="timeline-step">
                 <div class="timeline-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
                 <div class="text-primary fw-bold mb-2">02</div>
-                <h5>Track Application</h5>
-                <p>Click on 'Track Now' to view your application status.</p>
+                <h5>{{ _('Track Application') }}</h5>
+                <p>{{ _('Click on \'Track Now\' to view your application status.') }}</p>
             </div>
             <div class="timeline-step">
                 <div class="timeline-icon"><i class="fa-regular fa-file-lines"></i></div>
                 <div class="text-primary fw-bold mb-2">03</div>
-                <h5>View Status</h5>
-                <p>See whether your application is Pending or Approved.</p>
+                <h5>{{ _('View Status') }}</h5>
+                <p>{{ _('See whether your application is Pending or Approved.') }}</p>
             </div>
             <div class="timeline-step">
                 <div class="timeline-icon"><i class="fa-solid fa-bell"></i></div>
                 <div class="text-primary fw-bold mb-2">04</div>
-                <h5>Get Notified</h5>
-                <p>Receive updates and notifications at every important step.</p>
+                <h5>{{ _('Get Notified') }}</h5>
+                <p>{{ _('Receive updates and notifications at every important step.') }}</p>
             </div>
         </div>
     </div>
@@ -128,10 +128,10 @@
     <div class="container">
         <div class="cta-banner">
             <div>
-                <h3 class="fw-bold mb-2">Stay Informed, Always</h3>
-                <p class="text-muted mb-0">We keep you updated on every change in your application status so you never miss an important update.</p>
+                <h3 class="fw-bold mb-2">{{ _('Stay Informed, Always') }}</h3>
+                <p class="text-muted mb-0">{{ _('We keep you updated on every change in your application status so you never miss an important update.') }}</p>
             </div>
-            <a href="{{ url_for('track') }}" class="btn btn-primary btn-lg px-4">Track Application <i class="fa-solid fa-arrow-right ms-2"></i></a>
+            <a href="{{ url_for('track') }}" class="btn btn-primary btn-lg px-4">{{ _('Track Application') }} <i class="fa-solid fa-arrow-right ms-2"></i></a>
         </div>
     </div>
 </section>
@@ -140,7 +140,7 @@
 <section class="py-5 bg-white">
     <div class="container py-4">
         <div class="text-center mb-5">
-            <h2 class="fw-bold">Trusted by Thousands</h2>
+            <h2 class="fw-bold">{{ _('Trusted by Thousands') }}</h2>
             <div class="bg-primary mx-auto mt-2" style="height: 3px; width: 50px;"></div>
         </div>
         <div class="row">
@@ -148,28 +148,28 @@
                 <div class="stat-card">
                     <div class="fs-1 text-primary mb-2"><i class="fa-solid fa-users"></i></div>
                     <h3>10,000+</h3>
-                    <p>Applications Tracked</p>
+                    <p>{{ _('Applications Tracked') }}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card">
                     <div class="fs-1 text-success mb-2"><i class="fa-solid fa-circle-check"></i></div>
                     <h3>8,500+</h3>
-                    <p>Applications Approved</p>
+                    <p>{{ _('Applications Approved') }}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card">
                     <div class="fs-1 text-info mb-2"><i class="fa-solid fa-clock-rotate-left"></i></div>
                     <h3>2,000+</h3>
-                    <p>Pending Applications</p>
+                    <p>{{ _('Pending Applications') }}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card">
                     <div class="fs-1 text-purple mb-2" style="color:#6f42c1;"><i class="fa-solid fa-building"></i></div>
                     <h3>20+</h3>
-                    <p>Departments Integrated</p>
+                    <p>{{ _('Departments Integrated') }}</p>
                 </div>
             </div>
         </div>
@@ -180,32 +180,32 @@
 <section class="py-5">
     <div class="container py-4">
         <div class="text-center mb-5">
-            <h2 class="fw-bold">What Our Users Say</h2>
+            <h2 class="fw-bold">{{ _('What Our Users Say') }}</h2>
             <div class="bg-primary mx-auto mt-2" style="height: 3px; width: 50px;"></div>
         </div>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="testimonial-card">
                     <div class="fs-3 text-primary mb-3"><i class="fa-solid fa-quote-left"></i></div>
-                    <p>"The application tracking system is very easy to use and helps me keep track of my application in real time."</p>
+                    <p>{{ _('"The application tracking system is very easy to use and helps me keep track of my application in real time."') }}</p>
                     <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                    <h6 class="fw-bold mb-0">- Rahul Sharma</h6>
+                    <h6 class="fw-bold mb-0">{{ _('- Rahul Sharma') }}</h6>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="testimonial-card">
                     <div class="fs-3 text-primary mb-3"><i class="fa-solid fa-quote-left"></i></div>
-                    <p>"I love how I can see the status from each department. It's transparent and reliable."</p>
+                    <p>{{ _('"I love how I can see the status from each department. It\'s transparent and reliable."') }}</p>
                     <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                    <h6 class="fw-bold mb-0">- Priya Singh</h6>
+                    <h6 class="fw-bold mb-0">{{ _('- Priya Singh') }}</h6>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="testimonial-card">
                     <div class="fs-3 text-primary mb-3"><i class="fa-solid fa-quote-left"></i></div>
-                    <p>"The real-time updates and notifications make the whole process smooth and hassle-free."</p>
+                    <p>{{ _('"The real-time updates and notifications make the whole process smooth and hassle-free."') }}</p>
                     <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                    <h6 class="fw-bold mb-0">- Amit Verma</h6>
+                    <h6 class="fw-bold mb-0">{{ _('- Amit Verma') }}</h6>
                 </div>
             </div>
         </div>
@@ -220,15 +220,15 @@
                 <i class="fa-solid fa-list-check"></i>
             </div>
             <div class="flex-grow-1">
-                <h2 class="fw-bold mb-3">Track Your Application Now</h2>
-                <p class="text-muted mb-4 fs-5">Enter your Consignment ID and get real-time updates on your application status.</p>
+                <h2 class="fw-bold mb-3">{{ _('Track Your Application Now') }}</h2>
+                <p class="text-muted mb-4 fs-5">{{ _('Enter your Consignment ID and get real-time updates on your application status.') }}</p>
                 <form action="{{ url_for('track') }}" method="POST" class="tracking-form mb-2 border">
-                    <input type="text" name="tracking_id" placeholder="Enter Consignment ID" required>
+                    <input type="text" name="tracking_id" placeholder="{{ _('Enter Consignment ID') }}" required>
                     <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 text-nowrap">
-                        <i class="fa-solid fa-magnifying-glass"></i> Track Now
+                        <i class="fa-solid fa-magnifying-glass"></i> {{ _('Track Now') }}
                     </button>
                 </form>
-                <small class="text-muted ms-2">Example: CCN123456789</small>
+                <small class="text-muted ms-2">{{ _('Example: CCN123456789') }}</small>
             </div>
         </div>
     </div>

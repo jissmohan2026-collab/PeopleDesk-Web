@@ -18,23 +18,23 @@
         <div class="sidebar d-flex flex-column bg-dark text-white">
             <a href="{{ url_for('index') }}" class="text-decoration-none text-white mb-4 mt-2 d-flex align-items-center gap-2">
                 <i class="fa-solid fa-clipboard-check text-primary fs-4"></i>
-                <span class="fs-5 fw-bold">SuperAdmin ATS</span>
+                <span class="fs-5 fw-bold">{{ _('SuperAdmin ATS') }}</span>
             </a>
             
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a href="{{ url_for('superadmin_dashboard') }}" class="nav-link text-white {% if request.endpoint == 'superadmin_dashboard' %}active{% endif %}" {% if request.endpoint == 'superadmin_dashboard' %}style="background-color: var(--primary-color);"{% endif %}>
-                        <i class="fa-solid fa-gauge me-2"></i> Applications
+                        <i class="fa-solid fa-gauge me-2"></i> {{ _('Applications') }}
                     </a>
                 </li>
                 <li class="nav-item mt-2">
                     <a href="{{ url_for('superadmin_users') }}" class="nav-link text-white {% if request.endpoint == 'superadmin_users' %}active{% endif %}" {% if request.endpoint == 'superadmin_users' %}style="background-color: var(--primary-color);"{% endif %}>
-                        <i class="fa-solid fa-users me-2"></i> Manage Users
+                        <i class="fa-solid fa-users me-2"></i> {{ _('Manage Users') }}
                     </a>
                 </li>
                 <li class="nav-item mt-2">
                     <a href="{{ url_for('superadmin_departments') }}" class="nav-link text-white {% if request.endpoint == 'superadmin_departments' %}active{% endif %}" {% if request.endpoint == 'superadmin_departments' %}style="background-color: var(--primary-color);"{% endif %}>
-                        <i class="fa-solid fa-building me-2"></i> Manage Departments
+                        <i class="fa-solid fa-building me-2"></i> {{ _('Manage Departments') }}
                     </a>
                 </li>
             </ul>
@@ -46,9 +46,9 @@
                     <strong>{{ current_user.username }}</strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">{{ _('Profile') }}</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">Sign out</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">{{ _('Sign out') }}</a></li>
                 </ul>
             </div>
         </div>
@@ -57,6 +57,10 @@
         <div class="main-content">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">{% block header %}SuperAdmin Control Panel{% endblock %}</h1>
+                <div class="btn-group" role="group">
+                    <a href="{{ url_for('set_language', lang='en') }}" class="btn btn-sm {% if session.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-outline-primary{% endif %}">{{ _('English') }}</a>
+                    <a href="{{ url_for('set_language', lang='ml') }}" class="btn btn-sm {% if session.get('lang') == 'ml' %}btn-primary{% else %}btn-outline-primary{% endif %}">മലയാളം</a>
+                </div>
             </div>
 
             <!-- Flash Messages -->
