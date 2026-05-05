@@ -11,10 +11,12 @@
             <div class="card-header bg-white border-0 pt-4 pb-0">
                 <ul class="nav nav-tabs border-bottom-0" id="userTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active fw-bold text-dark" id="users-tab" data-bs-toggle="tab" data-bs-target="#regular-users" type="button" role="tab">{{ _('Regular Users') }}</button>
+                        <button class="nav-link active fw-bold text-dark" id="users-tab" data-bs-toggle="tab"
+                            data-bs-target="#regular-users" type="button" role="tab">{{ _('Regular Users') }}</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-bold text-dark" id="admins-tab" data-bs-toggle="tab" data-bs-target="#admin-users" type="button" role="tab">{{ _('Administrators') }}</button>
+                        <button class="nav-link fw-bold text-dark" id="admins-tab" data-bs-toggle="tab"
+                            data-bs-target="#admin-users" type="button" role="tab">{{ _('Administrators') }}</button>
                     </li>
                 </ul>
             </div>
@@ -36,71 +38,93 @@
                                 <tbody>
                                     {% set regular_users = users | selectattr("role", "equalto", "user") | list %}
                                     {% if regular_users %}
-                                        {% for user in regular_users %}
-                                        <tr>
-                                            <td class="ps-4 py-3 fw-bold text-primary">{{ user.id }}</td>
-                                            <td class="py-3 fw-semibold">{{ user.username }}</td>
-                                            <td class="py-3">
-                                                <span class="badge bg-secondary rounded-pill">{{ _('User') }}</span>
-                                            </td>
-                                            <td class="py-3">
-                                                {{ user.department.name if user.department else '<span class="text-muted">{{ _('None') }}</span>' | safe }}
-                                            </td>
-                                            <td class="pe-4 py-3 text-end">
-                                                <div class="d-flex justify-content-end gap-2">
-                                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">
-                                                        <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
-                                                    </button>
-                                                    <form action="{{ url_for('superadmin_delete_user', user_id=user.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
-                                                    </form>
-                                                </div>
-                                                
-                                                <!-- Edit Modal -->
-                                                <div class="modal fade text-start" id="editUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content rounded-4 border-0 shadow">
-                                                            <div class="modal-header border-0 pb-0">
-                                                                <h5 class="modal-title fw-bold">Edit User: {{ user.username }}</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <form action="{{ url_for('superadmin_edit_user', user_id=user.id) }}" method="POST">
-                                                                <div class="modal-body pt-3">
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">{{ _('New Password') }}</label>
-                                                                        <input type="password" class="form-control" name="password" placeholder="{{ _('Leave blank to keep current') }}">
-                                                                    </div>
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">{{ _('Department') }}</label>
-                                                                        <select name="department_id" class="form-select">
-                                                                            <option value="">{{ _('None') }}</option>
-                                                                            {% for dept in departments %}
-                                                                                <option value="{{ dept.id }}" {% if user.department_id == dept.id %}selected{% endif %}>{{ dept.name }}</option>
-                                                                            {% endfor %}
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer border-0 pt-0">
-                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
-                                                                    <button type="submit" class="btn btn-primary">{{ _('Save Changes') }}</button>
-                                                                </div>
-                                                            </form>
+                                    {% for user in regular_users %}
+                                    <tr>
+                                        <td class="ps-4 py-3 fw-bold text-primary">{{ user.id }}</td>
+                                        <td class="py-3 fw-semibold">{{ user.username }}</td>
+                                        <td class="py-3">
+                                            <span class="badge bg-secondary rounded-pill">{{ _('User') }}</span>
+                                        </td>
+                                        <td class="py-3">
+                                            {% if user.department %}
+                                            {{ user.department.name }}
+                                            {% else %}
+                                            <span class="text-muted">{{ _('None') }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="pe-4 py-3 text-end">
+                                            <div class="d-flex justify-content-end gap-2">
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">
+                                                    <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
+                                                </button>
+                                                <form action="{{ url_for('superadmin_delete_user', user_id=user.id) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i
+                                                            class="fa-solid fa-trash"></i></button>
+                                                </form>
+                                            </div>
+
+                                            <!-- Edit Modal -->
+                                            <div class="modal fade text-start" id="editUserModal{{ user.id }}"
+                                                tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content rounded-4 border-0 shadow">
+                                                        <div class="modal-header border-0 pb-0">
+                                                            <h5 class="modal-title fw-bold">Edit User: {{ user.username
+                                                                }}</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
+                                                        <form
+                                                            action="{{ url_for('superadmin_edit_user', user_id=user.id) }}"
+                                                            method="POST">
+                                                            <div class="modal-body pt-3">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-semibold">{{ _('New
+                                                                        Password') }}</label>
+                                                                    <input type="password" class="form-control"
+                                                                        name="password"
+                                                                        placeholder="{{ _('Leave blank to keep current') }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-semibold">{{
+                                                                        _('Department') }}</label>
+                                                                    <select name="department_id" class="form-select">
+                                                                        <option value="">{{ _('None') }}</option>
+                                                                        {% for dept in departments %}
+                                                                        <option value="{{ dept.id }}" {% if
+                                                                            user.department_id==dept.id %}selected{%
+                                                                            endif %}>{{ dept.name }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer border-0 pt-0">
+                                                                <button type="button" class="btn btn-light"
+                                                                    data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                                                                <button type="submit" class="btn btn-primary">{{ _('Save
+                                                                    Changes') }}</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
                                     {% else %}
-                                        <tr>
-                                            <td colspan="5" class="text-center py-5 text-muted">{{ _('No users found.') }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted">{{ _('No users found.') }}
+                                        </td>
+                                    </tr>
                                     {% endif %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    
+
                     <!-- Admin Users Tab -->
                     <div class="tab-pane fade" id="admin-users" role="tabpanel">
                         <div class="table-responsive" style="max-height: 500px;">
@@ -115,71 +139,95 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% set admin_users = users | selectattr("role", "in", ["admin", "superadmin"]) | list %}
+                                    {% set admin_users = users | selectattr("role", "in", ["admin", "superadmin"]) |
+                                    list %}
                                     {% if admin_users %}
-                                        {% for user in admin_users %}
-                                        <tr>
-                                            <td class="ps-4 py-3 fw-bold text-primary">{{ user.id }}</td>
-                                            <td class="py-3 fw-semibold">{{ user.username }}</td>
-                                            <td class="py-3">
-                                                {% if user.role == 'superadmin' %}
-                                                    <span class="badge bg-danger rounded-pill">{{ _('SuperAdmin') }}</span>
-                                                {% else %}
-                                                    <span class="badge bg-primary rounded-pill">{{ _('Admin') }}</span>
-                                                {% endif %}
-                                            </td>
-                                            <td class="py-3">
-                                                {{ user.department.name if user.department else '<span class="text-muted">{{ _('None') }}</span>' | safe }}
-                                            </td>
-                                            <td class="pe-4 py-3 text-end">
-                                                <div class="d-flex justify-content-end gap-2">
-                                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editAdminModal{{ user.id }}">
-                                                        <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
-                                                    </button>
-                                                    <form action="{{ url_for('superadmin_delete_user', user_id=user.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this administrator?');">
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
-                                                    </form>
-                                                </div>
-                                                
-                                                <!-- Edit Modal -->
-                                                <div class="modal fade text-start" id="editAdminModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content rounded-4 border-0 shadow">
-                                                            <div class="modal-header border-0 pb-0">
-                                                                <h5 class="modal-title fw-bold">Edit Admin: {{ user.username }}</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <form action="{{ url_for('superadmin_edit_user', user_id=user.id) }}" method="POST">
-                                                                <div class="modal-body pt-3">
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">{{ _('New Password') }}</label>
-                                                                        <input type="password" class="form-control" name="password" placeholder="{{ _('Leave blank to keep current') }}">
-                                                                    </div>
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">{{ _('Department') }}</label>
-                                                                        <select name="department_id" class="form-select">
-                                                                            <option value="">{{ _('None') }}</option>
-                                                                            {% for dept in departments %}
-                                                                                <option value="{{ dept.id }}" {% if user.department_id == dept.id %}selected{% endif %}>{{ dept.name }}</option>
-                                                                            {% endfor %}
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer border-0 pt-0">
-                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
-                                                                    <button type="submit" class="btn btn-primary">{{ _('Save Changes') }}</button>
-                                                                </div>
-                                                            </form>
+                                    {% for user in admin_users %}
+                                    <tr>
+                                        <td class="ps-4 py-3 fw-bold text-primary">{{ user.id }}</td>
+                                        <td class="py-3 fw-semibold">{{ user.username }}</td>
+                                        <td class="py-3">
+                                            {% if user.role == 'superadmin' %}
+                                            <span class="badge bg-danger rounded-pill">{{ _('SuperAdmin') }}</span>
+                                            {% else %}
+                                            <span class="badge bg-primary rounded-pill">{{ _('Admin') }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="py-3">
+                                            {% if user.department %}
+                                            {{ user.department.name }}
+                                            {% else %}
+                                            <span class="text-muted">{{ _('None') }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="pe-4 py-3 text-end">
+                                            <div class="d-flex justify-content-end gap-2">
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editAdminModal{{ user.id }}">
+                                                    <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
+                                                </button>
+                                                <form action="{{ url_for('superadmin_delete_user', user_id=user.id) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to delete this administrator?');">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i
+                                                            class="fa-solid fa-trash"></i></button>
+                                                </form>
+                                            </div>
+
+                                            <!-- Edit Modal -->
+                                            <div class="modal fade text-start" id="editAdminModal{{ user.id }}"
+                                                tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content rounded-4 border-0 shadow">
+                                                        <div class="modal-header border-0 pb-0">
+                                                            <h5 class="modal-title fw-bold">Edit Admin: {{ user.username
+                                                                }}</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
+                                                        <form
+                                                            action="{{ url_for('superadmin_edit_user', user_id=user.id) }}"
+                                                            method="POST">
+                                                            <div class="modal-body pt-3">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-semibold">{{ _('New
+                                                                        Password') }}</label>
+                                                                    <input type="password" class="form-control"
+                                                                        name="password"
+                                                                        placeholder="{{ _('Leave blank to keep current') }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-semibold">{{
+                                                                        _('Department') }}</label>
+                                                                    <select name="department_id" class="form-select">
+                                                                        <option value="">{{ _('None') }}</option>
+                                                                        {% for dept in departments %}
+                                                                        <option value="{{ dept.id }}" {% if
+                                                                            user.department_id==dept.id %}selected{%
+                                                                            endif %}>{{ dept.name }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer border-0 pt-0">
+                                                                <button type="button" class="btn btn-light"
+                                                                    data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                                                                <button type="submit" class="btn btn-primary">{{ _('Save
+                                                                    Changes') }}</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
                                     {% else %}
-                                        <tr>
-                                            <td colspan="5" class="text-center py-5 text-muted">{{ _('No administrators found.') }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted">{{ _('No administrators
+                                            found.') }}</td>
+                                    </tr>
                                     {% endif %}
                                 </tbody>
                             </table>
@@ -201,15 +249,19 @@
                     <div class="mb-3">
                         <label for="username" class="form-label fw-semibold">{{ _('Username') }}</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-user text-muted"></i></span>
-                            <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" required>
+                            <span class="input-group-text bg-light border-end-0"><i
+                                    class="fa-solid fa-user text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" id="username" name="username"
+                                required>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">{{ _('Password') }}</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock text-muted"></i></span>
-                            <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" required>
+                            <span class="input-group-text bg-light border-end-0"><i
+                                    class="fa-solid fa-lock text-muted"></i></span>
+                            <input type="password" class="form-control border-start-0 ps-0" id="password"
+                                name="password" required>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -221,19 +273,22 @@
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label for="department_id" class="form-label fw-semibold">{{ _('Assign Department (Optional)') }}</label>
+                        <label for="department_id" class="form-label fw-semibold">{{ _('Assign Department (Optional)')
+                            }}</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-building text-muted"></i></span>
+                            <span class="input-group-text bg-light border-end-0"><i
+                                    class="fa-solid fa-building text-muted"></i></span>
                             <select name="department_id" id="department_id" class="form-select border-start-0 ps-0">
                                 <option value="">{{ _('None') }}</option>
                                 {% for dept in departments %}
-                                    <option value="{{ dept.id }}">{{ dept.name }}</option>
+                                <option value="{{ dept.id }}">{{ dept.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                     </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary py-2 fw-semibold">{{ _('Create Account') }}</button>
+                        <button type="submit" class="btn btn-primary py-2 fw-semibold">{{ _('Create Account')
+                            }}</button>
                     </div>
                 </form>
             </div>
