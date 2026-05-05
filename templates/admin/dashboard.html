@@ -53,7 +53,15 @@
                                 {% for con in consignments %}
                                 <tr>
                                     <td class="ps-4 py-3 fw-bold text-primary">{{ con.tracking_id }}</td>
-                                    <td class="py-3 fw-semibold">{{ con.title }}</td>
+                                    <td class="py-3 fw-semibold">
+                                        {{ con.title }}
+                                        <div class="text-muted small fw-normal mt-1">
+                                            By: {% if con.submitter and con.submitter.name %}{{ con.submitter.name }} ({{ con.submitter.phone_no }}){% else %}User ID: {{ con.user_id }}{% endif %}
+                                            {% if con.attachment_url %}
+                                            <br><a href="{{ con.attachment_url }}" target="_blank" class="text-info text-decoration-none"><i class="fa-solid fa-paperclip"></i> View Attachment</a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
                                     <td class="py-3 text-muted" style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         {{ con.description }}
                                     </td>

@@ -13,6 +13,12 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128), nullable=False)
     role = db.Column(db.String(20), nullable=False, default='user') # 'user', 'admin', 'superadmin'
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=True)
+    
+    name = db.Column(db.String(100), nullable=True)
+    address = db.Column(db.Text, nullable=True)
+    phone_no = db.Column(db.String(20), unique=True, nullable=True)
+    place = db.Column(db.String(100), nullable=True)
+    district = db.Column(db.String(100), nullable=True)
 
     department = db.relationship('Department', backref='admins')
     
@@ -26,6 +32,9 @@ class Department(db.Model):
     __tablename__ = 'departments'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
+    officer_name = db.Column(db.String(100), nullable=True)
+    officer_phone = db.Column(db.String(20), nullable=True)
+    officer_email = db.Column(db.String(120), nullable=True)
 
 class Consignment(db.Model):
     __tablename__ = 'consignments'
@@ -37,6 +46,7 @@ class Consignment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     assigned_admin_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

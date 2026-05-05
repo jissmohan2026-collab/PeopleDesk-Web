@@ -17,6 +17,7 @@
                             <tr>
                                 <th class="ps-4 py-3">ID</th>
                                 <th class="py-3">Name</th>
+                                <th class="py-3">Officer Details</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -25,6 +26,15 @@
                                 <tr>
                                     <td class="ps-4 py-3 fw-bold text-primary">{{ dept.id }}</td>
                                     <td class="py-3 fw-semibold">{{ dept.name }}</td>
+                                    <td class="py-3 small">
+                                        {% if dept.officer_name %}
+                                        <strong>{{ dept.officer_name }}</strong><br>
+                                        {{ dept.officer_phone }}<br>
+                                        <a href="mailto:{{ dept.officer_email }}">{{ dept.officer_email }}</a>
+                                        {% else %}
+                                        <span class="text-muted">Not assigned</span>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             {% else %}
@@ -52,6 +62,19 @@
                             <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-building text-muted"></i></span>
                             <input type="text" class="form-control border-start-0 ps-0" id="name" name="name" required>
                         </div>
+                    </div>
+                    <h6 class="mt-4 mb-3 text-primary border-bottom pb-2">Officer Details (Optional)</h6>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Officer Name</label>
+                        <input type="text" class="form-control bg-light" name="officer_name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Officer Phone</label>
+                        <input type="tel" class="form-control bg-light" name="officer_phone">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Officer Email</label>
+                        <input type="email" class="form-control bg-light" name="officer_email">
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary py-2 fw-semibold">Create Department</button>

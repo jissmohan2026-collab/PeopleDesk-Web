@@ -36,8 +36,12 @@
 
         <!-- Manage Applications Section -->
         <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-white border-0 pt-4 pb-0">
+            <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold mb-0">All Applications</h5>
+                <div>
+                    <a href="{{ url_for('superadmin_export_csv') }}" class="btn btn-success btn-sm"><i class="fa-solid fa-file-csv me-1"></i> Export CSV</a>
+                    <a href="{{ url_for('superadmin_export_xml') }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-file-code me-1"></i> Export XML</a>
+                </div>
             </div>
             <div class="card-body p-0 mt-3">
                 <div class="table-responsive" style="max-height: 500px;">
@@ -59,7 +63,14 @@
                                     <td class="ps-4 py-3 fw-bold text-primary">{{ con.tracking_id }}</td>
                                     <td class="py-3">
                                         {{ con.title }}
-                                        <div class="text-muted small">By User ID: {{ con.user_id }}</div>
+                                        <div class="text-muted small">
+                                            By: <a href="{{ url_for('superadmin_user_profile', user_id=con.user_id) }}" class="text-decoration-none" title="View Profile">
+                                                {% if con.submitter and con.submitter.name %}{{ con.submitter.name }}{% else %}User ID: {{ con.user_id }}{% endif %}
+                                            </a>
+                                            {% if con.attachment_url %}
+                                            <br><a href="{{ con.attachment_url }}" target="_blank" class="text-info"><i class="fa-solid fa-paperclip"></i> Attachment</a>
+                                            {% endif %}
+                                        </div>
                                     </td>
                                     <td class="py-3">
                                         <span class="badge bg-secondary rounded-pill">{{ con.status }}</span>
@@ -75,15 +86,23 @@
                                         {% endif %}
                                     </td>
                                     <td class="pe-4 py-3 text-end">
-                                        <form action="{{ url_for('superadmin_assign', con_id=con.id) }}" method="POST" class="d-flex align-items-center justify-content-end gap-2">
-                                            <select name="admin_id" class="form-select form-select-sm w-auto" required>
-                                                <option value="" disabled selected>Select Admin</option>
-                                                {% for admin in admins %}
-                                                    <option value="{{ admin.id }}" {% if con.assigned_admin_id == admin.id %}selected{% endif %}>{{ admin.username }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <button type="submit" class="btn btn-sm btn-primary">Assign</button>
-                                        </form>
+                                        <div class="d-flex align-items-center justify-content-end gap-2 mb-2">
+                                            <form action="{{ url_for('superadmin_assign', con_id=con.id) }}" method="POST" class="d-flex gap-1">
+                                                <select name="admin_id" class="form-select form-select-sm w-auto" required>
+                                                    <option value="" disabled selected>Admin</option>
+                                                    {% for admin in admins %}
+                                                        <option value="{{ admin.id }}" {% if con.assigned_admin_id == admin.id %}selected{% endif %}>{{ admin.username }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-sm btn-primary">Assign</button>
+                                            </form>
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a href="{{ url_for('superadmin_edit_application', con_id=con.id) }}" class="btn btn-sm btn-outline-secondary" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                                            <form action="{{ url_for('superadmin_delete_application', con_id=con.id) }}" method="POST" onsubmit="return confirm('Delete this application?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% endfor %}

@@ -1,0 +1,33 @@
+{% extends "dash_base_admin.html" %}
+
+{% block title %}Edit Application - SuperAdmin{% endblock %}
+{% block header %}Edit Application{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Edit Application: {{ consignment.tracking_id }}</h5>
+                <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-sm btn-outline-secondary">Back to Dashboard</a>
+            </div>
+            <div class="card-body mt-3">
+                <form action="{{ url_for('superadmin_edit_application', con_id=consignment.id) }}" method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-semibold">Application Title</label>
+                        <input type="text" class="form-control bg-light" id="title" name="title" value="{{ consignment.title }}" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="description" class="form-label fw-semibold">Description / Details</label>
+                        <textarea class="form-control bg-light" id="description" name="description" rows="5" required>{{ consignment.description }}</textarea>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-light px-4 py-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

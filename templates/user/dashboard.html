@@ -37,10 +37,18 @@
                         {% for con in consignments %}
                         <tr>
                             <td class="ps-4 py-3 fw-bold text-primary">{{ con.tracking_id }}</td>
-                            <td class="py-3">{{ con.title }}</td>
+                            <td class="py-3">
+                                {{ con.title }}
+                                {% if con.attachment_url %}
+                                <div class="small mt-1"><a href="{{ con.attachment_url }}" target="_blank" class="text-info text-decoration-none"><i class="fa-solid fa-paperclip"></i> View Attachment</a></div>
+                                {% endif %}
+                            </td>
                             <td class="py-3">
                                 {% if con.department %}
                                 {{ con.department.name }}
+                                {% if con.department.officer_name %}
+                                <div class="small text-muted mt-1"><i class="fa-solid fa-user-tie"></i> {{ con.department.officer_name }}<br><i class="fa-solid fa-phone"></i> {{ con.department.officer_phone }}</div>
+                                {% endif %}
                                 {% else %}
                                 <span class="text-muted">Not Specified</span>
                                 {% endif %}
