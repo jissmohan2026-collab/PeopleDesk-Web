@@ -9,16 +9,22 @@
     <div class="col-xl-8 col-lg-12">
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-header bg-white border-0 pt-4 pb-0">
-                <ul class="nav nav-tabs border-bottom-0" id="userTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active fw-bold text-dark" id="users-tab" data-bs-toggle="tab"
-                            data-bs-target="#regular-users" type="button" role="tab">{{ _('Regular Users') }}</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-bold text-dark" id="admins-tab" data-bs-toggle="tab"
-                            data-bs-target="#admin-users" type="button" role="tab">{{ _('Administrators') }}</button>
-                    </li>
-                </ul>
+                <div class="d-flex justify-content-between align-items-end border-bottom">
+                    <ul class="nav nav-tabs border-bottom-0" id="userTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-bold text-dark" id="users-tab" data-bs-toggle="tab"
+                                data-bs-target="#regular-users" type="button" role="tab">{{ _('Regular Users') }}</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold text-dark" id="admins-tab" data-bs-toggle="tab"
+                                data-bs-target="#admin-users" type="button" role="tab">{{ _('Administrators') }}</button>
+                        </li>
+                    </ul>
+                    <form method="GET" action="{{ url_for('superadmin_users') }}" class="d-flex w-50 mb-2">
+                        <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="{{ _('Search by name, phone, username') }}" value="{{ search_query or '' }}">
+                        <button type="submit" class="btn btn-sm btn-primary">{{ _('Search') }}</button>
+                    </form>
+                </div>
             </div>
             <div class="card-body p-0 mt-2">
                 <div class="tab-content" id="userTabsContent">

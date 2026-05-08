@@ -1,123 +1,224 @@
 {% extends "dash_base_admin.html" %}
 
-{% block title %}SuperAdmin Dashboard - ATS{% endblock %}
-{% block header %}Overview & Management{% endblock %}
+{% block title %}SuperAdmin Overview - ATS{% endblock %}
+{% block header %}Overview Dashboard{% endblock %}
 
 {% block content %}
+<style>
+    .card-gradient-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        color: white;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-gradient-success {
+        background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+        color: white;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-gradient-warning {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        color: #212529;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    .progress-stacked {
+        height: 25px;
+        border-radius: 12px;
+        background-color: #f8f9fa;
+        overflow: hidden;
+        display: flex;
+        width: 100%;
+    }
+    .progress-segment {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: bold;
+        transition: width 0.6s ease;
+    }
+</style>
+
 <div class="row g-4 mb-4">
     <div class="col-12">
-        <!-- Filter Form -->
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-body">
-                <form method="GET" action="{{ url_for('superadmin_dashboard') }}" class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label for="status" class="form-label fw-semibold">{{ _('Filter by Status') }}</label>
-                        <select name="status" id="status" class="form-select">
-                            <option value="">{{ _('All Statuses') }}</option>
-                            <option value="Submitted" {% if status_filter == 'Submitted' %}selected{% endif %}>{{ _('Submitted') }}</option>
-                            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>{{ _('Pending') }}</option>
-                            <option value="Under Review" {% if status_filter == 'Under Review' %}selected{% endif %}>{{ _('Under Review') }}</option>
-                            <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>{{ _('Approved') }}</option>
-                            <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>{{ _('Completed') }}</option>
-                            <option value="Closed" {% if status_filter == 'Closed' %}selected{% endif %}>{{ _('Closed') }}</option>
-                        </select>
+        <!-- Balance Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 card-gradient-primary hover-lift">
+                    <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
+                        <i class="fa-solid fa-wallet fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
+                        <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Total Balance</h6>
+                        <h2 class="mb-0 fw-bold">₹2,00,000</h2>
                     </div>
-                    <div class="col-md-4">
-                        <label for="date" class="form-label fw-semibold">{{ _('Filter by Date') }}</label>
-                        <input type="date" name="date" id="date" class="form-control" value="{{ date_filter or '' }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 card-gradient-success hover-lift">
+                    <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
+                        <i class="fa-solid fa-money-bill-trend-up fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
+                        <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Current Balance</h6>
+                        <h2 class="mb-0 fw-bold">₹1,50,000</h2>
                     </div>
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-filter me-1"></i> {{ _('Apply Filters') }}</button>
-                        <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-rotate-right me-1"></i> {{ _('Reset') }}</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 card-gradient-warning hover-lift">
+                    <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
+                        <i class="fa-solid fa-hand-holding-dollar fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
+                        <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Used Up Balance</h6>
+                        <h2 class="mb-0 fw-bold">₹50,000</h2>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 
-        <!-- Manage Applications Section -->
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0">{{ _('All Applications') }}</h5>
-                <div>
-                    <a href="{{ url_for('superadmin_export_csv') }}" class="btn btn-success btn-sm"><i class="fa-solid fa-file-csv me-1"></i> {{ _('Export CSV') }}</a>
-                    <a href="{{ url_for('superadmin_export_xml') }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-file-code me-1"></i> {{ _('Export XML') }}</a>
+        <!-- Quick Stats Row -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+                    <div class="card-body p-4 d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 text-primary">
+                            <i class="fa-solid fa-file-alt fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">{{ _('Total Applications') }}</h6>
+                            <h3 class="mb-0 fw-bold text-dark">{{ stats.total_apps }}</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card-body p-0 mt-3">
-                <div class="table-responsive" style="max-height: 500px;">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light sticky-top">
-                            <tr>
-                                <th class="ps-4 py-3">{{ _('Tracking ID') }}</th>
-                                <th class="py-3">{{ _('Title') }}</th>
-                                <th class="py-3">{{ _('Status') }}</th>
-                                <th class="py-3">{{ _('Created Date') }}</th>
-                                <th class="py-3">{{ _('Assigned To') }}</th>
-                                <th class="pe-4 py-3 text-end">{{ _('Action') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if consignments %}
-                                {% for con in consignments %}
-                                <tr>
-                                    <td class="ps-4 py-3 fw-bold text-primary">{{ con.tracking_id }}</td>
-                                    <td class="py-3">
-                                        {{ con.title }}
-                                        <div class="text-muted small">
-                                            {{ _('By:') }} <a href="{{ url_for('superadmin_user_profile', user_id=con.user_id) }}" class="text-decoration-none" title="{{ _('View Profile') }}">
-                                                {% if con.submitter and con.submitter.name %}{{ con.submitter.name }}{% else %}User ID: {{ con.user_id }}{% endif %}
-                                            </a>
-                                            {% if con.attachment_url %}
-                                            <br><a href="{{ con.attachment_url }}" target="_blank" class="text-info"><i class="fa-solid fa-paperclip"></i> {{ _('Attachment') }}</a>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                    <td class="py-3">
-                                        <span class="badge bg-secondary rounded-pill">{{ con.status }}</span>
-                                    </td>
-                                    <td class="py-3 text-muted small">
-                                        {{ con.created_at.strftime('%Y-%m-%d') if con.created_at else 'N/A' }}
-                                    </td>
-                                    <td class="py-3">
-                                        {% if con.assigned_admin_id %}
-                                            <span class="text-success"><i class="fa-solid fa-check-circle me-1"></i> Admin ID: {{ con.assigned_admin_id }}</span>
-                                        {% else %}
-                                            <span class="text-warning"><i class="fa-solid fa-clock me-1"></i> {{ _('Unassigned') }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="pe-4 py-3 text-end">
-                                        <div class="d-flex align-items-center justify-content-end gap-2 mb-2">
-                                            <form action="{{ url_for('superadmin_assign', con_id=con.id) }}" method="POST" class="d-flex gap-1">
-                                                <select name="admin_id" class="form-select form-select-sm w-auto" required>
-                                                    <option value="" disabled selected>{{ _('Admin') }}</option>
-                                                    {% for admin in admins %}
-                                                        <option value="{{ admin.id }}" {% if con.assigned_admin_id == admin.id %}selected{% endif %}>{{ admin.username }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                                <button type="submit" class="btn btn-sm btn-primary">{{ _('Assign') }}</button>
-                                            </form>
-                                        </div>
-                                        <div class="d-flex justify-content-end gap-2">
-                                            <a href="{{ url_for('superadmin_edit_application', con_id=con.id) }}" class="btn btn-sm btn-outline-secondary" title="{{ _('Edit') }}"><i class="fa-solid fa-pen"></i></a>
-                                            <form action="{{ url_for('superadmin_delete_application', con_id=con.id) }}" method="POST" onsubmit="return confirm('Delete this application?');">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ _('Delete') }}"><i class="fa-solid fa-trash"></i></button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td colspan="6" class="text-center py-5 text-muted">
-                                        {{ _('No applications found.') }}
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+                    <div class="card-body p-4 d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3 me-3 text-success">
+                            <i class="fa-solid fa-users fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">{{ _('Total Users') }}</h6>
+                            <h3 class="mb-0 fw-bold text-dark">{{ stats.total_users }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+                    <div class="card-body p-4 d-flex align-items-center">
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3 me-3 text-warning">
+                            <i class="fa-solid fa-user-shield fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">{{ _('Total Admins') }}</h6>
+                            <h3 class="mb-0 fw-bold text-dark">{{ stats.total_admins }}</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- System Health & Detailed Stats -->
+        <div class="row g-4 mb-4">
+            <!-- System Health -->
+            <div class="col-xl-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-white border-0 pt-4 pb-2">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-server me-2 text-primary"></i>System Health</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item px-0 d-flex justify-content-between align-items-center border-0 mb-2">
+                                <span class="fw-semibold text-muted">Server Status</span>
+                                <span class="badge bg-success rounded-pill px-3 py-2"><i class="fa-solid fa-circle-check me-1"></i> Online</span>
+                            </li>
+                            <li class="list-group-item px-0 d-flex justify-content-between align-items-center border-0 mb-2">
+                                <span class="fw-semibold text-muted">Database</span>
+                                <span class="badge bg-success rounded-pill px-3 py-2"><i class="fa-solid fa-database me-1"></i> Connected</span>
+                            </li>
+                            <li class="list-group-item px-0 d-flex justify-content-between align-items-center border-0 mb-2">
+                                <span class="fw-semibold text-muted">Uptime</span>
+                                <span class="fw-bold text-dark">99.9%</span>
+                            </li>
+                            <li class="list-group-item px-0 d-flex justify-content-between align-items-center border-0 mb-2">
+                                <span class="fw-semibold text-muted">Last Backup</span>
+                                <span class="fw-bold text-dark">Today, 02:00 AM</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Breakdown -->
+            <div class="col-xl-8">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-white border-0 pt-4 pb-2">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-chart-pie me-2 text-primary"></i>Application Breakdown</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-4">Overview of all application statuses currently in the system.</p>
+                        
+                        {% set total = stats.total_apps if stats.total_apps > 0 else 1 %}
+                        {% set pending_pct = (stats.pending_apps / total * 100) | round(1) %}
+                        {% set approved_pct = (stats.approved_apps / total * 100) | round(1) %}
+                        {% set completed_pct = (stats.completed_apps / total * 100) | round(1) %}
+                        
+                        <!-- Progress Bar -->
+                        <div class="progress-stacked shadow-sm mb-4">
+                            <div class="progress-segment bg-warning" style="width: {{ pending_pct }}%" title="Pending: {{ stats.pending_apps }}">
+                                {% if pending_pct > 5 %}{{ pending_pct }}%{% endif %}
+                            </div>
+                            <div class="progress-segment bg-info" style="width: {{ approved_pct }}%" title="Approved: {{ stats.approved_apps }}">
+                                {% if approved_pct > 5 %}{{ approved_pct }}%{% endif %}
+                            </div>
+                            <div class="progress-segment bg-success" style="width: {{ completed_pct }}%" title="Completed: {{ stats.completed_apps }}">
+                                {% if completed_pct > 5 %}{{ completed_pct }}%{% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Legend -->
+                        <div class="row g-3 text-center">
+                            <div class="col-sm-4">
+                                <div class="p-3 border rounded-3 hover-lift transition">
+                                    <h3 class="fw-bold text-warning mb-1">{{ stats.pending_apps }}</h3>
+                                    <span class="text-muted small fw-bold text-uppercase">Pending</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="p-3 border rounded-3 hover-lift transition">
+                                    <h3 class="fw-bold text-info mb-1">{{ stats.approved_apps }}</h3>
+                                    <span class="text-muted small fw-bold text-uppercase">Approved</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="p-3 border rounded-3 hover-lift transition">
+                                    <h3 class="fw-bold text-success mb-1">{{ stats.completed_apps }}</h3>
+                                    <span class="text-muted small fw-bold text-uppercase">Completed</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4 text-center d-flex flex-wrap justify-content-center gap-3">
+                <a href="{{ url_for('superadmin_users') }}" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill hover-lift">
+                    <i class="fa-solid fa-user-plus me-2"></i>Manage Users
+                </a>
+                <a href="{{ url_for('superadmin_departments') }}" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill hover-lift">
+                    <i class="fa-solid fa-building me-2"></i>Manage Departments
+                </a>
+                <a href="{{ url_for('superadmin_applications') }}" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill hover-lift">
+                    <i class="fa-solid fa-list-check me-2"></i>View All Applications
+                </a>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

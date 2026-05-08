@@ -24,7 +24,12 @@
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a href="{{ url_for('superadmin_dashboard') }}" class="nav-link text-white {% if request.endpoint == 'superadmin_dashboard' %}active{% endif %}" {% if request.endpoint == 'superadmin_dashboard' %}style="background-color: var(--primary-color);"{% endif %}>
-                        <i class="fa-solid fa-gauge me-2"></i> {{ _('Applications') }}
+                        <i class="fa-solid fa-gauge me-2"></i> {{ _('Overview') }}
+                    </a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a href="{{ url_for('superadmin_applications') }}" class="nav-link text-white {% if request.endpoint == 'superadmin_applications' %}active{% endif %}" {% if request.endpoint == 'superadmin_applications' %}style="background-color: var(--primary-color);"{% endif %}>
+                        <i class="fa-solid fa-file-alt me-2"></i> {{ _('Applications') }}
                     </a>
                 </li>
                 <li class="nav-item mt-2">

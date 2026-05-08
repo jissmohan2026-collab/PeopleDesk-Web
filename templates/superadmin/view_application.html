@@ -1,0 +1,103 @@
+{% extends "dash_base_admin.html" %}
+
+{% block title %}View Application - SuperAdmin{% endblock %}
+{% block header %}Application Details{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="fa-solid fa-arrow-left me-1"></i> {{ _('Back to Dashboard') }}
+    </a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-8 col-lg-12">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">{{ consignment.title }}</h5>
+                <span class="badge bg-primary rounded-pill px-3 py-2">{{ consignment.status }}</span>
+            </div>
+            <div class="card-body mt-3">
+                <div class="mb-4">
+                    <h6 class="text-muted text-uppercase small fw-bold mb-2">{{ _('Tracking ID') }}</h6>
+                    <p class="fs-5 fw-semibold text-primary">{{ consignment.tracking_id }}</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h6 class="text-muted text-uppercase small fw-bold mb-2">{{ _('Description') }}</h6>
+                    <div class="bg-light p-3 rounded-3 border">
+                        {{ consignment.description }}
+                    </div>
+                </div>
+
+                {% if consignment.attachment_url %}
+                <div class="mb-4">
+                    <h6 class="text-muted text-uppercase small fw-bold mb-2">{{ _('Attachment') }}</h6>
+                    <a href="{{ consignment.attachment_url }}" target="_blank" class="btn btn-outline-info">
+                        <i class="fa-solid fa-paperclip me-2"></i> {{ _('View Attachment') }}
+                    </a>
+                </div>
+                {% else %}
+                <div class="mb-4">
+                    <h6 class="text-muted text-uppercase small fw-bold mb-2">{{ _('Attachment') }}</h6>
+                    <p class="text-muted fst-italic">{{ _('No attachments provided.') }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-12">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 pb-0">
+                <h6 class="fw-bold mb-0 text-uppercase text-muted">{{ _('Submitter Details') }}</h6>
+            </div>
+            <div class="card-body mt-3">
+                <ul class="list-unstyled mb-0">
+                    {% if consignment.submitter %}
+                        <li class="mb-3">
+                            <span class="text-muted d-block small fw-bold">{{ _('Name') }}</span>
+                            <span class="fw-semibold">{{ consignment.submitter.name or consignment.submitter.username }}</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="text-muted d-block small fw-bold">{{ _('Phone') }}</span>
+                            <span class="fw-semibold">{{ consignment.submitter.phone_no or 'N/A' }}</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="text-muted d-block small fw-bold">{{ _('Address') }}</span>
+                            <span class="fw-semibold">{{ consignment.submitter.address or 'N/A' }}</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="text-muted d-block small fw-bold">{{ _('Location') }}</span>
+                            <span class="fw-semibold">{{ consignment.submitter.place or 'N/A' }}, {{ consignment.submitter.district or 'N/A' }}</span>
+                        </li>
+                    {% else %}
+                        <li class="mb-3 text-muted">{{ _('Unknown User') }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 pb-0">
+                <h6 class="fw-bold mb-0 text-uppercase text-muted">{{ _('Application Info') }}</h6>
+            </div>
+            <div class="card-body mt-3">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3">
+                        <span class="text-muted d-block small fw-bold">{{ _('Department') }}</span>
+                        <span class="fw-semibold">{{ consignment.department.name if consignment.department else 'N/A' }}</span>
+                    </li>
+                    <li class="mb-3">
+                        <span class="text-muted d-block small fw-bold">{{ _('Assigned Admin') }}</span>
+                        <span class="fw-semibold">{{ consignment.admin.name or consignment.admin.username if consignment.admin else 'Unassigned' }}</span>
+                    </li>
+                    <li class="mb-3">
+                        <span class="text-muted d-block small fw-bold">{{ _('Created At') }}</span>
+                        <span class="fw-semibold">{{ consignment.created_at.strftime('%Y-%m-%d %H:%M') if consignment.created_at else 'N/A' }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

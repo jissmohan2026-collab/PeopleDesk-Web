@@ -305,8 +305,26 @@ def superadmin_dashboard():
     if current_user.role != 'superadmin':
         return redirect(url_for('index'))
     
+    stats = {
+        'total_apps': Consignment.query.count(),
+        'pending_apps': Consignment.query.filter_by(status='Pending').count(),
+        'approved_apps': Consignment.query.filter_by(status='Approved').count(),
+        'completed_apps': Consignment.query.filter_by(status='Completed').count(),
+        'total_users': User.query.filter_by(role='user').count(),
+        'total_admins': User.query.filter(User.role.in_(['admin', 'superadmin'])).count()
+    }
+    
+    return render_template('superadmin/dashboard.html', stats=stats)
+
+@app.route('/superadmin/applications')
+@login_required
+def superadmin_applications():
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    
     status_filter = request.args.get('status')
     date_filter = request.args.get('date')
+    search_query = request.args.get('search', '').strip()
     
     query = Consignment.query
     
@@ -315,6 +333,23 @@ def superadmin_dashboard():
         
     consignments = query.order_by(Consignment.created_at.desc()).all()
     
+    if search_query:
+        filtered_consignments = []
+        for con in consignments:
+            match = False
+            if search_query.lower() in con.tracking_id.lower() or (con.title and search_query.lower() in con.title.lower()):
+                match = True
+            elif con.submitter:
+                if con.submitter.phone_no and search_query in con.submitter.phone_no:
+                    match = True
+                elif con.submitter.username and search_query.lower() in con.submitter.username.lower():
+                    match = True
+                elif con.submitter.name and search_query.lower() in con.submitter.name.lower():
+                    match = True
+            if match:
+                filtered_consignments.append(con)
+        consignments = filtered_consignments
+
     if date_filter:
         try:
             filter_date = datetime.strptime(date_filter, '%Y-%m-%d').date()
@@ -323,13 +358,16 @@ def superadmin_dashboard():
             pass
             
     admins = User.query.filter_by(role='admin').all()
-    return render_template('superadmin/dashboard.html', consignments=consignments, admins=admins, status_filter=status_filter, date_filter=date_filter)
+    
+    return render_template('superadmin/applications.html', consignments=consignments, admins=admins, status_filter=status_filter, date_filter=date_filter, search_query=search_query)
 
 @app.route('/superadmin/users', methods=['GET', 'POST'])
 @login_required
 def superadmin_users():
     if current_user.role != 'superadmin':
         return redirect(url_for('index'))
+    
+    search_query = request.args.get('search', '').strip()
     
     if request.method == 'POST':
         username = request.form.get('username')
@@ -338,18 +376,25 @@ def superadmin_users():
         department_id = request.form.get('department_id') or None
         
         if User.query.filter_by(username=username).first():
-            flash(_('Username already exists.), '), ')')
+            flash(_('Username already exists.'), 'danger')
         else:
             new_user = User(username=username, role=role, department_id=department_id)
             new_user.set_password(password)
             db.session.add(new_user)
             db.session.commit()
-            flash(_('User created successfully.), '), ')')
+            flash(_('User created successfully.'), 'success')
         return redirect(url_for('superadmin_users'))
         
-    users = User.query.all()
+    query = User.query
+    if search_query:
+        query = query.filter(db.or_(
+            User.username.ilike(f'%{search_query}%'),
+            User.name.ilike(f'%{search_query}%'),
+            User.phone_no.ilike(f'%{search_query}%')
+        ))
+    users = query.all()
     departments = Department.query.all()
-    return render_template('superadmin/users.html', users=users, departments=departments)
+    return render_template('superadmin/users.html', users=users, departments=departments, search_query=search_query)
 
 @app.route('/superadmin/edit_user/<int:user_id>', methods=['POST'])
 @login_required
@@ -380,12 +425,12 @@ def superadmin_departments():
         officer_phone = request.form.get('officer_phone')
         officer_email = request.form.get('officer_email')
         if Department.query.filter_by(name=name).first():
-            flash(_('Department already exists.), '), ')')
+            flash(_('Department already exists.'), 'danger')
         else:
             new_dept = Department(name=name, officer_name=officer_name, officer_phone=officer_phone, officer_email=officer_email)
             db.session.add(new_dept)
             db.session.commit()
-            flash(_('Department created successfully.), '), ')')
+            flash(_('Department created successfully.'), 'success')
         return redirect(url_for('superadmin_departments'))
         
     departments = Department.query.all()
@@ -401,7 +446,7 @@ def superadmin_delete_department(dept_id):
     Consignment.query.filter_by(department_id=dept.id).update({Consignment.department_id: None})
     db.session.delete(dept)
     db.session.commit()
-    flash(_('Department deleted successfully.), '), ')')
+    flash(_('Department deleted successfully.'), 'success')
     return redirect(url_for('superadmin_departments'))
 
 @app.route('/superadmin/user/<int:user_id>')
@@ -418,14 +463,14 @@ def superadmin_delete_user(user_id):
     if current_user.role != 'superadmin':
         return redirect(url_for('index'))
     if current_user.id == user_id:
-        flash(_('You cannot delete your own profile.), '), ')')
+        flash(_('You cannot delete your own profile.'), 'danger')
         return redirect(url_for('superadmin_users'))
     user = User.query.get_or_404(user_id)
     Consignment.query.filter_by(user_id=user.id).update({Consignment.user_id: None})
     Consignment.query.filter_by(assigned_admin_id=user.id).update({Consignment.assigned_admin_id: None})
     db.session.delete(user)
     db.session.commit()
-    flash(_('User deleted successfully.), '), ')')
+    flash(_('User deleted successfully.'), 'success')
     return redirect(url_for('superadmin_users'))
 
 @app.route('/superadmin/delete_application/<int:con_id>', methods=['POST'])
@@ -436,7 +481,7 @@ def superadmin_delete_application(con_id):
     consignment = Consignment.query.get_or_404(con_id)
     db.session.delete(consignment)
     db.session.commit()
-    flash(_('Application deleted successfully.), '), ')')
+    flash(_('Application deleted successfully.'), 'success')
     return redirect(url_for('superadmin_dashboard'))
 
 @app.route('/superadmin/edit_application/<int:con_id>', methods=['GET', 'POST'])
@@ -449,9 +494,17 @@ def superadmin_edit_application(con_id):
         consignment.title = request.form.get('title')
         consignment.description = request.form.get('description')
         db.session.commit()
-        flash(_('Application updated successfully.), '), ')')
+        flash(_('Application updated successfully.'), 'success')
         return redirect(url_for('superadmin_dashboard'))
     return render_template('superadmin/edit_application.html', consignment=consignment)
+
+@app.route('/superadmin/view_application/<int:con_id>')
+@login_required
+def superadmin_view_application(con_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    consignment = Consignment.query.get_or_404(con_id)
+    return render_template('superadmin/view_application.html', consignment=consignment)
 
 @app.route('/superadmin/export/csv')
 @login_required
