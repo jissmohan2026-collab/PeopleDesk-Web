@@ -753,12 +753,13 @@ def download_pending_works():
     file_stream.seek(0)
     
     filename = f"pending_works_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-    return send_file(
-        file_stream,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        as_attachment=True,
-        download_name=filename
+    
+    response = Response(
+        file_stream.getvalue(),
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
 
 @app.route('/vehicles', methods=['GET'])
 @login_required

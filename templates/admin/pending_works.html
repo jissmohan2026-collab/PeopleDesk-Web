@@ -127,11 +127,7 @@
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-semibold">Status</label>
-                                                        <select name="status" class="form-select" required>
-                                                            <option value="Pending" {% if work.status == 'Pending' %}selected{% endif %}>Pending</option>
-                                                            <option value="In Progress" {% if work.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-                                                            <option value="Completed" {% if work.status == 'Completed' %}selected{% endif %}>Completed</option>
-                                                        </select>
+                                                        <input type="text" name="status" class="form-control" value="{{ work.status }}" placeholder="Enter status" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer border-top-0 pb-4 px-4">
@@ -187,11 +183,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Status</label>
-                        <select name="status" class="form-select" required>
-                            <option value="Pending">Pending</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Completed">Completed</option>
-                        </select>
+                        <input type="text" name="status" class="form-control" placeholder="Enter status" required>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pb-4 px-4">
