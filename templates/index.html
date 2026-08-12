@@ -232,6 +232,87 @@
             </div>
         </div>
     </div>
-</section>
+<!-- Thanking Overlay Card for K. U. Jenish Kumar MLA -->
+<div id="jenish-thank-overlay">
+    <div class="thank-card d-flex flex-column flex-md-row position-relative">
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="document.getElementById('jenish-thank-overlay').classList.remove('show')" aria-label="Close"></button>
+        <div class="thank-image-container">
+            <img src="{{ url_for('static', filename='css/image.png') }}" alt="K. U. Jenish Kumar" class="thank-img">
+        </div>
+        <div class="thank-text-container p-4 d-flex flex-column justify-content-center text-center text-md-start">
+            <h4 class="fw-bold text-primary mb-1">{{ _('K. U. Jenish Kumar') }}</h4>
+            <p class="text-muted mb-3 fw-semibold">{{ _('Hon. MLA of Konni, Kerala') }}</p>
+            <p class="thank-message text-dark fs-5 mb-0">
+                {{ _('We sincerely thank you for your constant support and dedication towards our community development.') }}
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+#jenish-thank-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+#jenish-thank-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.thank-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    max-width: 650px;
+    width: 90%;
+    transition: transform 0.3s ease;
+    transform: scale(0.9);
+}
+#jenish-thank-overlay.show .thank-card {
+    transform: scale(1);
+}
+.thank-image-container {
+    width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+}
+.thank-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.thank-text-container {
+    flex: 1;
+}
+@media (min-width: 768px) {
+    .thank-image-container {
+        width: 250px;
+        height: 250px;
+        min-width: 250px;
+        max-height: none;
+    }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var overlay = document.getElementById('jenish-thank-overlay');
+    overlay.classList.add('show');
+    setTimeout(function() {
+        overlay.classList.remove('show');
+    }, 3000);
+});
+</script>
 
 {% endblock %}

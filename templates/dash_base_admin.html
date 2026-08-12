@@ -42,6 +42,26 @@
                         <i class="fa-solid fa-building me-2"></i> {{ _('Manage Departments') }}
                     </a>
                 </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#projectSubmenuAdmin" role="button" aria-expanded="{% if request.endpoint in ['pending_works', 'vehicles'] %}true{% else %}false{% endif %}" aria-controls="projectSubmenuAdmin">
+                        <span><i class="fa-solid fa-folder me-2"></i> {{ _('Project Menu') }}</span>
+                        <i class="fa-solid fa-chevron-down small"></i>
+                    </a>
+                    <div class="collapse {% if request.endpoint in ['pending_works', 'vehicles'] %}show{% endif %}" id="projectSubmenuAdmin">
+                        <ul class="nav flex-column ms-3 mt-1 small">
+                            <li class="nav-item">
+                                <a href="{{ url_for('pending_works') }}" class="nav-link text-white py-1 {% if request.endpoint == 'pending_works' %}fw-bold text-primary{% endif %}">
+                                    <i class="fa-solid fa-circle-notch me-2"></i> {{ _('Pending Works') }}
+                                </a>
+                            </li>
+                            <li class="nav-item mt-1">
+                                <a href="{{ url_for('vehicles') }}" class="nav-link text-white py-1 {% if request.endpoint == 'vehicles' %}fw-bold text-primary{% endif %}">
+                                    <i class="fa-solid fa-car me-2"></i> {{ _('Vehicle Management') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
             </ul>
             
             <hr>

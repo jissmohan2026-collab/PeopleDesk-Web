@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_babel import Babel, _
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
-from models import db, bcrypt, User, Department, Consignment
+from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle
 import uuid
 from datetime import datetime
 import os
@@ -567,8 +567,242 @@ def superadmin_assign(con_id):
     if admin_id:
         consignment.assigned_admin_id = admin_id
         db.session.commit()
-        flash(_('Admin assigned successfully.), '), ')')
+        flash(_('Admin assigned successfully.'))
     return redirect(url_for('superadmin_dashboard'))
+
+from flask import send_file
+from openpyxl import Workbook
+from io import BytesIO
+
+@app.route('/pending-works', methods=['GET'])
+@login_required
+def pending_works():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    
+    status_filter = request.args.get('status', '')
+    local_body_filter = request.args.get('local_body', '')
+    ward_filter = request.args.get('ward_no', '')
+    amount_min = request.args.get('amount_min', '')
+    amount_max = request.args.get('amount_max', '')
+    
+    query = PendingWork.query
+    if status_filter:
+        query = query.filter(PendingWork.status == status_filter)
+    if local_body_filter:
+        query = query.filter(PendingWork.local_body.ilike(f"%{local_body_filter}%"))
+    if ward_filter:
+        try:
+            query = query.filter(PendingWork.ward_no == int(ward_filter))
+        except ValueError:
+            pass
+    if amount_min:
+        try:
+            query = query.filter(PendingWork.amount >= int(amount_min))
+        except ValueError:
+            pass
+    if amount_max:
+        try:
+            query = query.filter(PendingWork.amount <= int(amount_max))
+        except ValueError:
+            pass
+            
+    works = query.all()
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/pending_works.html', works=works, 
+                           status_filter=status_filter, local_body_filter=local_body_filter,
+                           ward_filter=ward_filter, amount_min=amount_min, amount_max=amount_max,
+                           base_template=base_template)
+
+@app.route('/pending-works/add', methods=['POST'])
+@login_required
+def add_pending_work():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+        
+    try:
+        work_name = request.form.get('work_name')
+        amount = int(request.form.get('amount', 0))
+        local_body = request.form.get('local_body')
+        ward_no = int(request.form.get('ward_no', 0))
+        status = request.form.get('status', 'Pending')
+        
+        work = PendingWork(
+            work_name=work_name,
+            amount=amount,
+            local_body=local_body,
+            ward_no=ward_no,
+            status=status
+        )
+        db.session.add(work)
+        db.session.commit()
+        flash(_('Pending Work added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding work: {str(e)}', 'danger')
+        
+    return redirect(url_for('pending_works'))
+
+@app.route('/pending-works/edit/<int:work_id>', methods=['POST'])
+@login_required
+def edit_pending_work(work_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+        
+    work = PendingWork.query.get_or_404(work_id)
+    try:
+        work.work_name = request.form.get('work_name')
+        work.amount = int(request.form.get('amount', 0))
+        work.local_body = request.form.get('local_body')
+        work.ward_no = int(request.form.get('ward_no', 0))
+        work.status = request.form.get('status')
+        
+        db.session.commit()
+        flash(_('Pending Work updated successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error updating work: {str(e)}', 'danger')
+        
+    return redirect(url_for('pending_works'))
+
+@app.route('/pending-works/download', methods=['GET'])
+@login_required
+def download_pending_works():
+    if current_user.role != 'superadmin':
+        flash(_('Unauthorized access.'), 'danger')
+        return redirect(url_for('index'))
+        
+    status_filter = request.args.get('status', '')
+    local_body_filter = request.args.get('local_body', '')
+    ward_filter = request.args.get('ward_no', '')
+    amount_min = request.args.get('amount_min', '')
+    amount_max = request.args.get('amount_max', '')
+    
+    query = PendingWork.query
+    if status_filter:
+        query = query.filter(PendingWork.status == status_filter)
+    if local_body_filter:
+        query = query.filter(PendingWork.local_body.ilike(f"%{local_body_filter}%"))
+    if ward_filter:
+        try:
+            query = query.filter(PendingWork.ward_no == int(ward_filter))
+        except ValueError:
+            pass
+    if amount_min:
+        try:
+            query = query.filter(PendingWork.amount >= int(amount_min))
+        except ValueError:
+            pass
+    if amount_max:
+        try:
+            query = query.filter(PendingWork.amount <= int(amount_max))
+        except ValueError:
+            pass
+            
+    works = query.all()
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Pending Works"
+    
+    headers = ["SR (ID)", "Work Name", "Amount", "Local Body", "Ward No", "Status"]
+    ws.append(headers)
+    
+    for idx, w in enumerate(works, start=1):
+        ws.append([idx, w.work_name, w.amount, w.local_body, w.ward_no, w.status])
+        
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    
+    filename = f"pending_works_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    return send_file(
+        file_stream,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        as_attachment=True,
+        download_name=filename
+    )
+
+@app.route('/vehicles', methods=['GET'])
+@login_required
+def vehicles():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+        
+    status_filter = request.args.get('status', '')
+    type_filter = request.args.get('vehicle_type', '')
+    
+    query = Vehicle.query
+    if status_filter:
+        query = query.filter(Vehicle.status == status_filter)
+    if type_filter:
+        query = query.filter(Vehicle.vehicle_type == type_filter)
+        
+    vehicles_list = query.all()
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/vehicles.html', vehicles=vehicles_list, 
+                           status_filter=status_filter, type_filter=type_filter,
+                           base_template=base_template)
+
+@app.route('/vehicles/add', methods=['POST'])
+@login_required
+def add_vehicle():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+        
+    try:
+        vehicle_number = request.form.get('vehicle_number')
+        vehicle_model = request.form.get('vehicle_model')
+        vehicle_year = int(request.form.get('vehicle_year', 0))
+        driver_name = request.form.get('driver_name')
+        driver_contract = request.form.get('driver_contract')
+        driver_license = request.form.get('driver_license')
+        vehicle_type = request.form.get('vehicle_type', 'owned')
+        status = request.form.get('status', 'Pending')
+        
+        veh = Vehicle(
+            vehicle_number=vehicle_number,
+            vehicle_model=vehicle_model,
+            vehicle_year=vehicle_year,
+            driver_name=driver_name,
+            driver_contract=driver_contract,
+            driver_license=driver_license,
+            vehicle_type=vehicle_type,
+            status=status
+        )
+        db.session.add(veh)
+        db.session.commit()
+        flash(_('Vehicle added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding vehicle: {str(e)}', 'danger')
+        
+    return redirect(url_for('vehicles'))
+
+@app.route('/vehicles/edit/<int:veh_id>', methods=['POST'])
+@login_required
+def edit_vehicle(veh_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+        
+    veh = Vehicle.query.get_or_404(veh_id)
+    try:
+        veh.vehicle_number = request.form.get('vehicle_number')
+        veh.vehicle_model = request.form.get('vehicle_model')
+        veh.vehicle_year = int(request.form.get('vehicle_year', 0))
+        veh.driver_name = request.form.get('driver_name')
+        veh.driver_contract = request.form.get('driver_contract')
+        veh.driver_license = request.form.get('driver_license')
+        veh.vehicle_type = request.form.get('vehicle_type')
+        veh.status = request.form.get('status')
+        
+        db.session.commit()
+        flash(_('Vehicle updated successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error updating vehicle: {str(e)}', 'danger')
+        
+    return redirect(url_for('vehicles'))
 
 # --- Setup Script ---
 @app.cli.command("init-db")

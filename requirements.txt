@@ -10,3 +10,4 @@ werkzeug
 Flask-Babel
 deep-translator
 psycopg2-binary
+openpyxl
