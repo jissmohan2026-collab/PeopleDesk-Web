@@ -69,6 +69,7 @@
                                 <th class="py-3">Local Body</th>
                                 <th class="py-3">Ward No</th>
                                 <th class="py-3">Status</th>
+                                <th class="py-3">Remarks</th>
                                 <th class="pe-4 py-3 text-end">Action</th>
                             </tr>
                         </thead>
@@ -82,14 +83,17 @@
                                     <td class="py-3">{{ work.local_body }}</td>
                                     <td class="py-3">{{ work.ward_no }}</td>
                                     <td class="py-3">
-                                        {% if work.status == 'Completed' %}
-                                            <span class="badge bg-success rounded-pill px-3 py-2">Completed</span>
-                                        {% elif work.status == 'In Progress' %}
-                                            <span class="badge bg-info text-dark rounded-pill px-3 py-2">In Progress</span>
-                                        {% else %}
+                                        {% if work.status == 'Complete' or work.status == 'Completed' %}
+                                            <span class="badge bg-success rounded-pill px-3 py-2">Complete</span>
+                                        {% elif work.status == 'Reject' or work.status == 'Rejected' %}
+                                            <span class="badge bg-danger rounded-pill px-3 py-2">Reject</span>
+                                        {% elif work.status == 'Pending' %}
                                             <span class="badge bg-warning text-dark rounded-pill px-3 py-2">Pending</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary rounded-pill px-3 py-2">{{ work.status }}</span>
                                         {% endif %}
                                     </td>
+                                    <td class="py-3 text-muted small">{{ work.remarks or '' }}</td>
                                     <td class="pe-4 py-3 text-end">
                                         <button class="btn btn-sm btn-outline-primary me-2" 
                                                 data-bs-toggle="modal" 
@@ -127,7 +131,19 @@
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-semibold">Status</label>
-                                                        <input type="text" name="status" class="form-control" value="{{ work.status }}" placeholder="Enter status" required>
+                                                        <select name="status" class="form-select" required>
+                                                            <option value="Pending" {% if work.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                                            <option value="Complete" {% if work.status == 'Complete' or work.status == 'Completed' %}selected{% endif %}>Complete</option>
+                                                            <option value="Reject" {% if work.status == 'Reject' or work.status == 'Rejected' %}selected{% endif %}>Reject</option>
+                                                            <option value="Other" {% if work.status == 'Other' %}selected{% endif %}>Other</option>
+                                                            {% if work.status not in ['Pending', 'Complete', 'Completed', 'Reject', 'Rejected', 'Other'] %}
+                                                                <option value="{{ work.status }}" selected>{{ work.status }}</option>
+                                                            {% endif %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Remarks</label>
+                                                        <textarea name="remarks" class="form-control" rows="2" placeholder="Enter remarks (optional)">{{ work.remarks or '' }}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer border-top-0 pb-4 px-4">
@@ -141,7 +157,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="7" class="text-center py-5 text-muted">
+                                    <td colspan="8" class="text-center py-5 text-muted">
                                         <i class="fa-solid fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
                                         No pending works found matching the criteria.
                                     </td>
@@ -183,7 +199,16 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Status</label>
-                        <input type="text" name="status" class="form-control" placeholder="Enter status" required>
+                        <select name="status" class="form-select" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Complete">Complete</option>
+                            <option value="Reject">Reject</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Remarks</label>
+                        <textarea name="remarks" class="form-control" rows="2" placeholder="Enter remarks (optional)"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pb-4 px-4">

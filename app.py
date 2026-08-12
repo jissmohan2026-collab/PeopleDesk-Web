@@ -663,13 +663,15 @@ def add_pending_work():
         local_body = request.form.get('local_body')
         ward_no = int(request.form.get('ward_no', 0))
         status = request.form.get('status', 'Pending')
+        remarks = request.form.get('remarks', '')
         
         work = PendingWork(
             work_name=work_name,
             amount=amount,
             local_body=local_body,
             ward_no=ward_no,
-            status=status
+            status=status,
+            remarks=remarks
         )
         db.session.add(work)
         db.session.commit()
@@ -693,6 +695,7 @@ def edit_pending_work(work_id):
         work.local_body = request.form.get('local_body')
         work.ward_no = int(request.form.get('ward_no', 0))
         work.status = request.form.get('status')
+        work.remarks = request.form.get('remarks', '')
         
         db.session.commit()
         flash(_('Pending Work updated successfully.'))
@@ -742,11 +745,11 @@ def download_pending_works():
     ws = wb.active
     ws.title = "Pending Works"
     
-    headers = ["SR (ID)", "Work Name", "Amount", "Local Body", "Ward No", "Status"]
+    headers = ["SR (ID)", "Work Name", "Amount", "Local Body", "Ward No", "Status", "Remarks"]
     ws.append(headers)
     
     for idx, w in enumerate(works, start=1):
-        ws.append([idx, w.work_name, w.amount, w.local_body, w.ward_no, w.status])
+        ws.append([idx, w.work_name, w.amount, w.local_body, w.ward_no, w.status, w.remarks])
         
     file_stream = BytesIO()
     wb.save(file_stream)

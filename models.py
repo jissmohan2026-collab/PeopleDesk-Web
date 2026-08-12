@@ -63,6 +63,7 @@ class PendingWork(db.Model):
     local_body = db.Column(db.String(255), nullable=False)
     ward_no = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(50), nullable=False, default='Pending')
+    remarks = db.Column(db.Text, nullable=True)
 
 class Vehicle(db.Model):
     __tablename__ = 'vehicles'
