@@ -54,3 +54,25 @@ class Consignment(db.Model):
     submitter = db.relationship('User', foreign_keys=[user_id], backref='submitted_consignments')
     admin = db.relationship('User', foreign_keys=[assigned_admin_id], backref='assigned_consignments')
     department = db.relationship('Department', backref='consignments')
+
+class PendingWork(db.Model):
+    __tablename__ = 'pending_works'
+    id = db.Column(db.Integer, primary_key=True) # Automatic generation starting 1
+    work_name = db.Column(db.String(255), nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
+    local_body = db.Column(db.String(255), nullable=False)
+    ward_no = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(50), nullable=False, default='Pending')
+
+class Vehicle(db.Model):
+    __tablename__ = 'vehicles'
+    id = db.Column(db.Integer, primary_key=True) # auto index
+    vehicle_number = db.Column(db.String(50), nullable=False, unique=True)
+    vehicle_model = db.Column(db.String(100), nullable=False)
+    vehicle_year = db.Column(db.Integer, nullable=False)
+    driver_name = db.Column(db.String(100), nullable=False)
+    driver_contract = db.Column(db.String(100), nullable=True)
+    driver_license = db.Column(db.String(100), nullable=False)
+    vehicle_type = db.Column(db.String(50), nullable=False) # 'owned', 'shared', 'other'
+    status = db.Column(db.String(50), nullable=False, default='Pending') # 'Active' or 'Pending'
+
