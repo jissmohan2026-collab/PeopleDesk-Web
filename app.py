@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_babel import Babel, _
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
-from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle
+from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle, SystemBalance
 import uuid
 from datetime import datetime
 import os
@@ -305,6 +305,13 @@ def superadmin_dashboard():
     if current_user.role != 'superadmin':
         return redirect(url_for('index'))
     
+    # Ensure a SystemBalance row exists
+    balance = SystemBalance.query.first()
+    if not balance:
+        balance = SystemBalance(total_balance=200000.0, current_balance=150000.0, used_up_balance=50000.0)
+        db.session.add(balance)
+        db.session.commit()
+    
     stats = {
         'total_apps': Consignment.query.count(),
         'pending_apps': Consignment.query.filter_by(status='Pending').count(),
@@ -314,7 +321,37 @@ def superadmin_dashboard():
         'total_admins': User.query.filter(User.role.in_(['admin', 'superadmin'])).count()
     }
     
-    return render_template('superadmin/dashboard.html', stats=stats)
+    return render_template('superadmin/dashboard.html', stats=stats, balance=balance)
+
+@app.route('/superadmin/update_balance', methods=['POST'])
+@login_required
+def superadmin_update_balance():
+    if current_user.role != 'superadmin':
+        return {"status": "error", "message": "Unauthorized"}, 403
+        
+    balance = SystemBalance.query.first()
+    if not balance:
+        balance = SystemBalance()
+        db.session.add(balance)
+        
+    try:
+        data = request.get_json()
+        if not data:
+            return {"status": "error", "message": "Invalid data"}, 400
+            
+        if 'total_balance' in data:
+            balance.total_balance = float(data['total_balance'])
+        if 'current_balance' in data:
+            balance.current_balance = float(data['current_balance'])
+        if 'used_up_balance' in data:
+            balance.used_up_balance = float(data['used_up_balance'])
+            
+        db.session.commit()
+        flash(_('Balance updated successfully.'))
+        return {"status": "success", "message": "Balance updated successfully"}
+    except Exception as e:
+        db.session.rollback()
+        return {"status": "error", "message": str(e)}, 500
 
 @app.route('/superadmin/applications')
 @login_required

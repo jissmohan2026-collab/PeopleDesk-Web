@@ -52,7 +52,28 @@
                     <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
                         <i class="fa-solid fa-wallet fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
                         <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Total Balance</h6>
-                        <h2 class="mb-0 fw-bold">₹2,00,000</h2>
+                        <div class="d-flex align-items-center justify-content-between position-relative" style="z-index: 10;">
+                            <h2 class="mb-0 fw-bold balance-display-container">
+                                <span id="total-balance-display">₹{{ "{:,.2f}".format(balance.total_balance) }}</span>
+                                <input type="number" id="total-balance-input" class="form-control form-control-sm d-none bg-white bg-opacity-25 text-white border-0 fw-bold" value="{{ balance.total_balance }}" step="0.01" style="font-size: 1.5rem; display: inline-block; width: auto; max-width: 180px;">
+                            </h2>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-link text-white p-0 ms-2" id="total-edit-btn" onclick="toggleEdit('total')">
+                                    <i class="fa-solid fa-pen" style="font-size: 1rem;"></i>
+                                </button>
+                                <div id="total-actions" class="d-none ms-2">
+                                    <button class="btn btn-sm btn-success py-1 px-2 me-1" onclick="saveBalance('total')">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger py-1 px-2" onclick="cancelEdit('total')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress d-none mt-2" id="total-progress-container" style="height: 6px; background-color: rgba(255,255,255,0.2);">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-white" role="progressbar" style="width: 100%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,7 +82,28 @@
                     <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
                         <i class="fa-solid fa-money-bill-trend-up fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
                         <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Current Balance</h6>
-                        <h2 class="mb-0 fw-bold">₹1,50,000</h2>
+                        <div class="d-flex align-items-center justify-content-between position-relative" style="z-index: 10;">
+                            <h2 class="mb-0 fw-bold balance-display-container">
+                                <span id="current-balance-display">₹{{ "{:,.2f}".format(balance.current_balance) }}</span>
+                                <input type="number" id="current-balance-input" class="form-control form-control-sm d-none bg-white bg-opacity-25 text-white border-0 fw-bold" value="{{ balance.current_balance }}" step="0.01" style="font-size: 1.5rem; display: inline-block; width: auto; max-width: 180px;">
+                            </h2>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-link text-white p-0 ms-2" id="current-edit-btn" onclick="toggleEdit('current')">
+                                    <i class="fa-solid fa-pen" style="font-size: 1rem;"></i>
+                                </button>
+                                <div id="current-actions" class="d-none ms-2">
+                                    <button class="btn btn-sm btn-success py-1 px-2 me-1" onclick="saveBalance('current')">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger py-1 px-2" onclick="cancelEdit('current')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress d-none mt-2" id="current-progress-container" style="height: 6px; background-color: rgba(255,255,255,0.2);">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-white" role="progressbar" style="width: 100%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -70,7 +112,28 @@
                     <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
                         <i class="fa-solid fa-hand-holding-dollar fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
                         <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Used Up Balance</h6>
-                        <h2 class="mb-0 fw-bold">₹50,000</h2>
+                        <div class="d-flex align-items-center justify-content-between position-relative" style="z-index: 10;">
+                            <h2 class="mb-0 fw-bold balance-display-container">
+                                <span id="used_up-balance-display">₹{{ "{:,.2f}".format(balance.used_up_balance) }}</span>
+                                <input type="number" id="used_up-balance-input" class="form-control form-control-sm d-none bg-dark bg-opacity-10 text-dark border-0 fw-bold" value="{{ balance.used_up_balance }}" step="0.01" style="font-size: 1.5rem; display: inline-block; width: auto; max-width: 180px;">
+                            </h2>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-link text-dark p-0 ms-2" id="used_up-edit-btn" onclick="toggleEdit('used_up')">
+                                    <i class="fa-solid fa-pen" style="font-size: 1rem;"></i>
+                                </button>
+                                <div id="used_up-actions" class="d-none ms-2">
+                                    <button class="btn btn-sm btn-success py-1 px-2 me-1" onclick="saveBalance('used_up')">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger py-1 px-2" onclick="cancelEdit('used_up')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress d-none mt-2" id="used_up-progress-container" style="height: 6px; background-color: rgba(0,0,0,0.1);">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark" role="progressbar" style="width: 100%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -221,4 +284,68 @@
 
     </div>
 </div>
+
+<script>
+function toggleEdit(type) {
+    document.getElementById(type + '-balance-display').classList.add('d-none');
+    document.getElementById(type + '-balance-input').classList.remove('d-none');
+    document.getElementById(type + '-edit-btn').classList.add('d-none');
+    document.getElementById(type + '-actions').classList.remove('d-none');
+    document.getElementById(type + '-balance-input').focus();
+}
+
+function cancelEdit(type) {
+    document.getElementById(type + '-balance-display').classList.remove('d-none');
+    document.getElementById(type + '-balance-input').classList.add('d-none');
+    document.getElementById(type + '-edit-btn').classList.remove('d-none');
+    document.getElementById(type + '-actions').classList.add('d-none');
+}
+
+function saveBalance(type) {
+    const val = parseFloat(document.getElementById(type + '-balance-input').value);
+    if (isNaN(val)) {
+        alert("Please enter a valid number");
+        return;
+    }
+    
+    if (confirm("Are you sure you want to update this balance?")) {
+        // Show progress bar
+        document.getElementById(type + '-progress-container').classList.remove('d-none');
+        // Hide edit/actions to prevent double click
+        document.getElementById(type + '-actions').classList.add('d-none');
+        document.getElementById(type + '-balance-input').disabled = true;
+
+        const payload = {};
+        payload[type + '_balance'] = val;
+        
+        fetch("{{ url_for('superadmin_update_balance') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                window.location.reload();
+            } else {
+                alert("Error: " + data.message);
+                // Reset on error
+                document.getElementById(type + '-progress-container').classList.add('d-none');
+                document.getElementById(type + '-actions').classList.remove('d-none');
+                document.getElementById(type + '-balance-input').disabled = false;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("An error occurred while updating the balance.");
+            // Reset on error
+            document.getElementById(type + '-progress-container').classList.add('d-none');
+            document.getElementById(type + '-actions').classList.remove('d-none');
+            document.getElementById(type + '-balance-input').disabled = false;
+        });
+    }
+}
+</script>
 {% endblock %}

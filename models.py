@@ -76,3 +76,11 @@ class Vehicle(db.Model):
     vehicle_type = db.Column(db.String(50), nullable=False) # 'owned', 'shared', 'other'
     status = db.Column(db.String(50), nullable=False, default='Pending') # 'Active' or 'Pending'
 
+
+class SystemBalance(db.Model):
+    __tablename__ = 'system_balances'
+    id = db.Column(db.Integer, primary_key=True)
+    total_balance = db.Column(db.Float, default=200000.0)
+    current_balance = db.Column(db.Float, default=150000.0)
+    used_up_balance = db.Column(db.Float, default=50000.0)
+
