@@ -306,7 +306,7 @@ def superadmin_dashboard():
         return redirect(url_for('index'))
     
     # Ensure a SystemBalance row exists
-    balance = SystemBalance.query.first()
+    balance = SystemBalance.query.order_by(SystemBalance.id.asc()).first()
     if not balance:
         balance = SystemBalance(total_balance=200000.0, current_balance=150000.0, used_up_balance=50000.0)
         db.session.add(balance)
@@ -329,7 +329,7 @@ def superadmin_update_balance():
     if current_user.role != 'superadmin':
         return {"status": "error", "message": "Unauthorized"}, 403
         
-    balance = SystemBalance.query.first()
+    balance = SystemBalance.query.order_by(SystemBalance.id.asc()).first()
     if not balance:
         balance = SystemBalance()
         db.session.add(balance)
@@ -343,8 +343,8 @@ def superadmin_update_balance():
             balance.total_balance = float(data['total_balance'])
         if 'current_balance' in data:
             balance.current_balance = float(data['current_balance'])
-        if 'used_up_balance' in data:
-            balance.used_up_balance = float(data['used_up_balance'])
+            
+        balance.used_up_balance = balance.total_balance - balance.current_balance
             
         db.session.commit()
         flash(_('Balance updated successfully.'))
