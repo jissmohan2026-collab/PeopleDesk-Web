@@ -126,7 +126,7 @@
                             <tr>
                                 <th class="ps-4 py-3">SR</th>
                                 <th class="py-3">Work Name</th>
-                                <th class="py-3">Amount (₹)</th>
+                                <th class="py-3">Amount Allotted (₹)</th>
                                 <th class="py-3">Inst. 1 (₹)</th>
                                 <th class="py-3">Inst. 2 (₹)</th>
                                 <th class="py-3">Inst. 3 (₹)</th>
@@ -191,7 +191,7 @@
                                                         <input type="text" name="work_name" class="form-control" value="{{ work.work_name }}" required>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-semibold">Amount (₹)</label>
+                                                        <label class="form-label fw-semibold">Amount Allotted (₹)</label>
                                                         <input type="number" name="amount" id="edit_amount_{{ work.id }}" class="form-control" value="{{ work.amount }}" oninput="calculateEditBalance({{ work.id }})" required>
                                                     </div>
                                                     <div class="mb-3">
@@ -283,7 +283,7 @@
                         <input type="text" name="work_name" class="form-control" placeholder="Enter work name" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Amount (₹)</label>
+                        <label class="form-label fw-semibold">Amount Allotted (₹)</label>
                         <input type="number" name="amount" id="add_amount" class="form-control" oninput="calculateAddBalance()" placeholder="Enter amount" required>
                     </div>
                     <div class="mb-3">

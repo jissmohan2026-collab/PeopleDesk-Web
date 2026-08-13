@@ -91,3 +91,18 @@ class SystemBalance(db.Model):
     current_balance = db.Column(db.Float, default=150000.0)
     used_up_balance = db.Column(db.Float, default=50000.0)
 
+
+class Road(db.Model):
+    __tablename__ = 'roads'
+    id = db.Column(db.Integer, primary_key=True)
+    constituency = db.Column(db.String(100), nullable=True)
+    mla_name = db.Column(db.String(100), nullable=True)
+    local_govt_name = db.Column(db.String(100), nullable=True)
+    local_govt_type = db.Column(db.String(100), nullable=True)
+    road_name = db.Column(db.String(200), nullable=False)
+    road_width = db.Column(db.Float, nullable=True, default=0.0)
+    road_length = db.Column(db.Float, nullable=True, default=0.0)
+    estimate_cost = db.Column(db.Float, nullable=True, default=0.0)
+    status = db.Column(db.String(50), nullable=False, default='Pending')
+    remarks = db.Column(db.Text, nullable=True)
+

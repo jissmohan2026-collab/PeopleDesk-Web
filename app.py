@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_babel import Babel, _
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
-from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle, SystemBalance
+from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle, SystemBalance, Road
 import uuid
 from datetime import datetime
 import os
@@ -781,6 +781,144 @@ def download_pending_works():
     )
     response.headers["Content-Disposition"] = f"attachment; filename={filename}"
     return response
+
+
+@app.route('/roads', methods=['GET'])
+@login_required
+def roads():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    
+    status_filter = request.args.get('status', '')
+    constituency_filter = request.args.get('constituency', '')
+    road_name_filter = request.args.get('road_name', '')
+    
+    query = Road.query
+    if status_filter:
+        query = query.filter(Road.status == status_filter)
+    if constituency_filter:
+        query = query.filter(Road.constituency.ilike(f'%{constituency_filter}%'))
+    if road_name_filter:
+        query = query.filter(Road.road_name.ilike(f'%{road_name_filter}%'))
+        
+    roads_list = query.order_by(Road.id.desc()).all()
+    
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/roads.html', roads=roads_list, 
+                           base_template=base_template,
+                           status_filter=status_filter,
+                           constituency_filter=constituency_filter,
+                           road_name_filter=road_name_filter)
+
+@app.route('/roads/add', methods=['POST'])
+@login_required
+def add_road():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+        
+    try:
+        constituency = request.form.get('constituency')
+        mla_name = request.form.get('mla_name')
+        local_govt_name = request.form.get('local_govt_name')
+        local_govt_type = request.form.get('local_govt_type')
+        road_name = request.form.get('road_name')
+        road_width = float(request.form.get('road_width', 0.0))
+        road_length = float(request.form.get('road_length', 0.0))
+        estimate_cost = float(request.form.get('estimate_cost', 0.0))
+        status = request.form.get('status', 'Pending')
+        remarks = request.form.get('remarks', '')
+        
+        road = Road(
+            constituency=constituency,
+            mla_name=mla_name,
+            local_govt_name=local_govt_name,
+            local_govt_type=local_govt_type,
+            road_name=road_name,
+            road_width=road_width,
+            road_length=road_length,
+            estimate_cost=estimate_cost,
+            status=status,
+            remarks=remarks
+        )
+        db.session.add(road)
+        db.session.commit()
+        flash(_('Road added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding road: {str(e)}', 'danger')
+        
+    return redirect(url_for('roads'))
+
+@app.route('/roads/edit/<int:road_id>', methods=['POST'])
+@login_required
+def edit_road(road_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+        
+    road = Road.query.get_or_404(road_id)
+    try:
+        road.constituency = request.form.get('constituency')
+        road.mla_name = request.form.get('mla_name')
+        road.local_govt_name = request.form.get('local_govt_name')
+        road.local_govt_type = request.form.get('local_govt_type')
+        road.road_name = request.form.get('road_name')
+        road.road_width = float(request.form.get('road_width', 0.0))
+        road.road_length = float(request.form.get('road_length', 0.0))
+        road.estimate_cost = float(request.form.get('estimate_cost', 0.0))
+        road.status = request.form.get('status')
+        road.remarks = request.form.get('remarks', '')
+        
+        db.session.commit()
+        flash(_('Road updated successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error updating road: {str(e)}', 'danger')
+        
+    return redirect(url_for('roads'))
+
+@app.route('/roads/download', methods=['GET'])
+@login_required
+def download_roads():
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+        
+    status_filter = request.args.get('status', '')
+    constituency_filter = request.args.get('constituency', '')
+    road_name_filter = request.args.get('road_name', '')
+    
+    query = Road.query
+    if status_filter:
+        query = query.filter(Road.status == status_filter)
+    if constituency_filter:
+        query = query.filter(Road.constituency.ilike(f'%{constituency_filter}%'))
+    if road_name_filter:
+        query = query.filter(Road.road_name.ilike(f'%{road_name_filter}%'))
+        
+    roads_list = query.order_by(Road.id.desc()).all()
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Roads"
+    
+    headers = ["SR (ID)", "Road Name", "Constituency", "MLA Name", "Local Self Govt", "Nature of Self Govt", "Width (m)", "Length (m)", "Estimate Cost (₹)", "Status", "Remarks"]
+    ws.append(headers)
+    
+    for idx, r in enumerate(roads_list, start=1):
+        ws.append([idx, r.road_name, r.constituency, r.mla_name, r.local_govt_name, r.local_govt_type, r.road_width, r.road_length, r.estimate_cost, r.status, r.remarks])
+        
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    
+    filename = f"roads_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    
+    response = Response(
+        file_stream.getvalue(),
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
 
 @app.route('/vehicles', methods=['GET'])
 @login_required
