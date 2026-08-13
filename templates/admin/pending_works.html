@@ -46,7 +46,68 @@
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h5 class="fw-bold mb-0 text-dark">Project Work List</h5>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 align-items-center">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="columnToggleDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <i class="fa-solid fa-columns me-2"></i>Columns
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="columnToggleDropdown" style="width: 240px; z-index: 1050;">
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-inst1" data-column="3" checked>
+                                    <label class="form-check-label" for="toggle-inst1">Installment 1</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-inst2" data-column="4" checked>
+                                    <label class="form-check-label" for="toggle-inst2">Installment 2</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-inst3" data-column="5" checked>
+                                    <label class="form-check-label" for="toggle-inst3">Installment 3</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-balance" data-column="6" checked>
+                                    <label class="form-check-label" for="toggle-balance">Balance Amount</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-local" data-column="7" checked>
+                                    <label class="form-check-label" for="toggle-local">Local Body</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-ward" data-column="8" checked>
+                                    <label class="form-check-label" for="toggle-ward">Ward No</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-filestatus" data-column="10" checked>
+                                    <label class="form-check-label" for="toggle-filestatus">File Status</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-dept" data-column="11" checked>
+                                    <label class="form-check-label" for="toggle-dept">Department</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-remarks" data-column="12" checked>
+                                    <label class="form-check-label" for="toggle-remarks">Remarks</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                     {% if current_user.role == 'superadmin' %}
                     <a href="{{ url_for('download_pending_works', status=status_filter, local_body=local_body_filter, ward_no=ward_filter, amount_min=amount_min, amount_max=amount_max) }}" class="btn btn-success">
                         <i class="fa-solid fa-file-excel me-2"></i>Download XLSX
@@ -296,5 +357,28 @@ function calculateEditBalance(id) {
     const inst3 = parseFloat(document.getElementById('edit_inst3_' + id).value) || 0;
     document.getElementById('edit_balance_' + id).value = amt - inst1 - inst2 - inst3;
 }
+
+// Column visibility toggles
+document.querySelectorAll('.col-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const colIdx = parseInt(this.getAttribute('data-column'));
+        const isChecked = this.checked;
+        const table = document.querySelector('table');
+        
+        // Toggle header cell
+        const th = table.querySelectorAll('thead tr th')[colIdx];
+        if (th) {
+            th.style.display = isChecked ? '' : 'none';
+        }
+        
+        // Toggle body cells
+        table.querySelectorAll('tbody tr').forEach(row => {
+            const td = row.querySelectorAll('td')[colIdx];
+            if (td) {
+                td.style.display = isChecked ? '' : 'none';
+            }
+        });
+    });
+});
 </script>
 {% endblock %}
