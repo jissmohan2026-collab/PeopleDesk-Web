@@ -660,22 +660,34 @@ def add_pending_work():
     try:
         work_name = request.form.get('work_name')
         amount = int(request.form.get('amount', 0))
+        installment_1 = int(request.form.get('installment_1', 0))
+        installment_2 = int(request.form.get('installment_2', 0))
+        installment_3 = int(request.form.get('installment_3', 0))
+        balance_amount = amount - installment_1 - installment_2 - installment_3
         local_body = request.form.get('local_body')
         ward_no = int(request.form.get('ward_no', 0))
         status = request.form.get('status', 'Pending')
+        file_status = request.form.get('file_status', '')
+        department = request.form.get('department', '')
         remarks = request.form.get('remarks', '')
         
         work = PendingWork(
             work_name=work_name,
             amount=amount,
+            installment_1=installment_1,
+            installment_2=installment_2,
+            installment_3=installment_3,
+            balance_amount=balance_amount,
             local_body=local_body,
             ward_no=ward_no,
             status=status,
+            file_status=file_status,
+            department=department,
             remarks=remarks
         )
         db.session.add(work)
         db.session.commit()
-        flash(_('Pending Work added successfully.'))
+        flash(_('Project Work added successfully.'))
     except Exception as e:
         db.session.rollback()
         flash(f'Error adding work: {str(e)}', 'danger')
@@ -692,13 +704,19 @@ def edit_pending_work(work_id):
     try:
         work.work_name = request.form.get('work_name')
         work.amount = int(request.form.get('amount', 0))
+        work.installment_1 = int(request.form.get('installment_1', 0))
+        work.installment_2 = int(request.form.get('installment_2', 0))
+        work.installment_3 = int(request.form.get('installment_3', 0))
+        work.balance_amount = work.amount - work.installment_1 - work.installment_2 - work.installment_3
         work.local_body = request.form.get('local_body')
         work.ward_no = int(request.form.get('ward_no', 0))
         work.status = request.form.get('status')
+        work.file_status = request.form.get('file_status', '')
+        work.department = request.form.get('department', '')
         work.remarks = request.form.get('remarks', '')
         
         db.session.commit()
-        flash(_('Pending Work updated successfully.'))
+        flash(_('Project Work updated successfully.'))
     except Exception as e:
         db.session.rollback()
         flash(f'Error updating work: {str(e)}', 'danger')
@@ -745,11 +763,11 @@ def download_pending_works():
     ws = wb.active
     ws.title = "Pending Works"
     
-    headers = ["SR (ID)", "Work Name", "Amount", "Local Body", "Ward No", "Status", "Remarks"]
+    headers = ["SR (ID)", "Work Name", "Amount", "Installment 1", "Installment 2", "Installment 3", "Balance Amount", "Local Body", "Ward No", "Status", "File Status", "Department", "Remarks"]
     ws.append(headers)
     
     for idx, w in enumerate(works, start=1):
-        ws.append([idx, w.work_name, w.amount, w.local_body, w.ward_no, w.status, w.remarks])
+        ws.append([idx, w.work_name, w.amount, w.installment_1 or 0, w.installment_2 or 0, w.installment_3 or 0, w.balance_amount or 0, w.local_body, w.ward_no, w.status, w.file_status, w.department, w.remarks])
         
     file_stream = BytesIO()
     wb.save(file_stream)

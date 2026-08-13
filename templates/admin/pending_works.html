@@ -1,7 +1,7 @@
 {% extends base_template %}
 
-{% block title %}Pending Works - ATS{% endblock %}
-{% block header %}Pending Works Management{% endblock %}
+{% block title %}Project Work - ATS{% endblock %}
+{% block header %}Project Work Management{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -45,7 +45,7 @@
         <!-- Toolbar and Table -->
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <h5 class="fw-bold mb-0 text-dark">Pending Works List</h5>
+                <h5 class="fw-bold mb-0 text-dark">Project Work List</h5>
                 <div class="d-flex gap-2">
                     {% if current_user.role == 'superadmin' %}
                     <a href="{{ url_for('download_pending_works', status=status_filter, local_body=local_body_filter, ward_no=ward_filter, amount_min=amount_min, amount_max=amount_max) }}" class="btn btn-success">
@@ -53,7 +53,7 @@
                     </a>
                     {% endif %}
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkModal">
-                        <i class="fa-solid fa-plus me-2"></i>Add Pending Work
+                        <i class="fa-solid fa-plus me-2"></i>Add Project Work
                     </button>
                 </div>
             </div>
@@ -66,9 +66,15 @@
                                 <th class="ps-4 py-3">SR</th>
                                 <th class="py-3">Work Name</th>
                                 <th class="py-3">Amount (₹)</th>
+                                <th class="py-3">Inst. 1 (₹)</th>
+                                <th class="py-3">Inst. 2 (₹)</th>
+                                <th class="py-3">Inst. 3 (₹)</th>
+                                <th class="py-3">Balance (₹)</th>
                                 <th class="py-3">Local Body</th>
                                 <th class="py-3">Ward No</th>
                                 <th class="py-3">Status</th>
+                                <th class="py-3">File Status</th>
+                                <th class="py-3">Department</th>
                                 <th class="py-3">Remarks</th>
                                 <th class="pe-4 py-3 text-end">Action</th>
                             </tr>
@@ -80,6 +86,10 @@
                                     <td class="ps-4 py-3 fw-bold">{{ loop.index }}</td>
                                     <td class="py-3 fw-semibold text-dark">{{ work.work_name }}</td>
                                     <td class="py-3">{{ "{:,}".format(work.amount) }}</td>
+                                    <td class="py-3">{{ "{:,}".format(work.installment_1 or 0) }}</td>
+                                    <td class="py-3">{{ "{:,}".format(work.installment_2 or 0) }}</td>
+                                    <td class="py-3">{{ "{:,}".format(work.installment_3 or 0) }}</td>
+                                    <td class="py-3 fw-bold text-danger">{{ "{:,}".format(work.balance_amount or 0) }}</td>
                                     <td class="py-3">{{ work.local_body }}</td>
                                     <td class="py-3">{{ work.ward_no }}</td>
                                     <td class="py-3">
@@ -93,6 +103,8 @@
                                             <span class="badge bg-secondary rounded-pill px-3 py-2">{{ work.status }}</span>
                                         {% endif %}
                                     </td>
+                                    <td class="py-3">{{ work.file_status or '' }}</td>
+                                    <td class="py-3">{{ work.department or '' }}</td>
                                     <td class="py-3 text-muted small">{{ work.remarks or '' }}</td>
                                     <td class="pe-4 py-3 text-end">
                                         <button class="btn btn-sm btn-outline-primary me-2" 
@@ -108,7 +120,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content border-0 rounded-4 shadow">
                                             <div class="modal-header border-bottom-0 pt-4 px-4">
-                                                <h5 class="modal-title fw-bold" id="editWorkModalLabel{{ work.id }}">Edit Pending Work</h5>
+                                                <h5 class="modal-title fw-bold" id="editWorkModalLabel{{ work.id }}">Edit Project Work</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <form action="{{ url_for('edit_pending_work', work_id=work.id) }}" method="POST">
@@ -119,7 +131,23 @@
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-semibold">Amount (₹)</label>
-                                                        <input type="number" name="amount" class="form-control" value="{{ work.amount }}" required>
+                                                        <input type="number" name="amount" id="edit_amount_{{ work.id }}" class="form-control" value="{{ work.amount }}" oninput="calculateEditBalance({{ work.id }})" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Installment 1 (₹)</label>
+                                                        <input type="number" name="installment_1" id="edit_inst1_{{ work.id }}" class="form-control" value="{{ work.installment_1 or 0 }}" oninput="calculateEditBalance({{ work.id }})">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Installment 2 (₹)</label>
+                                                        <input type="number" name="installment_2" id="edit_inst2_{{ work.id }}" class="form-control" value="{{ work.installment_2 or 0 }}" oninput="calculateEditBalance({{ work.id }})">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Installment 3 (₹)</label>
+                                                        <input type="number" name="installment_3" id="edit_inst3_{{ work.id }}" class="form-control" value="{{ work.installment_3 or 0 }}" oninput="calculateEditBalance({{ work.id }})">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Balance Amount (₹)</label>
+                                                        <input type="number" name="balance_amount" id="edit_balance_{{ work.id }}" class="form-control" value="{{ work.balance_amount or 0 }}" readonly>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-semibold">Local Body</label>
@@ -142,6 +170,14 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3">
+                                                        <label class="form-label fw-semibold">File Status</label>
+                                                        <input type="text" name="file_status" class="form-control" value="{{ work.file_status or '' }}" placeholder="Enter file status">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Department</label>
+                                                        <input type="text" name="department" class="form-control" value="{{ work.department or '' }}" placeholder="Enter department">
+                                                    </div>
+                                                    <div class="mb-3">
                                                         <label class="form-label fw-semibold">Remarks</label>
                                                         <textarea name="remarks" class="form-control" rows="2" placeholder="Enter remarks (optional)">{{ work.remarks or '' }}</textarea>
                                                     </div>
@@ -157,9 +193,9 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="8" class="text-center py-5 text-muted">
+                                    <td colspan="14" class="text-center py-5 text-muted">
                                         <i class="fa-solid fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
-                                        No pending works found matching the criteria.
+                                        No project works found matching the criteria.
                                     </td>
                                 </tr>
                             {% endif %}
@@ -176,7 +212,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow">
             <div class="modal-header border-bottom-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="addWorkModalLabel">Add Pending Work</h5>
+                <h5 class="modal-title fw-bold" id="addWorkModalLabel">Add Project Work</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ url_for('add_pending_work') }}" method="POST">
@@ -187,7 +223,23 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Amount (₹)</label>
-                        <input type="number" name="amount" class="form-control" placeholder="Enter amount" required>
+                        <input type="number" name="amount" id="add_amount" class="form-control" oninput="calculateAddBalance()" placeholder="Enter amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Installment 1 (₹)</label>
+                        <input type="number" name="installment_1" id="add_inst1" class="form-control" oninput="calculateAddBalance()" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Installment 2 (₹)</label>
+                        <input type="number" name="installment_2" id="add_inst2" class="form-control" oninput="calculateAddBalance()" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Installment 3 (₹)</label>
+                        <input type="number" name="installment_3" id="add_inst3" class="form-control" oninput="calculateAddBalance()" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Balance Amount (₹)</label>
+                        <input type="number" name="balance_amount" id="add_balance" class="form-control" value="0" readonly>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Local Body</label>
@@ -207,16 +259,42 @@
                         </select>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label fw-semibold">File Status</label>
+                        <input type="text" name="file_status" class="form-control" placeholder="Enter file status">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Department</label>
+                        <input type="text" name="department" class="form-control" placeholder="Enter department">
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label fw-semibold">Remarks</label>
                         <textarea name="remarks" class="form-control" rows="2" placeholder="Enter remarks (optional)"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pb-4 px-4">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary px-4">Add Work</button>
+                    <button type="submit" class="btn btn-primary px-4">Add Project Work</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+function calculateAddBalance() {
+    const amt = parseFloat(document.getElementById('add_amount').value) || 0;
+    const inst1 = parseFloat(document.getElementById('add_inst1').value) || 0;
+    const inst2 = parseFloat(document.getElementById('add_inst2').value) || 0;
+    const inst3 = parseFloat(document.getElementById('add_inst3').value) || 0;
+    document.getElementById('add_balance').value = amt - inst1 - inst2 - inst3;
+}
+
+function calculateEditBalance(id) {
+    const amt = parseFloat(document.getElementById('edit_amount_' + id).value) || 0;
+    const inst1 = parseFloat(document.getElementById('edit_inst1_' + id).value) || 0;
+    const inst2 = parseFloat(document.getElementById('edit_inst2_' + id).value) || 0;
+    const inst3 = parseFloat(document.getElementById('edit_inst3_' + id).value) || 0;
+    document.getElementById('edit_balance_' + id).value = amt - inst1 - inst2 - inst3;
+}
+</script>
 {% endblock %}
