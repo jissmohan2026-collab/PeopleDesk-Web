@@ -117,3 +117,140 @@ class Road(db.Model):
     contractor_phone = db.Column(db.String(50), nullable=True)
     attachment_url = db.Column(db.String(500), nullable=True)
 
+
+class FundManagement(db.Model):
+    __tablename__ = 'fund_management'
+    id = db.Column(db.Integer, primary_key=True)
+    financial_year = db.Column(db.String(50), nullable=False)
+    constituency = db.Column(db.String(100), nullable=False)
+    mla_name = db.Column(db.String(100), nullable=False)
+    fund_type = db.Column(db.String(50), nullable=False) # 'MLA-SDF' or 'LAC-ADF'
+    annual_fund_allocation = db.Column(db.Float, default=0.0)
+    previous_year_balance = db.Column(db.Float, default=0.0)
+    total_available_fund = db.Column(db.Float, default=0.0)
+    amount_recommended = db.Column(db.Float, default=0.0)
+    amount_sanctioned = db.Column(db.Float, default=0.0)
+    amount_released = db.Column(db.Float, default=0.0)
+    amount_utilized = db.Column(db.Float, default=0.0)
+    balance_amount = db.Column(db.Float, default=0.0)
+    number_of_projects = db.Column(db.Integer, default=0)
+    pending_projects = db.Column(db.Integer, default=0)
+    completed_projects = db.Column(db.Integer, default=0)
+
+
+class LAC_ADF_Project(db.Model):
+    __tablename__ = 'lac_adf_projects'
+    id = db.Column(db.Integer, primary_key=True)
+    project_name = db.Column(db.String(255), nullable=False)
+    project_category = db.Column(db.String(100), nullable=True)
+    project_description = db.Column(db.Text, nullable=True)
+    constituency = db.Column(db.String(100), nullable=False)
+    local_body = db.Column(db.String(100), nullable=False)
+    ward = db.Column(db.String(50), nullable=True)
+    location = db.Column(db.String(255), nullable=True)
+    beneficiary_institution = db.Column(db.String(255), nullable=True)
+    beneficiary_details = db.Column(db.Text, nullable=True)
+    mla_recommendation_date = db.Column(db.String(100), nullable=True)
+    estimated_project_cost = db.Column(db.Float, default=0.0)
+    mla_adf_amount = db.Column(db.Float, default=0.0)
+    other_fund_contribution = db.Column(db.Float, default=0.0)
+    implementing_department = db.Column(db.String(255), nullable=True)
+    implementing_agency = db.Column(db.String(255), nullable=True)
+    project_officer = db.Column(db.String(100), nullable=True)
+    priority = db.Column(db.String(50), nullable=True) # 'High', 'Medium', 'Low'
+    project_status = db.Column(db.String(50), default='Proposed') # 'Proposed', 'Approved', 'Execution', 'Completed'
+
+
+class ApprovalSanctionTracking(db.Model):
+    __tablename__ = 'approval_sanction_tracking'
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('lac_adf_projects.id'), nullable=False)
+    administrative_department = db.Column(db.String(255), nullable=True)
+    mla_recommendation = db.Column(db.String(255), nullable=True)
+    administrative_sanction_no = db.Column(db.String(100), nullable=True)
+    administrative_sanction_date = db.Column(db.String(100), nullable=True)
+    technical_sanction_no = db.Column(db.String(100), nullable=True)
+    technical_sanction_date = db.Column(db.String(100), nullable=True)
+    financial_concurrence_no = db.Column(db.String(100), nullable=True)
+    financial_concurrence_date = db.Column(db.String(100), nullable=True)
+    detailed_estimate_prepared = db.Column(db.Boolean, default=False)
+    tender_quotation_required = db.Column(db.Boolean, default=False)
+    tender_date = db.Column(db.String(100), nullable=True)
+    work_order_no = db.Column(db.String(100), nullable=True)
+    work_order_date = db.Column(db.String(100), nullable=True)
+    agreement_no = db.Column(db.String(100), nullable=True)
+    agreement_date = db.Column(db.String(100), nullable=True)
+
+
+class ProjectExecution(db.Model):
+    __tablename__ = 'project_executions'
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('lac_adf_projects.id'), nullable=False)
+    contractor_agency = db.Column(db.String(255), nullable=True)
+    work_order_amount = db.Column(db.Float, default=0.0)
+    start_date = db.Column(db.String(100), nullable=True)
+    scheduled_completion_date = db.Column(db.String(100), nullable=True)
+    actual_completion_date = db.Column(db.String(100), nullable=True)
+    physical_progress_pct = db.Column(db.Float, default=0.0)
+    financial_progress_pct = db.Column(db.Float, default=0.0)
+    amount_paid = db.Column(db.Float, default=0.0)
+    running_bill_no = db.Column(db.String(100), nullable=True)
+    last_payment_date = db.Column(db.String(100), nullable=True)
+    current_status = db.Column(db.String(100), nullable=True)
+    delay_reason = db.Column(db.Text, nullable=True)
+    revised_completion_date = db.Column(db.String(100), nullable=True)
+
+
+class PaymentUtilization(db.Model):
+    __tablename__ = 'payment_utilization'
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('lac_adf_projects.id'), nullable=False)
+    bill_no = db.Column(db.String(100), nullable=True)
+    bill_date = db.Column(db.String(100), nullable=True)
+    bill_amount = db.Column(db.Float, default=0.0)
+    amount_approved = db.Column(db.Float, default=0.0)
+    amount_paid = db.Column(db.Float, default=0.0)
+    payment_date = db.Column(db.String(100), nullable=True)
+    payment_reference = db.Column(db.String(255), nullable=True)
+    cumulative_expenditure = db.Column(db.Float, default=0.0)
+    remaining_project_fund = db.Column(db.Float, default=0.0)
+    uc_submitted = db.Column(db.Boolean, default=False)
+    uc_date = db.Column(db.String(100), nullable=True)
+
+
+class MonitoringInspection(db.Model):
+    __tablename__ = 'monitoring_inspection'
+    id = db.Column(db.Integer, primary_key=True)
+    inspection_id = db.Column(db.String(100), nullable=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('lac_adf_projects.id'), nullable=False)
+    inspection_date = db.Column(db.String(100), nullable=True)
+    inspection_officer = db.Column(db.String(255), nullable=True)
+    physical_progress_pct = db.Column(db.Float, default=0.0)
+    financial_progress_pct = db.Column(db.Float, default=0.0)
+    quality_status = db.Column(db.String(100), nullable=True)
+    issues_identified = db.Column(db.Text, nullable=True)
+    corrective_action = db.Column(db.Text, nullable=True)
+    next_inspection_date = db.Column(db.String(100), nullable=True)
+    inspection_report = db.Column(db.String(500), nullable=True)
+    photographs = db.Column(db.String(500), nullable=True)
+    remarks = db.Column(db.Text, nullable=True)
+
+
+class CompletionAssetRegister(db.Model):
+    __tablename__ = 'completion_asset_register'
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('lac_adf_projects.id'), nullable=False)
+    completion_certificate_no = db.Column(db.String(100), nullable=True)
+    completion_date = db.Column(db.String(100), nullable=True)
+    final_cost = db.Column(db.Float, default=0.0)
+    final_expenditure = db.Column(db.Float, default=0.0)
+    asset_created = db.Column(db.String(255), nullable=True)
+    asset_location = db.Column(db.String(255), nullable=True)
+    asset_custodian_department = db.Column(db.String(255), nullable=True)
+    handover_date = db.Column(db.String(100), nullable=True)
+    handover_document = db.Column(db.String(500), nullable=True)
+    maintenance_responsibility = db.Column(db.String(255), nullable=True)
+    maintenance_period = db.Column(db.String(100), nullable=True)
+    asset_status = db.Column(db.String(100), nullable=True)
+
+

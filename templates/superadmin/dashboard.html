@@ -45,121 +45,146 @@
 
 <div class="row g-4 mb-4">
     <div class="col-12">
-        <!-- Balance Cards -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100 card-gradient-primary hover-lift">
-                    <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
-                        <i class="fa-solid fa-wallet fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
-                        <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Total Balance</h6>
-                        <div class="d-flex align-items-center justify-content-between position-relative" style="z-index: 10;">
-                            <h2 class="mb-0 fw-bold balance-display-container">
-                                <span id="total-balance-display">₹{{ "{:,.2f}".format(balance.total_balance) }}</span>
-                                <input type="number" id="total-balance-input" class="form-control form-control-sm d-none bg-white bg-opacity-25 text-white border-0 fw-bold" value="{{ balance.total_balance }}" step="0.01" style="font-size: 1.5rem; display: inline-block; width: auto; max-width: 180px;">
-                            </h2>
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-link text-white p-0 ms-2" id="total-edit-btn" onclick="toggleEdit('total')">
-                                    <i class="fa-solid fa-pen" style="font-size: 1rem;"></i>
-                                </button>
-                                <div id="total-actions" class="d-none ms-2">
-                                    <button class="btn btn-sm btn-success py-1 px-2 me-1" onclick="saveBalance('total')">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger py-1 px-2" onclick="cancelEdit('total')">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
+        <h5 class="fw-bold mb-3"><i class="fa-solid fa-file-invoice-dollar me-2 text-primary"></i>MLA-SDF / LAC-ADF Fund Management</h5>
+        <!-- Fund Management Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4 col-lg-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-primary text-white position-relative overflow-hidden">
+                    <div class="card-body p-3">
+                        <h6 class="text-uppercase fw-semibold mb-2 opacity-75 small">Total Fund</h6>
+                        <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(balance.total_balance) }}</h4>
+                        <div class="d-flex align-items-center mt-2">
+                            <button class="btn btn-xs btn-light py-0 px-2 text-primary" onclick="toggleEdit('total')" style="font-size: 0.75rem;">Edit</button>
+                            <input type="number" id="total-balance-input" class="form-control form-control-sm d-none bg-white text-dark mt-1 border-0" value="{{ balance.total_balance }}" step="0.01">
+                            <div id="total-actions" class="d-none ms-2">
+                                <button class="btn btn-xs btn-success px-1" onclick="saveBalance('total')"><i class="fa-solid fa-check"></i></button>
+                                <button class="btn btn-xs btn-danger px-1" onclick="cancelEdit('total')"><i class="fa-solid fa-xmark"></i></button>
                             </div>
-                        </div>
-                        <div class="progress d-none mt-2" id="total-progress-container" style="height: 6px; background-color: rgba(255,255,255,0.2);">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-white" role="progressbar" style="width: 100%"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100 card-gradient-success hover-lift">
-                    <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
-                        <i class="fa-solid fa-money-bill-trend-up fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
-                        <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Current Balance</h6>
-                        <div class="d-flex align-items-center justify-content-between position-relative" style="z-index: 10;">
-                            <h2 class="mb-0 fw-bold balance-display-container">
-                                <span id="current-balance-display">₹{{ "{:,.2f}".format(balance.current_balance) }}</span>
-                                <input type="number" id="current-balance-input" class="form-control form-control-sm d-none bg-white bg-opacity-25 text-white border-0 fw-bold" value="{{ balance.current_balance }}" step="0.01" style="font-size: 1.5rem; display: inline-block; width: auto; max-width: 180px;">
-                            </h2>
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-link text-white p-0 ms-2" id="current-edit-btn" onclick="toggleEdit('current')">
-                                    <i class="fa-solid fa-pen" style="font-size: 1rem;"></i>
-                                </button>
-                                <div id="current-actions" class="d-none ms-2">
-                                    <button class="btn btn-sm btn-success py-1 px-2 me-1" onclick="saveBalance('current')">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger py-1 px-2" onclick="cancelEdit('current')">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
-                            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-light text-dark">
+                    <div class="card-body p-3">
+                        <h6 class="text-uppercase fw-semibold mb-2 text-muted small">Allocated</h6>
+                        <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(stats.allocated) }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-light text-dark">
+                    <div class="card-body p-3">
+                        <h6 class="text-uppercase fw-semibold mb-2 text-muted small">Sanctioned</h6>
+                        <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(stats.sanctioned) }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-light text-dark">
+                    <div class="card-body p-3">
+                        <h6 class="text-uppercase fw-semibold mb-2 text-muted small">Released</h6>
+                        <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(stats.released) }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-light text-dark">
+                    <div class="card-body p-3">
+                        <h6 class="text-uppercase fw-semibold mb-2 text-muted small">Utilized</h6>
+                        <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(stats.utilized) }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-success text-white">
+                    <div class="card-body p-3">
+                        <h6 class="text-uppercase fw-semibold mb-2 opacity-75 small">Balance</h6>
+                        <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(stats.balance_left) }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="fw-bold mb-3"><i class="fa-solid fa-list-check me-2 text-primary"></i>Project Tracking</h5>
+        <!-- Project Tracking Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3 text-primary">
+                            <i class="fa-solid fa-diagram-project fa-lg"></i>
                         </div>
-                        <div class="progress d-none mt-2" id="current-progress-container" style="height: 6px; background-color: rgba(255,255,255,0.2);">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-white" role="progressbar" style="width: 100%"></div>
+                        <div>
+                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">Total Projects</h6>
+                            <h4 class="mb-0 fw-bold text-dark">{{ stats.total_projects }}</h4>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100 card-gradient-warning hover-lift">
-                    <div class="card-body p-4 d-flex flex-column justify-content-center position-relative overflow-hidden">
-                        <i class="fa-solid fa-hand-holding-dollar fa-3x position-absolute end-0 bottom-0 mb-3 me-3 opacity-25"></i>
-                        <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Used Up Balance</h6>
-                        <div class="d-flex align-items-center justify-content-between position-relative" style="z-index: 10;">
-                            <h2 class="mb-0 fw-bold">
-                                <span>₹{{ "{:,.2f}".format(balance.total_balance - balance.current_balance) }}</span>
-                            </h2>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3 text-warning">
+                            <i class="fa-solid fa-arrows-spin fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">Ongoing</h6>
+                            <h4 class="mb-0 fw-bold text-dark">{{ stats.ongoing_projects }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3 text-success">
+                            <i class="fa-solid fa-circle-check fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">Completed</h6>
+                            <h4 class="mb-0 fw-bold text-dark">{{ stats.completed_projects }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-2 me-3 text-danger">
+                            <i class="fa-solid fa-clock-rotate-left fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">Pending/Delayed</h6>
+                            <h4 class="mb-0 fw-bold text-dark">{{ stats.pending_projects }}</h4>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Stats Row -->
+        <h5 class="fw-bold mb-3"><i class="fa-solid fa-chart-bar me-2 text-primary"></i>Implementation Progress</h5>
+        <!-- Progress Bars -->
         <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
-                    <div class="card-body p-4 d-flex align-items-center">
-                        <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 text-primary">
-                            <i class="fa-solid fa-file-alt fa-2x"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">{{ _('Total Applications') }}</h6>
-                            <h3 class="mb-0 fw-bold text-dark">{{ stats.total_apps }}</h3>
-                        </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-semibold text-muted">Physical Progress</span>
+                        <span class="fw-bold text-primary">{{ "{:,.1f}%".format(stats.physical_progress) }}</span>
+                    </div>
+                    <div class="progress" style="height: 10px; border-radius: 5px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ stats.physical_progress }}%;" aria-valuenow="{{ stats.physical_progress }}" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
-                    <div class="card-body p-4 d-flex align-items-center">
-                        <div class="bg-success bg-opacity-10 rounded-circle p-3 me-3 text-success">
-                            <i class="fa-solid fa-users fa-2x"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">{{ _('Total Users') }}</h6>
-                            <h3 class="mb-0 fw-bold text-dark">{{ stats.total_users }}</h3>
-                        </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-semibold text-muted">Financial Progress</span>
+                        <span class="fw-bold text-success">{{ "{:,.1f}%".format(stats.financial_progress) }}</span>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
-                    <div class="card-body p-4 d-flex align-items-center">
-                        <div class="bg-warning bg-opacity-10 rounded-circle p-3 me-3 text-warning">
-                            <i class="fa-solid fa-user-shield fa-2x"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-muted mb-1 text-uppercase small fw-bold">{{ _('Total Admins') }}</h6>
-                            <h3 class="mb-0 fw-bold text-dark">{{ stats.total_admins }}</h3>
-                        </div>
+                    <div class="progress" style="height: 10px; border-radius: 5px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ stats.financial_progress }}%;" aria-valuenow="{{ stats.financial_progress }}" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
             </div>
