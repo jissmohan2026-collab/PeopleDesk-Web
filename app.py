@@ -1134,6 +1134,56 @@ def mla_sdf_fund_management():
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
     return render_template('admin/mla_sdf/fund_management.html', base_template=base_template, funds=funds)
 
+
+@app.route('/mla-sdf/fund-management/add', methods=['POST'])
+@login_required
+def add_fund_management():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        financial_year = request.form.get('financial_year')
+        constituency = request.form.get('constituency')
+        mla_name = request.form.get('mla_name')
+        fund_type = request.form.get('fund_type')
+        annual_fund_allocation = float(request.form.get('annual_fund_allocation', 0.0))
+        previous_year_balance = float(request.form.get('previous_year_balance', 0.0))
+        amount_recommended = float(request.form.get('amount_recommended', 0.0))
+        amount_sanctioned = float(request.form.get('amount_sanctioned', 0.0))
+        amount_released = float(request.form.get('amount_released', 0.0))
+        amount_utilized = float(request.form.get('amount_utilized', 0.0))
+        number_of_projects = int(request.form.get('number_of_projects', 0))
+        pending_projects = int(request.form.get('pending_projects', 0))
+        completed_projects = int(request.form.get('completed_projects', 0))
+        
+        total_available_fund = annual_fund_allocation + previous_year_balance
+        balance_amount = total_available_fund - amount_utilized
+        
+        fund = FundManagement(
+            financial_year=financial_year,
+            constituency=constituency,
+            mla_name=mla_name,
+            fund_type=fund_type,
+            annual_fund_allocation=annual_fund_allocation,
+            previous_year_balance=previous_year_balance,
+            total_available_fund=total_available_fund,
+            amount_recommended=amount_recommended,
+            amount_sanctioned=amount_sanctioned,
+            amount_released=amount_released,
+            amount_utilized=amount_utilized,
+            balance_amount=balance_amount,
+            number_of_projects=number_of_projects,
+            pending_projects=pending_projects,
+            completed_projects=completed_projects
+        )
+        db.session.add(fund)
+        db.session.commit()
+        flash(_('Fund record added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding fund record: {str(e)}', 'danger')
+        
+    return redirect(url_for('mla_sdf_fund_management'))
+
 @app.route('/mla-sdf/proposals')
 @login_required
 def mla_sdf_proposals():
