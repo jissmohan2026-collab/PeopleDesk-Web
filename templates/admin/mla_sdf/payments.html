@@ -1,0 +1,59 @@
+{% extends base_template %}
+
+{% block title %}Payments & Disbursements - MLA-SDF / LAC-ADF{% endblock %}
+{% block header %}Payments & Fund Utilization{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark">Disbursements & Payment Register</h5>
+            </div>
+            <div class="card-body p-0 mt-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">Project ID</th>
+                                <th class="py-3">Bill No</th>
+                                <th class="py-3">Bill Date</th>
+                                <th class="py-3">Bill Amount (₹)</th>
+                                <th class="py-3">Amount Approved (₹)</th>
+                                <th class="py-3">Amount Paid (₹)</th>
+                                <th class="py-3">Payment Date</th>
+                                <th class="py-3">Payment Ref</th>
+                                <th class="py-3">Remaining Balance (₹)</th>
+                                <th class="py-3">UC Submitted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold">{{ payment.project_id }}</td>
+                                <td class="py-3 fw-semibold text-dark">{{ payment.bill_no or 'N/A' }}</td>
+                                <td class="py-3 text-muted">{{ payment.bill_date or 'N/A' }}</td>
+                                <td class="py-3">₹{{ "{:,.2f}".format(payment.bill_amount) }}</td>
+                                <td class="py-3 text-success">₹{{ "{:,.2f}".format(payment.amount_approved) }}</td>
+                                <td class="py-3 text-info fw-bold">₹{{ "{:,.2f}".format(payment.amount_paid) }}</td>
+                                <td class="py-3 text-muted">{{ payment.payment_date or 'N/A' }}</td>
+                                <td class="py-3"><code>{{ payment.payment_reference or 'N/A' }}</code></td>
+                                <td class="py-3 text-danger">₹{{ "{:,.2f}".format(payment.remaining_project_fund) }}</td>
+                                <td class="py-3">
+                                    {% if payment.uc_submitted %}
+                                        <span class="badge bg-success"><i class="fa-solid fa-circle-check"></i> UC Submitted</span>
+                                        <div class="text-muted small mt-1">Date: {{ payment.uc_date or 'N/A' }}</div>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

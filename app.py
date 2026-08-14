@@ -1103,6 +1103,258 @@ def edit_vehicle(veh_id):
         
     return redirect(url_for('vehicles'))
 
+
+@app.route('/mla-sdf/fund-management')
+@login_required
+def mla_sdf_fund_management():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    funds = FundManagement.query.all()
+    if not funds:
+        default_fund = FundManagement(
+            financial_year="2026-27",
+            constituency="Trivandrum",
+            mla_name="MLA Name",
+            fund_type="LAC-ADF",
+            annual_fund_allocation=5000000.0,
+            previous_year_balance=1200000.0,
+            total_available_fund=6200000.0,
+            amount_recommended=4500000.0,
+            amount_sanctioned=4000000.0,
+            amount_released=3500000.0,
+            amount_utilized=3000000.0,
+            balance_amount=3200000.0,
+            number_of_projects=8,
+            pending_projects=5,
+            completed_projects=3
+        )
+        db.session.add(default_fund)
+        db.session.commit()
+        funds = [default_fund]
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/fund_management.html', base_template=base_template, funds=funds)
+
+@app.route('/mla-sdf/proposals')
+@login_required
+def mla_sdf_proposals():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    projects = LAC_ADF_Project.query.all()
+    if not projects:
+        default_project = LAC_ADF_Project(
+            project_name="Constructing Community Hall Block",
+            project_category="Building",
+            project_description="Durable asset for public meetings",
+            constituency="Trivandrum",
+            local_body="Corporation",
+            ward="12",
+            location="East Fort",
+            beneficiary_institution="Public Library",
+            beneficiary_details="Local community",
+            mla_recommendation_date="2026-04-12",
+            estimated_project_cost=2500000.0,
+            mla_adf_amount=2000000.0,
+            other_fund_contribution=500000.0,
+            implementing_department="PWD",
+            implementing_agency="Contractor A",
+            project_officer="Officer John",
+            priority="High",
+            project_status="Proposed"
+        )
+        db.session.add(default_project)
+        db.session.commit()
+        projects = [default_project]
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/proposals.html', base_template=base_template, projects=projects)
+
+@app.route('/mla-sdf/approvals')
+@login_required
+def mla_sdf_approvals():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    trackings = ApprovalSanctionTracking.query.all()
+    if not trackings:
+        project = LAC_ADF_Project.query.first()
+        if project:
+            default_tracking = ApprovalSanctionTracking(
+                project_id=project.id,
+                administrative_department="Finance",
+                mla_recommendation="Recommended",
+                administrative_sanction_no="AS-102-2026",
+                administrative_sanction_date="2026-05-10",
+                technical_sanction_no="TS-554-2026",
+                technical_sanction_date="2026-05-15",
+                financial_concurrence_no="FC-77-2026",
+                financial_concurrence_date="2026-05-20",
+                detailed_estimate_prepared=True,
+                tender_quotation_required=True,
+                tender_date="2026-06-01",
+                work_order_no="WO-9988",
+                work_order_date="2026-06-10",
+                agreement_no="AG-2026-9",
+                agreement_date="2026-06-15"
+            )
+            db.session.add(default_tracking)
+            db.session.commit()
+            trackings = [default_tracking]
+        else:
+            trackings = []
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/approvals.html', base_template=base_template, trackings=trackings)
+
+@app.route('/mla-sdf/execution')
+@login_required
+def mla_sdf_execution():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    executions = ProjectExecution.query.all()
+    if not executions:
+        project = LAC_ADF_Project.query.first()
+        if project:
+            default_execution = ProjectExecution(
+                project_id=project.id,
+                contractor_agency="Anil Constructions",
+                work_order_amount=2450000.0,
+                start_date="2026-06-20",
+                scheduled_completion_date="2026-12-20",
+                actual_completion_date="",
+                physical_progress_pct=45.0,
+                financial_progress_pct=40.0,
+                amount_paid=1000000.0,
+                running_bill_no="R-Bill-1",
+                last_payment_date="2026-08-01",
+                current_status="On Schedule",
+                delay_reason="",
+                revised_completion_date=""
+            )
+            db.session.add(default_execution)
+            db.session.commit()
+            executions = [default_execution]
+        else:
+            executions = []
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/execution.html', base_template=base_template, executions=executions)
+
+@app.route('/mla-sdf/payments')
+@login_required
+def mla_sdf_payments():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    payments = PaymentUtilization.query.all()
+    if not payments:
+        project = LAC_ADF_Project.query.first()
+        if project:
+            default_payment = PaymentUtilization(
+                project_id=project.id,
+                bill_no="BILL-8876",
+                bill_date="2026-07-28",
+                bill_amount=1000000.0,
+                amount_approved=1000000.0,
+                amount_paid=1000000.0,
+                payment_date="2026-08-01",
+                payment_reference="TXN998877",
+                cumulative_expenditure=1000000.0,
+                remaining_project_fund=1450000.0,
+                uc_submitted=True,
+                uc_date="2026-08-05"
+            )
+            db.session.add(default_payment)
+            db.session.commit()
+            payments = [default_payment]
+        else:
+            payments = []
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/payments.html', base_template=base_template, payments=payments)
+
+@app.route('/mla-sdf/monitoring')
+@login_required
+def mla_sdf_monitoring():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    inspections = MonitoringInspection.query.all()
+    if not inspections:
+        project = LAC_ADF_Project.query.first()
+        if project:
+            default_inspection = MonitoringInspection(
+                inspection_id="INS-001",
+                project_id=project.id,
+                inspection_date="2026-07-15",
+                inspection_officer="Officer Mathew",
+                physical_progress_pct=30.0,
+                financial_progress_pct=0.0,
+                quality_status="Satisfactory",
+                issues_identified="Minor delay in procurement",
+                corrective_action="Accelerate sourcing",
+                next_inspection_date="2026-08-20",
+                inspection_report="",
+                photographs="",
+                remarks="Overall quality is good."
+            )
+            db.session.add(default_inspection)
+            db.session.commit()
+            inspections = [default_inspection]
+        else:
+            inspections = []
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/monitoring.html', base_template=base_template, inspections=inspections)
+
+@app.route('/mla-sdf/documents')
+@login_required
+def mla_sdf_documents():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/documents.html', base_template=base_template)
+
+@app.route('/mla-sdf/completion')
+@login_required
+def mla_sdf_completion():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    registers = CompletionAssetRegister.query.all()
+    if not registers:
+        project = LAC_ADF_Project.query.first()
+        if project:
+            default_register = CompletionAssetRegister(
+                project_id=project.id,
+                completion_certificate_no="CC-2026-004",
+                completion_date="2026-12-24",
+                final_cost=2450000.0,
+                final_expenditure=2450000.0,
+                asset_created="Community Hall",
+                asset_location="East Fort",
+                asset_custodian_department="Municipal Corporation",
+                handover_date="2026-12-30",
+                handover_document="",
+                maintenance_responsibility="Municipal Corporation",
+                maintenance_period="3 Years",
+                asset_status="Functional"
+            )
+            db.session.add(default_register)
+            db.session.commit()
+            registers = [default_register]
+        else:
+            registers = []
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/completion.html', base_template=base_template, registers=registers)
+
+@app.route('/mla-sdf/asset-register')
+@login_required
+def mla_sdf_asset_register():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    registers = CompletionAssetRegister.query.all()
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/asset_register.html', base_template=base_template, registers=registers)
+
+@app.route('/mla-sdf/reports')
+@login_required
+def mla_sdf_reports():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/reports.html', base_template=base_template)
+
 # --- Setup Script ---
 @app.cli.command("init-db")
 def init_db():

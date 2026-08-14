@@ -1,0 +1,64 @@
+{% extends base_template %}
+
+{% block title %}Approvals & Sanctions - MLA-SDF / LAC-ADF{% endblock %}
+{% block header %}Approvals & Sanctions Tracking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark">Technical & Administrative Sanction Tracking</h5>
+            </div>
+            <div class="card-body p-0 mt-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">Project ID</th>
+                                <th class="py-3">Admin Dept</th>
+                                <th class="py-3">Admin Sanction No</th>
+                                <th class="py-3">Admin Sanction Date</th>
+                                <th class="py-3">Tech Sanction No</th>
+                                <th class="py-3">Tech Sanction Date</th>
+                                <th class="py-3">Financial Concurrence</th>
+                                <th class="py-3">Estimate Prepared</th>
+                                <th class="py-3">Work Order No</th>
+                                <th class="py-3">Agreement No</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tracking in trackings %}
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold">{{ tracking.project_id }}</td>
+                                <td class="py-3 fw-semibold text-dark">{{ tracking.administrative_department or 'N/A' }}</td>
+                                <td class="py-3">{{ tracking.administrative_sanction_no or 'N/A' }}</td>
+                                <td class="py-3 text-muted">{{ tracking.administrative_sanction_date or 'N/A' }}</td>
+                                <td class="py-3">{{ tracking.technical_sanction_no or 'N/A' }}</td>
+                                <td class="py-3 text-muted">{{ tracking.technical_sanction_date or 'N/A' }}</td>
+                                <td class="py-3">
+                                    {% if tracking.financial_concurrence_no %}
+                                        <span class="badge bg-success">{{ tracking.financial_concurrence_no }}</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3">
+                                    {% if tracking.detailed_estimate_prepared %}
+                                        <span class="text-success fw-bold"><i class="fa-solid fa-circle-check"></i> Yes</span>
+                                    {% else %}
+                                        <span class="text-muted"><i class="fa-solid fa-circle-xmark"></i> No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3 fw-semibold">{{ tracking.work_order_no or 'N/A' }}</td>
+                                <td class="py-3">{{ tracking.agreement_no or 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

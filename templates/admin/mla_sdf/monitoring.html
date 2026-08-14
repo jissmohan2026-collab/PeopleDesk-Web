@@ -1,0 +1,56 @@
+{% extends base_template %}
+
+{% block title %}Inspections & Monitoring - MLA-SDF / LAC-ADF{% endblock %}
+{% block header %}Monitoring & Inspection Log{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark">Finance Dept / Local Inspection Log</h5>
+            </div>
+            <div class="card-body p-0 mt-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">Inspection ID</th>
+                                <th class="py-3">Project ID</th>
+                                <th class="py-3">Inspection Date</th>
+                                <th class="py-3">Officer</th>
+                                <th class="py-3">Physical Progress</th>
+                                <th class="py-3">Quality Status</th>
+                                <th class="py-3">Issues Identified</th>
+                                <th class="py-3">Corrective Action</th>
+                                <th class="py-3">Next Inspection Date</th>
+                                <th class="py-3">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for insp in inspections %}
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold">{{ insp.inspection_id }}</td>
+                                <td class="py-3 fw-semibold text-dark">{{ insp.project_id }}</td>
+                                <td class="py-3 text-muted">{{ insp.inspection_date or 'N/A' }}</td>
+                                <td class="py-3">{{ insp.inspection_officer or 'N/A' }}</td>
+                                <td class="py-3 fw-bold">{{ insp.physical_progress_pct }}%</td>
+                                <td class="py-3">
+                                    <span class="badge {% if insp.quality_status == 'Satisfactory' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                        {{ insp.quality_status }}
+                                    </span>
+                                </td>
+                                <td class="py-3 text-muted">{{ insp.issues_identified or 'None' }}</td>
+                                <td class="py-3 text-info">{{ insp.corrective_action or 'N/A' }}</td>
+                                <td class="py-3 text-muted">{{ insp.next_inspection_date or 'N/A' }}</td>
+                                <td class="py-3 text-muted small">{{ insp.remarks or 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

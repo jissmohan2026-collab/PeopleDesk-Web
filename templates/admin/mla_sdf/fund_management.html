@@ -1,0 +1,59 @@
+{% extends base_template %}
+
+{% block title %}Fund Management - MLA-SDF / LAC-ADF{% endblock %}
+{% block header %}Fund Management Overview{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark">Constituency Fund Status (FY 2026-27)</h5>
+            </div>
+            <div class="card-body p-0 mt-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">FY</th>
+                                <th class="py-3">Constituency</th>
+                                <th class="py-3">MLA Name</th>
+                                <th class="py-3">Fund Type</th>
+                                <th class="py-3">Allocation (₹)</th>
+                                <th class="py-3">Prev. Balance (₹)</th>
+                                <th class="py-3">Total Available (₹)</th>
+                                <th class="py-3">Recommended (₹)</th>
+                                <th class="py-3">Sanctioned (₹)</th>
+                                <th class="py-3">Released (₹)</th>
+                                <th class="py-3">Utilized (₹)</th>
+                                <th class="py-3">Projects</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fund in funds %}
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold">{{ fund.financial_year }}</td>
+                                <td class="py-3 fw-semibold">{{ fund.constituency }}</td>
+                                <td class="py-3">{{ fund.mla_name }}</td>
+                                <td class="py-3"><span class="badge bg-primary">{{ fund.fund_type }}</span></td>
+                                <td class="py-3">{{ "{:,.2f}".format(fund.annual_fund_allocation) }}</td>
+                                <td class="py-3">{{ "{:,.2f}".format(fund.previous_year_balance) }}</td>
+                                <td class="py-3 fw-bold text-success">{{ "{:,.2f}".format(fund.total_available_fund) }}</td>
+                                <td class="py-3">{{ "{:,.2f}".format(fund.amount_recommended) }}</td>
+                                <td class="py-3">{{ "{:,.2f}".format(fund.amount_sanctioned) }}</td>
+                                <td class="py-3 text-info">{{ "{:,.2f}".format(fund.amount_released) }}</td>
+                                <td class="py-3 text-danger fw-semibold">{{ "{:,.2f}".format(fund.amount_utilized) }}</td>
+                                <td class="py-3">
+                                    <span class="badge bg-secondary">Total: {{ fund.number_of_projects }}</span>
+                                    <span class="badge bg-success">Done: {{ fund.completed_projects }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
