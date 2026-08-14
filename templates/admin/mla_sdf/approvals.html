@@ -76,6 +76,12 @@
                                     <label class="form-check-label" for="toggle-agr">Agreement No</label>
                                 </div>
                             </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-attach" data-column="10" checked>
+                                    <label class="form-check-label" for="toggle-attach">Attachment</label>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <a href="{{ url_for('download_approvals') }}" class="btn btn-success">
@@ -101,11 +107,29 @@
                                 <th class="py-3">Estimate Prepared</th>
                                 <th class="py-3">Work Order No</th>
                                 <th class="py-3">Agreement No</th>
+                                <th class="py-3 text-end pe-4">Attachment</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for tracking in trackings %}
-                            <tr>
+                            <tr class="approval-row cursor-pointer" data-id="{{ tracking.id }}"
+                                data-pid="{{ tracking.project_id }}"
+                                data-dept="{{ tracking.administrative_department or 'N/A' }}"
+                                data-recommend="{{ tracking.mla_recommendation or 'N/A' }}"
+                                data-asno="{{ tracking.administrative_sanction_no or 'N/A' }}"
+                                data-asdate="{{ tracking.administrative_sanction_date or 'N/A' }}"
+                                data-tsno="{{ tracking.technical_sanction_no or 'N/A' }}"
+                                data-tsdate="{{ tracking.technical_sanction_date or 'N/A' }}"
+                                data-fcno="{{ tracking.financial_concurrence_no or 'N/A' }}"
+                                data-fcdate="{{ tracking.financial_concurrence_date or 'N/A' }}"
+                                data-est="{% if tracking.detailed_estimate_prepared %}Yes{% else %}No{% endif %}"
+                                data-tender="{% if tracking.tender_quotation_required %}Yes{% else %}No{% endif %}"
+                                data-tdate="{{ tracking.tender_date or 'N/A' }}"
+                                data-wono="{{ tracking.work_order_no or 'N/A' }}"
+                                data-wodate="{{ tracking.work_order_date or 'N/A' }}"
+                                data-agno="{{ tracking.agreement_no or 'N/A' }}"
+                                data-agdate="{{ tracking.agreement_date or 'N/A' }}"
+                                data-attachment="{{ tracking.attachment_url or '' }}">
                                 <td class="ps-4 py-3 fw-bold">{{ tracking.project_id }}</td>
                                 <td class="py-3 fw-semibold text-dark">{{ tracking.administrative_department or 'N/A' }}</td>
                                 <td class="py-3">{{ tracking.administrative_sanction_no or 'N/A' }}</td>
@@ -128,11 +152,113 @@
                                 </td>
                                 <td class="py-3 fw-semibold">{{ tracking.work_order_no or 'N/A' }}</td>
                                 <td class="py-3">{{ tracking.agreement_no or 'N/A' }}</td>
+                                <td class="py-3 text-end pe-4 action-column">
+                                    {% if tracking.attachment_url %}
+                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                            <a href="{{ tracking.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                                                <i class="fa-solid fa-file-pdf"></i>
+                                            </a>
+                                            <form action="{{ url_for('delete_approval_attachment', rec_id=tracking.id) }}" method="POST" onsubmit="return confirm('Are you sure?');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small">No File</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="approvalDetailsModal" tabindex="-1" aria-labelledby="approvalDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="approvalDetailsModalLabel">Approval & Sanction Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Project ID</span>
+                        <span id="detail-pid" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Admin Department</span>
+                        <span id="detail-dept" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">MLA Recommendation</span>
+                        <span id="detail-recommend" class="text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Administrative Sanction No</span>
+                        <span id="detail-asno" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Administrative Sanction Date</span>
+                        <span id="detail-asdate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Technical Sanction No</span>
+                        <span id="detail-tsno" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Technical Sanction Date</span>
+                        <span id="detail-tsdate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Financial Concurrence No</span>
+                        <span id="detail-fcno" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Financial Concurrence Date</span>
+                        <span id="detail-fcdate" class="text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Estimate Prepared</span>
+                        <span id="detail-est" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Tender Required</span>
+                        <span id="detail-tender" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Tender Date</span>
+                        <span id="detail-tdate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Work Order No</span>
+                        <span id="detail-wono" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Work Order Date</span>
+                        <span id="detail-wodate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Agreement No</span>
+                        <span id="detail-agno" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Agreement Date</span>
+                        <span id="detail-agdate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-12 mt-3" id="detail-attach-container">
+                        <!-- Attachment Link -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -146,7 +272,7 @@
                 <h5 class="modal-title fw-bold" id="addApprovalModalLabel">Add Approval & Sanction Tracking</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('add_approval') }}" method="POST">
+            <form action="{{ url_for('add_approval') }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body px-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Select Project</label>
@@ -234,6 +360,10 @@
                             <input type="date" name="agreement_date" class="form-control">
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">PDF Attachment</label>
+                        <input type="file" name="attachment" class="form-control" accept=".pdf">
+                    </div>
                 </div>
                 <div class="modal-footer border-top-0 pb-4 px-4">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -279,9 +409,9 @@ document.getElementById('toggle-all').addEventListener('change', function() {
     });
 });
 
-// Hide non-essential columns by default on page load (indices 3, 5, 7, 9)
+// Hide non-essential columns by default on page load (indices 3, 5, 7, 9, 10)
 document.addEventListener("DOMContentLoaded", function() {
-    const hideIndices = [3, 5, 7, 9];
+    const hideIndices = [3, 5, 7, 9, 10];
     hideIndices.forEach(idx => {
         const checkbox = document.querySelector(`.col-toggle[data-column="${idx}"]`);
         if (checkbox) {
@@ -290,6 +420,41 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     document.getElementById('toggle-all').checked = false;
+
+    // Row Click details
+    document.querySelectorAll('.approval-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.action-column')) return;
+            
+            document.getElementById('detail-pid').innerText = this.getAttribute('data-pid');
+            document.getElementById('detail-dept').innerText = this.getAttribute('data-dept');
+            document.getElementById('detail-recommend').innerText = this.getAttribute('data-recommend');
+            document.getElementById('detail-asno').innerText = this.getAttribute('data-asno');
+            document.getElementById('detail-asdate').innerText = this.getAttribute('data-asdate');
+            document.getElementById('detail-tsno').innerText = this.getAttribute('data-tsno');
+            document.getElementById('detail-tsdate').innerText = this.getAttribute('data-tsdate');
+            document.getElementById('detail-fcno').innerText = this.getAttribute('data-fcno');
+            document.getElementById('detail-fcdate').innerText = this.getAttribute('data-fcdate');
+            document.getElementById('detail-est').innerText = this.getAttribute('data-est');
+            document.getElementById('detail-tender').innerText = this.getAttribute('data-tender');
+            document.getElementById('detail-tdate').innerText = this.getAttribute('data-tdate');
+            document.getElementById('detail-wono').innerText = this.getAttribute('data-wono');
+            document.getElementById('detail-wodate').innerText = this.getAttribute('data-wodate');
+            document.getElementById('detail-agno').innerText = this.getAttribute('data-agno');
+            document.getElementById('detail-agdate').innerText = this.getAttribute('data-agdate');
+
+            const attachUrl = this.getAttribute('data-attachment');
+            const attachContainer = document.getElementById('detail-attach-container');
+            if (attachUrl) {
+                attachContainer.innerHTML = `<span class="text-muted d-block small uppercase fw-bold">Attachment</span><a href="${attachUrl}" target="_blank" class="btn btn-sm btn-primary mt-1"><i class="fa-solid fa-file-pdf"></i> View Attachment</a>`;
+            } else {
+                attachContainer.innerHTML = '';
+            }
+
+            const detailsModal = new bootstrap.Modal(document.getElementById('approvalDetailsModal'));
+            detailsModal.show();
+        });
+    });
 });
 </script>
 {% endblock %}

@@ -76,6 +76,12 @@
                                     <label class="form-check-label" for="toggle-remarks">Remarks</label>
                                 </div>
                             </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-attach" data-column="10" checked>
+                                    <label class="form-check-label" for="toggle-attach">Attachment</label>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <a href="{{ url_for('download_monitoring') }}" class="btn btn-success">
@@ -101,11 +107,24 @@
                                 <th class="py-3">Corrective Action</th>
                                 <th class="py-3">Next Inspection Date</th>
                                 <th class="py-3">Remarks</th>
+                                <th class="py-3 text-end pe-4">Attachment</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for insp in inspections %}
-                            <tr>
+                            <tr class="monitoring-row cursor-pointer" data-id="{{ insp.id }}"
+                                data-insid="{{ insp.inspection_id }}"
+                                data-pid="{{ insp.project_id }}"
+                                data-date="{{ insp.inspection_date or 'N/A' }}"
+                                data-officer="{{ insp.inspection_officer or 'N/A' }}"
+                                data-phys="{{ insp.physical_progress_pct }}%"
+                                data-fin="{{ insp.financial_progress_pct }}%"
+                                data-quality="{{ insp.quality_status or 'N/A' }}"
+                                data-issues="{{ insp.issues_identified or 'None' }}"
+                                data-corrective="{{ insp.corrective_action or 'N/A' }}"
+                                data-next="{{ insp.next_inspection_date or 'N/A' }}"
+                                data-remarks="{{ insp.remarks or 'N/A' }}"
+                                data-attachment="{{ insp.attachment_url or '' }}">
                                 <td class="ps-4 py-3 fw-bold">{{ insp.inspection_id }}</td>
                                 <td class="py-3 fw-semibold text-dark">{{ insp.project_id }}</td>
                                 <td class="py-3 text-muted">{{ insp.inspection_date or 'N/A' }}</td>
@@ -120,11 +139,93 @@
                                 <td class="py-3 text-info">{{ insp.corrective_action or 'N/A' }}</td>
                                 <td class="py-3 text-muted">{{ insp.next_inspection_date or 'N/A' }}</td>
                                 <td class="py-3 text-muted small">{{ insp.remarks or 'N/A' }}</td>
+                                <td class="py-3 text-end pe-4 action-column">
+                                    {% if insp.attachment_url %}
+                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                            <a href="{{ insp.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                                                <i class="fa-solid fa-file-pdf"></i>
+                                            </a>
+                                            <form action="{{ url_for('delete_monitoring_attachment', rec_id=insp.id) }}" method="POST" onsubmit="return confirm('Are you sure?');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small">No File</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="monitoringDetailsModal" tabindex="-1" aria-labelledby="monitoringDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="monitoringDetailsModalLabel">Inspection details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Inspection ID</span>
+                        <span id="detail-insid" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Project ID</span>
+                        <span id="detail-pid" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Inspection Date</span>
+                        <span id="detail-date" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Inspection Officer</span>
+                        <span id="detail-officer" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Physical Progress</span>
+                        <span id="detail-phys" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Financial Progress</span>
+                        <span id="detail-fin" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Quality Status</span>
+                        <span id="detail-quality" class="badge bg-success">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Next Inspection Date</span>
+                        <span id="detail-next" class="text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-12">
+                        <span class="text-muted d-block small uppercase fw-bold">Issues Identified</span>
+                        <p id="detail-issues" class="text-dark mb-0">-</p>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-muted d-block small uppercase fw-bold">Corrective Action</span>
+                        <p id="detail-corrective" class="text-dark mb-0">-</p>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-muted d-block small uppercase fw-bold">Remarks</span>
+                        <p id="detail-remarks" class="text-dark mb-0">-</p>
+                    </div>
+                    <div class="col-12 mt-3" id="detail-attach-container">
+                        <!-- Attachment Link -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -138,7 +239,7 @@
                 <h5 class="modal-title fw-bold" id="addMonitoringModalLabel">Add Monitoring & Inspection Log</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('add_monitoring') }}" method="POST">
+            <form action="{{ url_for('add_monitoring') }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body px-4">
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -200,6 +301,10 @@
                         <label class="form-label fw-semibold">Remarks</label>
                         <textarea name="remarks" class="form-control" rows="2"></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">PDF Attachment</label>
+                        <input type="file" name="attachment" class="form-control" accept=".pdf">
+                    </div>
                 </div>
                 <div class="modal-footer border-top-0 pb-4 px-4">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -245,9 +350,9 @@ document.getElementById('toggle-all').addEventListener('change', function() {
     });
 });
 
-// Hide non-essential columns by default on page load (indices 4, 6, 7, 8)
+// Hide non-essential columns by default on page load (indices 4, 6, 7, 8, 10)
 document.addEventListener("DOMContentLoaded", function() {
-    const hideIndices = [4, 6, 7, 8];
+    const hideIndices = [4, 6, 7, 8, 10];
     hideIndices.forEach(idx => {
         const checkbox = document.querySelector(`.col-toggle[data-column="${idx}"]`);
         if (checkbox) {
@@ -256,6 +361,36 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     document.getElementById('toggle-all').checked = false;
+
+    // Row Click details
+    document.querySelectorAll('.monitoring-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.action-column')) return;
+            
+            document.getElementById('detail-insid').innerText = this.getAttribute('data-insid');
+            document.getElementById('detail-pid').innerText = this.getAttribute('data-pid');
+            document.getElementById('detail-date').innerText = this.getAttribute('data-date');
+            document.getElementById('detail-officer').innerText = this.getAttribute('data-officer');
+            document.getElementById('detail-phys').innerText = this.getAttribute('data-phys');
+            document.getElementById('detail-fin').innerText = this.getAttribute('data-fin');
+            document.getElementById('detail-quality').innerText = this.getAttribute('data-quality');
+            document.getElementById('detail-next').innerText = this.getAttribute('data-next');
+            document.getElementById('detail-issues').innerText = this.getAttribute('data-issues') || 'None';
+            document.getElementById('detail-corrective').innerText = this.getAttribute('data-corrective') || 'N/A';
+            document.getElementById('detail-remarks').innerText = this.getAttribute('data-remarks') || 'N/A';
+
+            const attachUrl = this.getAttribute('data-attachment');
+            const attachContainer = document.getElementById('detail-attach-container');
+            if (attachUrl) {
+                attachContainer.innerHTML = `<span class="text-muted d-block small uppercase fw-bold">Attachment</span><a href="${attachUrl}" target="_blank" class="btn btn-sm btn-primary mt-1"><i class="fa-solid fa-file-pdf"></i> View Attachment</a>`;
+            } else {
+                attachContainer.innerHTML = '';
+            }
+
+            const detailsModal = new bootstrap.Modal(document.getElementById('monitoringDetailsModal'));
+            detailsModal.show();
+        });
+    });
 });
 </script>
 {% endblock %}

@@ -76,6 +76,12 @@
                                     <label class="form-check-label" for="toggle-status">Status</label>
                                 </div>
                             </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-attach" data-column="10" checked>
+                                    <label class="form-check-label" for="toggle-attach">Attachment</label>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <a href="{{ url_for('download_execution') }}" class="btn btn-success">
@@ -101,11 +107,27 @@
                                 <th class="py-3">Amount Paid (₹)</th>
                                 <th class="py-3">Running Bill No</th>
                                 <th class="py-3">Status</th>
+                                <th class="py-3 text-end pe-4">Attachment</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for exec in executions %}
-                            <tr>
+                            <tr class="execution-row cursor-pointer" data-id="{{ exec.id }}"
+                                data-pid="{{ exec.project_id }}"
+                                data-agency="{{ exec.contractor_agency or 'N/A' }}"
+                                data-woamt="₹{{ "{:,.2f}".format(exec.work_order_amount) }}"
+                                data-sdate="{{ exec.start_date or 'N/A' }}"
+                                data-cdate="{{ exec.scheduled_completion_date or 'N/A' }}"
+                                data-adate="{{ exec.actual_completion_date or 'N/A' }}"
+                                data-phys="{{ exec.physical_progress_pct }}%"
+                                data-fin="{{ exec.financial_progress_pct }}%"
+                                data-paid="₹{{ "{:,.2f}".format(exec.amount_paid) }}"
+                                data-bill="{{ exec.running_bill_no or 'N/A' }}"
+                                data-paydate="{{ exec.last_payment_date or 'N/A' }}"
+                                data-status="{{ exec.current_status or 'N/A' }}"
+                                data-delay="{{ exec.delay_reason or 'None' }}"
+                                data-revised="{{ exec.revised_completion_date or 'N/A' }}"
+                                data-attachment="{{ exec.attachment_url or '' }}">
                                 <td class="ps-4 py-3 fw-bold">{{ exec.project_id }}</td>
                                 <td class="py-3 fw-semibold text-dark">{{ exec.contractor_agency or 'N/A' }}</td>
                                 <td class="py-3">₹{{ "{:,.2f}".format(exec.work_order_amount) }}</td>
@@ -132,11 +154,105 @@
                                 <td class="py-3">
                                     <span class="badge bg-success">{{ exec.current_status }}</span>
                                 </td>
+                                <td class="py-3 text-end pe-4 action-column">
+                                    {% if exec.attachment_url %}
+                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                            <a href="{{ exec.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                                                <i class="fa-solid fa-file-pdf"></i>
+                                            </a>
+                                            <form action="{{ url_for('delete_execution_attachment', rec_id=exec.id) }}" method="POST" onsubmit="return confirm('Are you sure?');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small">No File</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="executionDetailsModal" tabindex="-1" aria-labelledby="executionDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="executionDetailsModalLabel">Execution Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Project ID</span>
+                        <span id="detail-pid" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Contractor Agency</span>
+                        <span id="detail-agency" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Work Order Amount</span>
+                        <span id="detail-woamt" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Start Date</span>
+                        <span id="detail-sdate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Scheduled Completion</span>
+                        <span id="detail-cdate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Actual Completion</span>
+                        <span id="detail-adate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Revised Completion</span>
+                        <span id="detail-revised" class="text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Physical Progress</span>
+                        <span id="detail-phys" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Financial Progress</span>
+                        <span id="detail-fin" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Amount Paid</span>
+                        <span id="detail-paid" class="text-success fw-bold">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Running Bill No</span>
+                        <span id="detail-bill" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Last Payment Date</span>
+                        <span id="detail-paydate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Current Status</span>
+                        <span id="detail-status" class="badge bg-success">-</span>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-muted d-block small uppercase fw-bold">Delay Reason</span>
+                        <p id="detail-delay" class="text-dark mb-0">-</p>
+                    </div>
+                    <div class="col-12 mt-3" id="detail-attach-container">
+                        <!-- Attachment Link -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -150,7 +266,7 @@
                 <h5 class="modal-title fw-bold" id="addExecutionModalLabel">Add Project Execution Record</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('add_execution') }}" method="POST">
+            <form action="{{ url_for('add_execution') }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body px-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Select Project</label>
@@ -208,6 +324,10 @@
                         <label class="form-label fw-semibold">Current Status</label>
                         <input type="text" name="current_status" class="form-control" placeholder="e.g. On Schedule, Delayed">
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">PDF Attachment</label>
+                        <input type="file" name="attachment" class="form-control" accept=".pdf">
+                    </div>
                 </div>
                 <div class="modal-footer border-top-0 pb-4 px-4">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -253,9 +373,9 @@ document.getElementById('toggle-all').addEventListener('change', function() {
     });
 });
 
-// Hide non-essential columns by default on page load (indices 3, 4, 7, 8)
+// Hide non-essential columns by default on page load (indices 3, 4, 7, 8, 10)
 document.addEventListener("DOMContentLoaded", function() {
-    const hideIndices = [3, 4, 7, 8];
+    const hideIndices = [3, 4, 7, 8, 10];
     hideIndices.forEach(idx => {
         const checkbox = document.querySelector(`.col-toggle[data-column="${idx}"]`);
         if (checkbox) {
@@ -264,6 +384,39 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     document.getElementById('toggle-all').checked = false;
+
+    // Row Click details
+    document.querySelectorAll('.execution-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.action-column')) return;
+            
+            document.getElementById('detail-pid').innerText = this.getAttribute('data-pid');
+            document.getElementById('detail-agency').innerText = this.getAttribute('data-agency');
+            document.getElementById('detail-woamt').innerText = this.getAttribute('data-woamt');
+            document.getElementById('detail-sdate').innerText = this.getAttribute('data-sdate');
+            document.getElementById('detail-cdate').innerText = this.getAttribute('data-cdate');
+            document.getElementById('detail-adate').innerText = this.getAttribute('data-adate');
+            document.getElementById('detail-revised').innerText = this.getAttribute('data-revised');
+            document.getElementById('detail-phys').innerText = this.getAttribute('data-phys');
+            document.getElementById('detail-fin').innerText = this.getAttribute('data-fin');
+            document.getElementById('detail-paid').innerText = this.getAttribute('data-paid');
+            document.getElementById('detail-bill').innerText = this.getAttribute('data-bill');
+            document.getElementById('detail-paydate').innerText = this.getAttribute('data-paydate');
+            document.getElementById('detail-status').innerText = this.getAttribute('data-status');
+            document.getElementById('detail-delay').innerText = this.getAttribute('data-delay') || 'None';
+
+            const attachUrl = this.getAttribute('data-attachment');
+            const attachContainer = document.getElementById('detail-attach-container');
+            if (attachUrl) {
+                attachContainer.innerHTML = `<span class="text-muted d-block small uppercase fw-bold">Attachment</span><a href="${attachUrl}" target="_blank" class="btn btn-sm btn-primary mt-1"><i class="fa-solid fa-file-pdf"></i> View Attachment</a>`;
+            } else {
+                attachContainer.innerHTML = '';
+            }
+
+            const detailsModal = new bootstrap.Modal(document.getElementById('executionDetailsModal'));
+            detailsModal.show();
+        });
+    });
 });
 </script>
 {% endblock %}

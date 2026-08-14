@@ -76,6 +76,12 @@
                                     <label class="form-check-label" for="toggle-uc">UC Status</label>
                                 </div>
                             </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-attach" data-column="10" checked>
+                                    <label class="form-check-label" for="toggle-attach">Attachment</label>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <a href="{{ url_for('download_payments') }}" class="btn btn-success">
@@ -101,11 +107,24 @@
                                 <th class="py-3">Payment Ref</th>
                                 <th class="py-3">Remaining Balance (₹)</th>
                                 <th class="py-3">UC Submitted</th>
+                                <th class="py-3 text-end pe-4">Attachment</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for payment in payments %}
-                            <tr>
+                            <tr class="payment-row cursor-pointer" data-id="{{ payment.id }}"
+                                data-pid="{{ payment.project_id }}"
+                                data-billno="{{ payment.bill_no or 'N/A' }}"
+                                data-billdate="{{ payment.bill_date or 'N/A' }}"
+                                data-billamt="₹{{ "{:,.2f}".format(payment.bill_amount) }}"
+                                data-approved="₹{{ "{:,.2f}".format(payment.amount_approved) }}"
+                                data-paid="₹{{ "{:,.2f}".format(payment.amount_paid) }}"
+                                data-paydate="{{ payment.payment_date or 'N/A' }}"
+                                data-ref="{{ payment.payment_reference or 'N/A' }}"
+                                data-cumexp="₹{{ "{:,.2f}".format(payment.cumulative_expenditure) }}"
+                                data-remfund="₹{{ "{:,.2f}".format(payment.remaining_project_fund) }}"
+                                data-uc="{% if payment.uc_submitted %}Yes (Submitted on {{ payment.uc_date }}){% else %}No{% endif %}"
+                                data-attachment="{{ payment.attachment_url or '' }}">
                                 <td class="ps-4 py-3 fw-bold">{{ payment.project_id }}</td>
                                 <td class="py-3 fw-semibold text-dark">{{ payment.bill_no or 'N/A' }}</td>
                                 <td class="py-3 text-muted">{{ payment.bill_date or 'N/A' }}</td>
@@ -118,9 +137,22 @@
                                 <td class="py-3">
                                     {% if payment.uc_submitted %}
                                         <span class="badge bg-success"><i class="fa-solid fa-circle-check"></i> UC Submitted</span>
-                                        <div class="text-muted small mt-1">Date: {{ payment.uc_date or 'N/A' }}</div>
                                     {% else %}
                                         <span class="badge bg-warning text-dark">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3 text-end pe-4 action-column">
+                                    {% if payment.attachment_url %}
+                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                            <a href="{{ payment.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                                                <i class="fa-solid fa-file-pdf"></i>
+                                            </a>
+                                            <form action="{{ url_for('delete_payment_attachment', rec_id=payment.id) }}" method="POST" onsubmit="return confirm('Are you sure?');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small">No File</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -128,6 +160,74 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="paymentDetailsModal" tabindex="-1" aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="paymentDetailsModalLabel">Payment & Utilization Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Project ID</span>
+                        <span id="detail-pid" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Bill No</span>
+                        <span id="detail-billno" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Bill Date</span>
+                        <span id="detail-billdate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Bill Amount</span>
+                        <span id="detail-billamt" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Amount Approved</span>
+                        <span id="detail-approved" class="text-success fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Amount Paid</span>
+                        <span id="detail-paid" class="text-info fw-bold">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Payment Date</span>
+                        <span id="detail-paydate" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Payment Reference</span>
+                        <span id="detail-ref" class="text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Cumulative Expenditure</span>
+                        <span id="detail-cumexp" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Remaining Fund</span>
+                        <span id="detail-remfund" class="text-danger fw-bold">-</span>
+                    </div>
+                    <div class="col-md-12">
+                        <span class="text-muted d-block small uppercase fw-bold">UC Submission Status</span>
+                        <span id="detail-uc" class="text-dark">-</span>
+                    </div>
+                    <div class="col-12 mt-3" id="detail-attach-container">
+                        <!-- Attachment Link -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -141,7 +241,7 @@
                 <h5 class="modal-title fw-bold" id="addPaymentModalLabel">Add Payment Record</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('add_payment') }}" method="POST">
+            <form action="{{ url_for('add_payment') }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body px-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Select Project</label>
@@ -207,6 +307,10 @@
                             <input type="date" name="uc_date" class="form-control">
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">PDF Attachment</label>
+                        <input type="file" name="attachment" class="form-control" accept=".pdf">
+                    </div>
                 </div>
                 <div class="modal-footer border-top-0 pb-4 px-4">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -252,9 +356,9 @@ document.getElementById('toggle-all').addEventListener('change', function() {
     });
 });
 
-// Hide non-essential columns by default on page load (indices 2, 4, 7, 8)
+// Hide non-essential columns by default on page load (indices 2, 4, 7, 8, 10)
 document.addEventListener("DOMContentLoaded", function() {
-    const hideIndices = [2, 4, 7, 8];
+    const hideIndices = [2, 4, 7, 8, 10];
     hideIndices.forEach(idx => {
         const checkbox = document.querySelector(`.col-toggle[data-column="${idx}"]`);
         if (checkbox) {
@@ -263,6 +367,36 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     document.getElementById('toggle-all').checked = false;
+
+    // Row Click details
+    document.querySelectorAll('.payment-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.action-column')) return;
+            
+            document.getElementById('detail-pid').innerText = this.getAttribute('data-pid');
+            document.getElementById('detail-billno').innerText = this.getAttribute('data-billno');
+            document.getElementById('detail-billdate').innerText = this.getAttribute('data-billdate');
+            document.getElementById('detail-billamt').innerText = this.getAttribute('data-billamt');
+            document.getElementById('detail-approved').innerText = this.getAttribute('data-approved');
+            document.getElementById('detail-paid').innerText = this.getAttribute('data-paid');
+            document.getElementById('detail-paydate').innerText = this.getAttribute('data-paydate');
+            document.getElementById('detail-ref').innerText = this.getAttribute('data-ref');
+            document.getElementById('detail-cumexp').innerText = this.getAttribute('data-cumexp');
+            document.getElementById('detail-remfund').innerText = this.getAttribute('data-remfund');
+            document.getElementById('detail-uc').innerText = this.getAttribute('data-uc');
+
+            const attachUrl = this.getAttribute('data-attachment');
+            const attachContainer = document.getElementById('detail-attach-container');
+            if (attachUrl) {
+                attachContainer.innerHTML = `<span class="text-muted d-block small uppercase fw-bold">Attachment</span><a href="${attachUrl}" target="_blank" class="btn btn-sm btn-primary mt-1"><i class="fa-solid fa-file-pdf"></i> View Attachment</a>`;
+            } else {
+                attachContainer.innerHTML = '';
+            }
+
+            const detailsModal = new bootstrap.Modal(document.getElementById('paymentDetailsModal'));
+            detailsModal.show();
+        });
+    });
 });
 </script>
 {% endblock %}

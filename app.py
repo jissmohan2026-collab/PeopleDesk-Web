@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_babel import Babel, _
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
-from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle, SystemBalance, Road, FundManagement, LAC_ADF_Project, ApprovalSanctionTracking, ProjectExecution, PaymentUtilization, MonitoringInspection, CompletionAssetRegister
+from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle, SystemBalance, Road, FundManagement, LAC_ADF_Project, ApprovalSanctionTracking, ProjectExecution, PaymentUtilization, MonitoringInspection, CompletionAssetRegister, MLA_SDF_Document, MLA_SDF_Report
 import uuid
 from datetime import datetime
 import os
@@ -1357,8 +1357,19 @@ def mla_sdf_monitoring():
 def mla_sdf_documents():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
+    documents = MLA_SDF_Document.query.all()
+    projects = LAC_ADF_Project.query.all()
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
-    return render_template('admin/mla_sdf/documents.html', base_template=base_template)
+    return render_template('admin/mla_sdf/documents.html', base_template=base_template, documents=documents, projects=projects)
+
+@app.route('/mla-sdf/reports')
+@login_required
+def mla_sdf_reports():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    reports = MLA_SDF_Report.query.all()
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    return render_template('admin/mla_sdf/reports.html', base_template=base_template, reports=reports)
 
 @app.route('/mla-sdf/completion')
 @login_required
@@ -1402,13 +1413,6 @@ def mla_sdf_asset_register():
     projects = LAC_ADF_Project.query.all()
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
     return render_template('admin/mla_sdf/asset_register.html', base_template=base_template, registers=registers, projects=projects)
-
-@app.route('/mla-sdf/reports')
-@login_required
-def mla_sdf_reports():
-    if current_user.role not in ['admin', 'superadmin']:
-        return redirect(url_for('index'))
-    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
 @app.route('/mla-sdf/fund-management/download')
 @login_required
 def download_fund_management():
@@ -1563,6 +1567,16 @@ def add_proposal():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
     try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
         project = LAC_ADF_Project(
             project_name=request.form.get('project_name'),
             project_category=request.form.get('project_category'),
@@ -1581,7 +1595,8 @@ def add_proposal():
             implementing_agency=request.form.get('implementing_agency'),
             project_officer=request.form.get('project_officer'),
             priority=request.form.get('priority'),
-            project_status=request.form.get('project_status', 'Proposed')
+            project_status=request.form.get('project_status', 'Proposed'),
+            attachment_url=attachment_url
         )
         db.session.add(project)
         db.session.commit()
@@ -1591,12 +1606,38 @@ def add_proposal():
         flash(f'Error adding proposal: {str(e)}', 'danger')
     return redirect(url_for('mla_sdf_proposals'))
 
+
+@app.route('/mla-sdf/proposals/delete_attachment/<int:project_id>', methods=['POST'])
+@login_required
+def delete_proposal_attachment(project_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    project = LAC_ADF_Project.query.get_or_404(project_id)
+    try:
+        project.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_proposals'))
+
 @app.route('/mla-sdf/approvals/add', methods=['POST'])
 @login_required
 def add_approval():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
     try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
         tracking = ApprovalSanctionTracking(
             project_id=int(request.form.get('project_id')),
             administrative_department=request.form.get('administrative_department'),
@@ -1613,7 +1654,8 @@ def add_approval():
             work_order_no=request.form.get('work_order_no'),
             work_order_date=request.form.get('work_order_date'),
             agreement_no=request.form.get('agreement_no'),
-            agreement_date=request.form.get('agreement_date')
+            agreement_date=request.form.get('agreement_date'),
+            attachment_url=attachment_url
         )
         db.session.add(tracking)
         db.session.commit()
@@ -1623,12 +1665,38 @@ def add_approval():
         flash(f'Error adding approval tracking: {str(e)}', 'danger')
     return redirect(url_for('mla_sdf_approvals'))
 
+
+@app.route('/mla-sdf/approvals/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_approval_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = ApprovalSanctionTracking.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_approvals'))
+
 @app.route('/mla-sdf/execution/add', methods=['POST'])
 @login_required
 def add_execution():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
     try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
         execution = ProjectExecution(
             project_id=int(request.form.get('project_id')),
             contractor_agency=request.form.get('contractor_agency'),
@@ -1643,7 +1711,8 @@ def add_execution():
             last_payment_date=request.form.get('last_payment_date'),
             current_status=request.form.get('current_status'),
             delay_reason=request.form.get('delay_reason'),
-            revised_completion_date=request.form.get('revised_completion_date')
+            revised_completion_date=request.form.get('revised_completion_date'),
+            attachment_url=attachment_url
         )
         db.session.add(execution)
         db.session.commit()
@@ -1653,12 +1722,38 @@ def add_execution():
         flash(f'Error adding execution record: {str(e)}', 'danger')
     return redirect(url_for('mla_sdf_execution'))
 
+
+@app.route('/mla-sdf/execution/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_execution_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = ProjectExecution.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_execution'))
+
 @app.route('/mla-sdf/payments/add', methods=['POST'])
 @login_required
 def add_payment():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
     try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
         payment = PaymentUtilization(
             project_id=int(request.form.get('project_id')),
             bill_no=request.form.get('bill_no'),
@@ -1671,7 +1766,8 @@ def add_payment():
             cumulative_expenditure=float(request.form.get('cumulative_expenditure', 0.0)),
             remaining_project_fund=float(request.form.get('remaining_project_fund', 0.0)),
             uc_submitted=request.form.get('uc_submitted') == 'true',
-            uc_date=request.form.get('uc_date')
+            uc_date=request.form.get('uc_date'),
+            attachment_url=attachment_url
         )
         db.session.add(payment)
         db.session.commit()
@@ -1681,12 +1777,38 @@ def add_payment():
         flash(f'Error adding payment: {str(e)}', 'danger')
     return redirect(url_for('mla_sdf_payments'))
 
+
+@app.route('/mla-sdf/payments/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_payment_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = PaymentUtilization.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_payments'))
+
 @app.route('/mla-sdf/monitoring/add', methods=['POST'])
 @login_required
 def add_monitoring():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
     try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
         inspection = MonitoringInspection(
             inspection_id=request.form.get('inspection_id'),
             project_id=int(request.form.get('project_id')),
@@ -1698,7 +1820,8 @@ def add_monitoring():
             issues_identified=request.form.get('issues_identified'),
             corrective_action=request.form.get('corrective_action'),
             next_inspection_date=request.form.get('next_inspection_date'),
-            remarks=request.form.get('remarks')
+            remarks=request.form.get('remarks'),
+            attachment_url=attachment_url
         )
         db.session.add(inspection)
         db.session.commit()
@@ -1708,12 +1831,38 @@ def add_monitoring():
         flash(f'Error adding inspection log: {str(e)}', 'danger')
     return redirect(url_for('mla_sdf_monitoring'))
 
+
+@app.route('/mla-sdf/monitoring/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_monitoring_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = MonitoringInspection.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_monitoring'))
+
 @app.route('/mla-sdf/completion/add', methods=['POST'])
 @login_required
 def add_completion():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
     try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
         register = CompletionAssetRegister(
             project_id=int(request.form.get('project_id')),
             completion_certificate_no=request.form.get('completion_certificate_no'),
@@ -1726,7 +1875,8 @@ def add_completion():
             handover_date=request.form.get('handover_date'),
             maintenance_responsibility=request.form.get('maintenance_responsibility'),
             maintenance_period=request.form.get('maintenance_period'),
-            asset_status=request.form.get('asset_status')
+            asset_status=request.form.get('asset_status'),
+            attachment_url=attachment_url
         )
         db.session.add(register)
         db.session.commit()
@@ -1735,6 +1885,166 @@ def add_completion():
         db.session.rollback()
         flash(f'Error adding completion record: {str(e)}', 'danger')
     return redirect(url_for('mla_sdf_completion'))
+
+
+@app.route('/mla-sdf/completion/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_completion_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = CompletionAssetRegister.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_completion'))
+
+
+@app.route('/mla-sdf/documents/add', methods=['POST'])
+@login_required
+def add_document():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
+        doc = MLA_SDF_Document(
+            project_id=int(request.form.get('project_id')),
+            document_title=request.form.get('document_title'),
+            document_category=request.form.get('document_category'),
+            uploaded_date=request.form.get('uploaded_date'),
+            remarks=request.form.get('remarks'),
+            attachment_url=attachment_url
+        )
+        db.session.add(doc)
+        db.session.commit()
+        flash(_('Document uploaded successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding document: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_documents'))
+
+
+@app.route('/mla-sdf/documents/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_document_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = MLA_SDF_Document.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_documents'))
+
+
+@app.route('/mla-sdf/documents/download')
+@login_required
+def download_documents():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    documents = MLA_SDF_Document.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Documents"
+    headers = ["ID", "Project ID", "Document Title", "Document Category", "Uploaded Date", "Remarks", "Attachment URL"]
+    ws.append(headers)
+    for d in documents:
+        ws.append([d.id, d.project_id, d.document_title, d.document_category, d.uploaded_date, d.remarks, d.attachment_url])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"MLA_SDF_Documents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+
+@app.route('/mla-sdf/reports/add', methods=['POST'])
+@login_required
+def add_report():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
+        rep = MLA_SDF_Report(
+            report_name=request.form.get('report_name'),
+            report_type=request.form.get('report_type'),
+            generated_by=request.form.get('generated_by'),
+            financial_year=request.form.get('financial_year'),
+            generated_date=request.form.get('generated_date'),
+            description=request.form.get('description'),
+            attachment_url=attachment_url
+        )
+        db.session.add(rep)
+        db.session.commit()
+        flash(_('Report record added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding report: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_reports'))
+
+
+@app.route('/mla-sdf/reports/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_report_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = MLA_SDF_Report.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_reports'))
+
+
+@app.route('/mla-sdf/reports/download')
+@login_required
+def download_reports():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    reports = MLA_SDF_Report.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Reports"
+    headers = ["ID", "Report Name", "Report Type", "Generated By", "Financial Year", "Generated Date", "Description", "Attachment URL"]
+    ws.append(headers)
+    for r in reports:
+        ws.append([r.id, r.report_name, r.report_type, r.generated_by, r.financial_year, r.generated_date, r.description, r.attachment_url])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"MLA_SDF_Reports_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
 
 # --- Setup Script ---
 @app.cli.command("init-db")

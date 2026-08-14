@@ -112,6 +112,12 @@
                                     <label class="form-check-label" for="toggle-comp">Completed Projects</label>
                                 </div>
                             </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-attach" data-column="16" checked>
+                                    <label class="form-check-label" for="toggle-attach">Attachment</label>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <a href="{{ url_for('download_fund_management') }}" class="btn btn-success">
@@ -142,12 +148,29 @@
                                 <th class="py-3">Balance Amount (₹)</th>
                                 <th class="py-3">Total Projects</th>
                                 <th class="py-3">Pending Projects</th>
-                                <th class="py-3 text-end pe-4">Completed Projects</th>
+                                <th class="py-3">Completed Projects</th>
+                                <th class="py-3 text-end pe-4">Attachment</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for fund in funds %}
-                            <tr>
+                            <tr class="fund-row cursor-pointer" data-id="{{ fund.id }}"
+                                data-fy="{{ fund.financial_year }}"
+                                data-const="{{ fund.constituency }}"
+                                data-mla="{{ fund.mla_name }}"
+                                data-ftype="{{ fund.fund_type }}"
+                                data-alloc="₹{{ "{:,.2f}".format(fund.annual_fund_allocation) }}"
+                                data-prevbal="₹{{ "{:,.2f}".format(fund.previous_year_balance) }}"
+                                data-avail="₹{{ "{:,.2f}".format(fund.total_available_fund) }}"
+                                data-rec="₹{{ "{:,.2f}".format(fund.amount_recommended) }}"
+                                data-sanc="₹{{ "{:,.2f}".format(fund.amount_sanctioned) }}"
+                                data-rel="₹{{ "{:,.2f}".format(fund.amount_released) }}"
+                                data-util="₹{{ "{:,.2f}".format(fund.amount_utilized) }}"
+                                data-bal="₹{{ "{:,.2f}".format(fund.balance_amount) }}"
+                                data-totp="{{ fund.number_of_projects }}"
+                                data-pend="{{ fund.pending_projects }}"
+                                data-comp="{{ fund.completed_projects }}"
+                                data-attachment="{{ fund.attachment_url or '' }}">
                                 <td class="ps-4 py-3 fw-bold">{{ loop.index }}</td>
                                 <td class="py-3">{{ fund.financial_year }}</td>
                                 <td class="py-3 fw-semibold">{{ fund.constituency }}</td>
@@ -163,12 +186,93 @@
                                 <td class="py-3 fw-bold">₹{{ "{:,.2f}".format(fund.balance_amount) }}</td>
                                 <td class="py-3"><span class="badge bg-secondary">{{ fund.number_of_projects }}</span></td>
                                 <td class="py-3"><span class="badge bg-warning text-dark">{{ fund.pending_projects }}</span></td>
-                                <td class="py-3 text-end pe-4"><span class="badge bg-success">{{ fund.completed_projects }}</span></td>
+                                <td class="py-3"><span class="badge bg-success">{{ fund.completed_projects }}</span></td>
+                                <td class="py-3 text-end pe-4 action-column">
+                                    {% if fund.attachment_url %}
+                                        <a href="{{ fund.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted small">No File</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="fundDetailsModal" tabindex="-1" aria-labelledby="fundDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" id="fundDetailsModalLabel">Fund Details Summary</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Financial Year</span>
+                        <span id="detail-fy" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Constituency</span>
+                        <span id="detail-const" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">MLA Name</span>
+                        <span id="detail-mla" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Fund Type</span>
+                        <span id="detail-ftype" class="badge bg-primary">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Annual Allocation</span>
+                        <span id="detail-alloc" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Previous Year Balance</span>
+                        <span id="detail-prevbal" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Total Available Fund</span>
+                        <span id="detail-avail" class="text-success fw-bold">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Amount Utilized</span>
+                        <span id="detail-util" class="text-danger fw-bold">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Remaining Balance</span>
+                        <span id="detail-bal" class="text-dark fw-bold">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Total Projects</span>
+                        <span id="detail-totp" class="badge bg-secondary">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Pending Projects</span>
+                        <span id="detail-pend" class="badge bg-warning text-dark">-</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="text-muted d-block small uppercase fw-bold">Completed Projects</span>
+                        <span id="detail-comp" class="badge bg-success">-</span>
+                    </div>
+                    <div class="col-12 mt-3" id="detail-attach-container">
+                        <!-- Attachment Link -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -182,7 +286,7 @@
                 <h5 class="modal-title fw-bold" id="addFundModalLabel">Add Fund Allocation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('add_fund_management') }}" method="POST">
+            <form action="{{ url_for('add_fund_management') }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body px-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Financial Year</label>
@@ -239,6 +343,10 @@
                         <label class="form-label fw-semibold">Completed Projects</label>
                         <input type="number" name="completed_projects" class="form-control" value="0">
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">PDF Attachment</label>
+                        <input type="file" name="attachment" class="form-control" accept=".pdf">
+                    </div>
                 </div>
                 <div class="modal-footer border-top-0 pb-4 px-4">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -284,9 +392,9 @@ document.getElementById('toggle-all').addEventListener('change', function() {
     });
 });
 
-// Hide non-essential columns by default on page load (indices 6, 7, 8, 9, 10, 11, 13, 14)
+// Hide non-essential columns by default on page load (indices 6, 7, 8, 9, 10, 11, 13, 14, 16)
 document.addEventListener("DOMContentLoaded", function() {
-    const hideIndices = [6, 7, 8, 9, 10, 11, 13, 14];
+    const hideIndices = [6, 7, 8, 9, 10, 11, 13, 14, 16];
     hideIndices.forEach(idx => {
         const checkbox = document.querySelector(`.col-toggle[data-column="${idx}"]`);
         if (checkbox) {
@@ -295,6 +403,37 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     document.getElementById('toggle-all').checked = false;
+
+    // Row Click details
+    document.querySelectorAll('.fund-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.action-column')) return;
+            
+            document.getElementById('detail-fy').innerText = this.getAttribute('data-fy');
+            document.getElementById('detail-const').innerText = this.getAttribute('data-const');
+            document.getElementById('detail-mla').innerText = this.getAttribute('data-mla');
+            document.getElementById('detail-ftype').innerText = this.getAttribute('data-ftype');
+            document.getElementById('detail-alloc').innerText = this.getAttribute('data-alloc');
+            document.getElementById('detail-prevbal').innerText = this.getAttribute('data-prevbal');
+            document.getElementById('detail-avail').innerText = this.getAttribute('data-avail');
+            document.getElementById('detail-util').innerText = this.getAttribute('data-util');
+            document.getElementById('detail-bal').innerText = this.getAttribute('data-bal');
+            document.getElementById('detail-totp').innerText = this.getAttribute('data-totp');
+            document.getElementById('detail-pend').innerText = this.getAttribute('data-pend');
+            document.getElementById('detail-comp').innerText = this.getAttribute('data-comp');
+
+            const attachUrl = this.getAttribute('data-attachment');
+            const attachContainer = document.getElementById('detail-attach-container');
+            if (attachUrl) {
+                attachContainer.innerHTML = `<span class="text-muted d-block small uppercase fw-bold">Attachment</span><a href="${attachUrl}" target="_blank" class="btn btn-sm btn-primary mt-1"><i class="fa-solid fa-file-pdf"></i> View Attachment</a>`;
+            } else {
+                attachContainer.innerHTML = '';
+            }
+
+            const detailsModal = new bootstrap.Modal(document.getElementById('fundDetailsModal'));
+            detailsModal.show();
+        });
+    });
 });
 </script>
 {% endblock %}

@@ -7,16 +7,284 @@
 <div class="row">
     <div class="col-12">
         <div class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-header bg-transparent border-0 pt-4 px-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h5 class="fw-bold mb-0 text-dark">Administrative & Technical Sanctions Documents</h5>
+                <div class="d-flex gap-2 align-items-center">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="columnToggleDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <i class="fa-solid fa-columns me-2"></i>Columns
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="columnToggleDropdown" style="width: 240px; z-index: 1050;">
+                            <li>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="toggle-all" checked>
+                                    <label class="form-check-label fw-bold" for="toggle-all">Show All Columns</label>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-proj" data-column="1" checked>
+                                    <label class="form-check-label" for="toggle-proj">Project ID</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-title" data-column="2" checked>
+                                    <label class="form-check-label" for="toggle-title">Document Title</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-category" data-column="3" checked>
+                                    <label class="form-check-label" for="toggle-category">Document Category</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-udate" data-column="4" checked>
+                                    <label class="form-check-label" for="toggle-udate">Uploaded Date</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-remarks" data-column="5" checked>
+                                    <label class="form-check-label" for="toggle-remarks">Remarks</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-attach" data-column="6" checked>
+                                    <label class="form-check-label" for="toggle-attach">Attachment</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('download_documents') }}" class="btn btn-success">
+                        <i class="fa-solid fa-file-excel me-2"></i>Download XLSX
+                    </a>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDocumentModal">
+                        <i class="fa-solid fa-plus me-2"></i>Upload Document
+                    </button>
+                </div>
             </div>
-            <div class="card-body p-4">
-                <div class="text-center py-5 text-muted">
-                    <i class="fa-solid fa-folder-open fs-1 mb-3 d-block text-secondary"></i>
-                    <p class="mb-0">Please refer to project details or PWD logs for direct attachment downloads.</p>
+            <div class="card-body p-0 mt-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">ID</th>
+                                <th class="py-3">Project ID</th>
+                                <th class="py-3">Document Title</th>
+                                <th class="py-3">Document Category</th>
+                                <th class="py-3">Uploaded Date</th>
+                                <th class="py-3">Remarks</th>
+                                <th class="py-3 text-end pe-4">Attachment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in documents %}
+                            <tr class="document-row cursor-pointer" data-id="{{ doc.id }}"
+                                data-pid="{{ doc.project_id }}"
+                                data-title="{{ doc.document_title }}"
+                                data-category="{{ doc.document_category or 'N/A' }}"
+                                data-udate="{{ doc.uploaded_date or 'N/A' }}"
+                                data-remarks="{{ doc.remarks or 'N/A' }}"
+                                data-attachment="{{ doc.attachment_url or '' }}">
+                                <td class="ps-4 py-3 fw-bold">{{ doc.id }}</td>
+                                <td class="py-3">{{ doc.project_id }}</td>
+                                <td class="py-3 fw-semibold text-dark">{{ doc.document_title }}</td>
+                                <td class="py-3"><span class="badge bg-secondary">{{ doc.document_category }}</span></td>
+                                <td class="py-3 text-muted">{{ doc.uploaded_date or 'N/A' }}</td>
+                                <td class="py-3 text-muted small">{{ doc.remarks or 'N/A' }}</td>
+                                <td class="py-3 text-end pe-4 action-column">
+                                    {% if doc.attachment_url %}
+                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                            <a href="{{ doc.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                                                <i class="fa-solid fa-file-pdf"></i> View
+                                            </a>
+                                            <form action="{{ url_for('delete_document_attachment', rec_id=doc.id) }}" method="POST" onsubmit="return confirm('Are you sure?');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small">No File</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="documentDetailsModal" tabindex="-1" aria-labelledby="documentDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="documentDetailsModalLabel">Document Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Document ID</span>
+                        <span id="detail-id" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Project ID</span>
+                        <span id="detail-pid" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-md-12">
+                        <span class="text-muted d-block small uppercase fw-bold">Document Title</span>
+                        <span id="detail-title" class="text-dark fw-bold">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Category</span>
+                        <span id="detail-category" class="badge bg-secondary">-</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Uploaded Date</span>
+                        <span id="detail-udate" class="text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-12">
+                        <span class="text-muted d-block small uppercase fw-bold">Remarks</span>
+                        <p id="detail-remarks" class="text-dark mb-0">-</p>
+                    </div>
+                    <div class="col-12 mt-3" id="detail-attach-container">
+                        <!-- Attachment Link -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Document Modal -->
+<div class="modal fade" id="addDocumentModal" tabindex="-1" aria-labelledby="addDocumentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" id="addDocumentModalLabel">Upload Document Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('add_document') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body px-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Select Project</label>
+                        <select name="project_id" class="form-select" required>
+                            {% for project in projects %}
+                                <option value="{{ project.id }}">{{ project.project_name }} (ID: {{ project.id }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Document Title</label>
+                        <input type="text" name="document_title" class="form-control" placeholder="e.g. AS Order, Agreement" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Document Category</label>
+                        <select name="document_category" class="form-select">
+                            <option value="Administrative Sanction" selected>Administrative Sanction</option>
+                            <option value="Technical Sanction">Technical Sanction</option>
+                            <option value="Tender Notification">Tender Notification</option>
+                            <option value="Work Order">Work Order</option>
+                            <option value="Agreement">Agreement</option>
+                            <option value="Utilization Certificate">Utilization Certificate</option>
+                            <option value="Completion Certificate">Completion Certificate</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Uploaded Date</label>
+                        <input type="date" name="uploaded_date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Remarks</label>
+                        <textarea name="remarks" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">PDF Attachment</label>
+                        <input type="file" name="attachment" class="form-control" accept=".pdf" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pb-4 px-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4">Save Document</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleColumnVisibility(colIdx, isVisible) {
+    const table = document.querySelector('table');
+    const th = table.querySelectorAll('thead tr th')[colIdx];
+    if (th) {
+        th.style.display = isVisible ? '' : 'none';
+    }
+    table.querySelectorAll('tbody tr').forEach(row => {
+        const td = row.querySelectorAll('td')[colIdx];
+        if (td) {
+            td.style.display = isVisible ? '' : 'none';
+        }
+    });
+}
+
+document.querySelectorAll('.col-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const colIdx = parseInt(this.getAttribute('data-column'));
+        toggleColumnVisibility(colIdx, this.checked);
+        
+        // Update show-all master check state
+        const allChecked = Array.from(document.querySelectorAll('.col-toggle')).every(c => c.checked);
+        document.getElementById('toggle-all').checked = allChecked;
+    });
+});
+
+document.getElementById('toggle-all').addEventListener('change', function() {
+    const isChecked = this.checked;
+    document.querySelectorAll('.col-toggle').forEach(checkbox => {
+        checkbox.checked = isChecked;
+        const colIdx = parseInt(checkbox.getAttribute('data-column'));
+        toggleColumnVisibility(colIdx, isChecked);
+    });
+});
+
+// Row Click details
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.document-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.action-column')) return;
+            
+            document.getElementById('detail-id').innerText = this.getAttribute('data-id');
+            document.getElementById('detail-pid').innerText = this.getAttribute('data-pid');
+            document.getElementById('detail-title').innerText = this.getAttribute('data-title');
+            document.getElementById('detail-category').innerText = this.getAttribute('data-category');
+            document.getElementById('detail-udate').innerText = this.getAttribute('data-udate');
+            document.getElementById('detail-remarks').innerText = this.getAttribute('data-remarks') || 'N/A';
+
+            const attachUrl = this.getAttribute('data-attachment');
+            const attachContainer = document.getElementById('detail-attach-container');
+            if (attachUrl) {
+                attachContainer.innerHTML = `<span class="text-muted d-block small uppercase fw-bold">Attachment</span><a href="${attachUrl}" target="_blank" class="btn btn-sm btn-primary mt-1"><i class="fa-solid fa-file-pdf"></i> View Attachment</a>`;
+            } else {
+                attachContainer.innerHTML = '';
+            }
+
+            const detailsModal = new bootstrap.Modal(document.getElementById('documentDetailsModal'));
+            detailsModal.show();
+        });
+    });
+});
+</script>
 {% endblock %}

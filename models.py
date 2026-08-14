@@ -136,6 +136,7 @@ class FundManagement(db.Model):
     number_of_projects = db.Column(db.Integer, default=0)
     pending_projects = db.Column(db.Integer, default=0)
     completed_projects = db.Column(db.Integer, default=0)
+    attachment_url = db.Column(db.String(500), nullable=True)
 
 
 class LAC_ADF_Project(db.Model):
@@ -159,6 +160,7 @@ class LAC_ADF_Project(db.Model):
     project_officer = db.Column(db.String(100), nullable=True)
     priority = db.Column(db.String(50), nullable=True) # 'High', 'Medium', 'Low'
     project_status = db.Column(db.String(50), default='Proposed') # 'Proposed', 'Approved', 'Execution', 'Completed'
+    attachment_url = db.Column(db.String(500), nullable=True)
 
 
 class ApprovalSanctionTracking(db.Model):
@@ -180,6 +182,7 @@ class ApprovalSanctionTracking(db.Model):
     work_order_date = db.Column(db.String(100), nullable=True)
     agreement_no = db.Column(db.String(100), nullable=True)
     agreement_date = db.Column(db.String(100), nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
 
 
 class ProjectExecution(db.Model):
@@ -199,6 +202,7 @@ class ProjectExecution(db.Model):
     current_status = db.Column(db.String(100), nullable=True)
     delay_reason = db.Column(db.Text, nullable=True)
     revised_completion_date = db.Column(db.String(100), nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
 
 
 class PaymentUtilization(db.Model):
@@ -216,6 +220,7 @@ class PaymentUtilization(db.Model):
     remaining_project_fund = db.Column(db.Float, default=0.0)
     uc_submitted = db.Column(db.Boolean, default=False)
     uc_date = db.Column(db.String(100), nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
 
 
 class MonitoringInspection(db.Model):
@@ -234,6 +239,7 @@ class MonitoringInspection(db.Model):
     inspection_report = db.Column(db.String(500), nullable=True)
     photographs = db.Column(db.String(500), nullable=True)
     remarks = db.Column(db.Text, nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
 
 
 class CompletionAssetRegister(db.Model):
@@ -252,5 +258,29 @@ class CompletionAssetRegister(db.Model):
     maintenance_responsibility = db.Column(db.String(255), nullable=True)
     maintenance_period = db.Column(db.String(100), nullable=True)
     asset_status = db.Column(db.String(100), nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
+
+
+class MLA_SDF_Document(db.Model):
+    __tablename__ = 'mla_sdf_documents'
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('lac_adf_projects.id'), nullable=False)
+    document_title = db.Column(db.String(255), nullable=False)
+    document_category = db.Column(db.String(100), nullable=True)
+    uploaded_date = db.Column(db.String(100), nullable=True)
+    remarks = db.Column(db.Text, nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
+
+
+class MLA_SDF_Report(db.Model):
+    __tablename__ = 'mla_sdf_reports'
+    id = db.Column(db.Integer, primary_key=True)
+    report_name = db.Column(db.String(255), nullable=False)
+    report_type = db.Column(db.String(100), nullable=True)
+    generated_by = db.Column(db.String(100), nullable=True)
+    financial_year = db.Column(db.String(50), nullable=True)
+    generated_date = db.Column(db.String(100), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
 
 
