@@ -1250,7 +1250,8 @@ def mla_sdf_approvals():
         else:
             trackings = []
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
-    return render_template('admin/mla_sdf/approvals.html', base_template=base_template, trackings=trackings)
+    projects = LAC_ADF_Project.query.all()
+    return render_template('admin/mla_sdf/approvals.html', base_template=base_template, trackings=trackings, projects=projects)
 
 @app.route('/mla-sdf/execution')
 @login_required
@@ -1283,7 +1284,8 @@ def mla_sdf_execution():
         else:
             executions = []
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
-    return render_template('admin/mla_sdf/execution.html', base_template=base_template, executions=executions)
+    projects = LAC_ADF_Project.query.all()
+    return render_template('admin/mla_sdf/execution.html', base_template=base_template, executions=executions, projects=projects)
 
 @app.route('/mla-sdf/payments')
 @login_required
@@ -1314,7 +1316,8 @@ def mla_sdf_payments():
         else:
             payments = []
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
-    return render_template('admin/mla_sdf/payments.html', base_template=base_template, payments=payments)
+    projects = LAC_ADF_Project.query.all()
+    return render_template('admin/mla_sdf/payments.html', base_template=base_template, payments=payments, projects=projects)
 
 @app.route('/mla-sdf/monitoring')
 @login_required
@@ -1346,7 +1349,8 @@ def mla_sdf_monitoring():
         else:
             inspections = []
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
-    return render_template('admin/mla_sdf/monitoring.html', base_template=base_template, inspections=inspections)
+    projects = LAC_ADF_Project.query.all()
+    return render_template('admin/mla_sdf/monitoring.html', base_template=base_template, inspections=inspections, projects=projects)
 
 @app.route('/mla-sdf/documents')
 @login_required
@@ -1386,7 +1390,8 @@ def mla_sdf_completion():
         else:
             registers = []
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
-    return render_template('admin/mla_sdf/completion.html', base_template=base_template, registers=registers)
+    projects = LAC_ADF_Project.query.all()
+    return render_template('admin/mla_sdf/completion.html', base_template=base_template, registers=registers, projects=projects)
 
 @app.route('/mla-sdf/asset-register')
 @login_required
@@ -1394,8 +1399,9 @@ def mla_sdf_asset_register():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
     registers = CompletionAssetRegister.query.all()
+    projects = LAC_ADF_Project.query.all()
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
-    return render_template('admin/mla_sdf/asset_register.html', base_template=base_template, registers=registers)
+    return render_template('admin/mla_sdf/asset_register.html', base_template=base_template, registers=registers, projects=projects)
 
 @app.route('/mla-sdf/reports')
 @login_required
@@ -1403,7 +1409,332 @@ def mla_sdf_reports():
     if current_user.role not in ['admin', 'superadmin']:
         return redirect(url_for('index'))
     base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
-    return render_template('admin/mla_sdf/reports.html', base_template=base_template)
+@app.route('/mla-sdf/fund-management/download')
+@login_required
+def download_fund_management():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    funds = FundManagement.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Fund Management"
+    headers = ["SR", "Financial Year", "Constituency", "MLA Name", "Fund Type", "Allocation", "Previous Year Balance", "Total Available", "Amount Recommended", "Amount Sanctioned", "Amount Released", "Amount Utilized", "Balance Amount", "Total Projects", "Pending Projects", "Completed Projects"]
+    ws.append(headers)
+    for idx, f in enumerate(funds, 1):
+        ws.append([idx, f.financial_year, f.constituency, f.mla_name, f.fund_type, f.annual_fund_allocation, f.previous_year_balance, f.total_available_fund, f.amount_recommended, f.amount_sanctioned, f.amount_released, f.amount_utilized, f.balance_amount, f.number_of_projects, f.pending_projects, f.completed_projects])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"fund_management_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+@app.route('/mla-sdf/proposals/download')
+@login_required
+def download_proposals():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    projects = LAC_ADF_Project.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Proposals"
+    headers = ["SR", "Project ID", "Project Name", "Category", "Description", "Constituency", "Local Body", "Ward", "Location", "Beneficiary Institution", "Beneficiary Details", "MLA Recommendation Date", "Estimated Cost", "MLA ADF Amount", "Other Fund", "Implementing Department", "Implementing Agency", "Project Officer", "Priority", "Status"]
+    ws.append(headers)
+    for idx, p in enumerate(projects, 1):
+        ws.append([idx, p.id, p.project_name, p.project_category, p.project_description, p.constituency, p.local_body, p.ward, p.location, p.beneficiary_institution, p.beneficiary_details, p.mla_recommendation_date, p.estimated_project_cost, p.mla_adf_amount, p.other_fund_contribution, p.implementing_department, p.implementing_agency, p.project_officer, p.priority, p.project_status])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"proposals_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+@app.route('/mla-sdf/approvals/download')
+@login_required
+def download_approvals():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    trackings = ApprovalSanctionTracking.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Approvals"
+    headers = ["SR", "Project ID", "Administrative Department", "MLA Recommendation", "Administrative Sanction No", "Administrative Sanction Date", "Technical Sanction No", "Technical Sanction Date", "Financial Concurrence No", "Financial Concurrence Date", "Detailed Estimate Prepared", "Tender Quotation Required", "Tender Date", "Work Order No", "Work Order Date", "Agreement No", "Agreement Date"]
+    ws.append(headers)
+    for idx, t in enumerate(trackings, 1):
+        ws.append([idx, t.project_id, t.administrative_department, t.mla_recommendation, t.administrative_sanction_no, t.administrative_sanction_date, t.technical_sanction_no, t.technical_sanction_date, t.financial_concurrence_no, t.financial_concurrence_date, "Yes" if t.detailed_estimate_prepared else "No", "Yes" if t.tender_quotation_required else "No", t.tender_date, t.work_order_no, t.work_order_date, t.agreement_no, t.agreement_date])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"approvals_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+@app.route('/mla-sdf/execution/download')
+@login_required
+def download_execution():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    executions = ProjectExecution.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Execution"
+    headers = ["SR", "Project ID", "Contractor/Agency", "Work Order Amount", "Start Date", "Scheduled Completion Date", "Actual Completion Date", "Physical Progress %", "Financial Progress %", "Amount Paid", "Running Bill No", "Last Payment Date", "Current Status", "Delay Reason", "Revised Completion Date"]
+    ws.append(headers)
+    for idx, e in enumerate(executions, 1):
+        ws.append([idx, e.project_id, e.contractor_agency, e.work_order_amount, e.start_date, e.scheduled_completion_date, e.actual_completion_date, e.physical_progress_pct, e.financial_progress_pct, e.amount_paid, e.running_bill_no, e.last_payment_date, e.current_status, e.delay_reason, e.revised_completion_date])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"execution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+@app.route('/mla-sdf/payments/download')
+@login_required
+def download_payments():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    payments = PaymentUtilization.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Payments"
+    headers = ["SR", "Project ID", "Bill No", "Bill Date", "Bill Amount", "Amount Approved", "Amount Paid", "Payment Date", "Payment Reference", "Cumulative Expenditure", "Remaining Project Fund", "UC Submitted", "UC Date"]
+    ws.append(headers)
+    for idx, p in enumerate(payments, 1):
+        ws.append([idx, p.project_id, p.bill_no, p.bill_date, p.bill_amount, p.amount_approved, p.amount_paid, p.payment_date, p.payment_reference, p.cumulative_expenditure, p.remaining_project_fund, "Yes" if p.uc_submitted else "No", p.uc_date])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"payments_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+@app.route('/mla-sdf/monitoring/download')
+@login_required
+def download_monitoring():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    inspections = MonitoringInspection.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Monitoring"
+    headers = ["SR", "Inspection ID", "Project ID", "Inspection Date", "Inspection Officer", "Physical Progress %", "Financial Progress %", "Quality Status", "Issues Identified", "Corrective Action", "Next Inspection Date", "Inspection Report", "Photographs", "Remarks"]
+    ws.append(headers)
+    for idx, i in enumerate(inspections, 1):
+        ws.append([idx, i.inspection_id, i.project_id, i.inspection_date, i.inspection_officer, i.physical_progress_pct, i.financial_progress_pct, i.quality_status, i.issues_identified, i.corrective_action, i.next_inspection_date, i.inspection_report, i.photographs, i.remarks])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"monitoring_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+@app.route('/mla-sdf/completion/download')
+@login_required
+def download_completion():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    registers = CompletionAssetRegister.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Completion"
+    headers = ["SR", "Project ID", "Completion Certificate No", "Completion Date", "Final Cost", "Final Expenditure", "Asset Created", "Asset Location", "Asset Custodian Department", "Handover Date", "Handover Document", "Maintenance Responsibility", "Maintenance Period", "Asset Status"]
+    ws.append(headers)
+    for idx, r in enumerate(registers, 1):
+        ws.append([idx, r.project_id, r.completion_certificate_no, r.completion_date, r.final_cost, r.final_expenditure, r.asset_created, r.asset_location, r.asset_custodian_department, r.handover_date, r.handover_document, r.maintenance_responsibility, r.maintenance_period, r.asset_status])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"completion_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+
+@app.route('/mla-sdf/proposals/add', methods=['POST'])
+@login_required
+def add_proposal():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        project = LAC_ADF_Project(
+            project_name=request.form.get('project_name'),
+            project_category=request.form.get('project_category'),
+            project_description=request.form.get('project_description'),
+            constituency=request.form.get('constituency'),
+            local_body=request.form.get('local_body'),
+            ward=request.form.get('ward'),
+            location=request.form.get('location'),
+            beneficiary_institution=request.form.get('beneficiary_institution'),
+            beneficiary_details=request.form.get('beneficiary_details'),
+            mla_recommendation_date=request.form.get('mla_recommendation_date'),
+            estimated_project_cost=float(request.form.get('estimated_project_cost', 0.0)),
+            mla_adf_amount=float(request.form.get('mla_adf_amount', 0.0)),
+            other_fund_contribution=float(request.form.get('other_fund_contribution', 0.0)),
+            implementing_department=request.form.get('implementing_department'),
+            implementing_agency=request.form.get('implementing_agency'),
+            project_officer=request.form.get('project_officer'),
+            priority=request.form.get('priority'),
+            project_status=request.form.get('project_status', 'Proposed')
+        )
+        db.session.add(project)
+        db.session.commit()
+        flash(_('Project proposal added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding proposal: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_proposals'))
+
+@app.route('/mla-sdf/approvals/add', methods=['POST'])
+@login_required
+def add_approval():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        tracking = ApprovalSanctionTracking(
+            project_id=int(request.form.get('project_id')),
+            administrative_department=request.form.get('administrative_department'),
+            mla_recommendation=request.form.get('mla_recommendation'),
+            administrative_sanction_no=request.form.get('administrative_sanction_no'),
+            administrative_sanction_date=request.form.get('administrative_sanction_date'),
+            technical_sanction_no=request.form.get('technical_sanction_no'),
+            technical_sanction_date=request.form.get('technical_sanction_date'),
+            financial_concurrence_no=request.form.get('financial_concurrence_no'),
+            financial_concurrence_date=request.form.get('financial_concurrence_date'),
+            detailed_estimate_prepared=request.form.get('detailed_estimate_prepared') == 'true',
+            tender_quotation_required=request.form.get('tender_quotation_required') == 'true',
+            tender_date=request.form.get('tender_date'),
+            work_order_no=request.form.get('work_order_no'),
+            work_order_date=request.form.get('work_order_date'),
+            agreement_no=request.form.get('agreement_no'),
+            agreement_date=request.form.get('agreement_date')
+        )
+        db.session.add(tracking)
+        db.session.commit()
+        flash(_('Approval tracking record added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding approval tracking: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_approvals'))
+
+@app.route('/mla-sdf/execution/add', methods=['POST'])
+@login_required
+def add_execution():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        execution = ProjectExecution(
+            project_id=int(request.form.get('project_id')),
+            contractor_agency=request.form.get('contractor_agency'),
+            work_order_amount=float(request.form.get('work_order_amount', 0.0)),
+            start_date=request.form.get('start_date'),
+            scheduled_completion_date=request.form.get('scheduled_completion_date'),
+            actual_completion_date=request.form.get('actual_completion_date'),
+            physical_progress_pct=float(request.form.get('physical_progress_pct', 0.0)),
+            financial_progress_pct=float(request.form.get('financial_progress_pct', 0.0)),
+            amount_paid=float(request.form.get('amount_paid', 0.0)),
+            running_bill_no=request.form.get('running_bill_no'),
+            last_payment_date=request.form.get('last_payment_date'),
+            current_status=request.form.get('current_status'),
+            delay_reason=request.form.get('delay_reason'),
+            revised_completion_date=request.form.get('revised_completion_date')
+        )
+        db.session.add(execution)
+        db.session.commit()
+        flash(_('Project execution record added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding execution record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_execution'))
+
+@app.route('/mla-sdf/payments/add', methods=['POST'])
+@login_required
+def add_payment():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        payment = PaymentUtilization(
+            project_id=int(request.form.get('project_id')),
+            bill_no=request.form.get('bill_no'),
+            bill_date=request.form.get('bill_date'),
+            bill_amount=float(request.form.get('bill_amount', 0.0)),
+            amount_approved=float(request.form.get('amount_approved', 0.0)),
+            amount_paid=float(request.form.get('amount_paid', 0.0)),
+            payment_date=request.form.get('payment_date'),
+            payment_reference=request.form.get('payment_reference'),
+            cumulative_expenditure=float(request.form.get('cumulative_expenditure', 0.0)),
+            remaining_project_fund=float(request.form.get('remaining_project_fund', 0.0)),
+            uc_submitted=request.form.get('uc_submitted') == 'true',
+            uc_date=request.form.get('uc_date')
+        )
+        db.session.add(payment)
+        db.session.commit()
+        flash(_('Payment record added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding payment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_payments'))
+
+@app.route('/mla-sdf/monitoring/add', methods=['POST'])
+@login_required
+def add_monitoring():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        inspection = MonitoringInspection(
+            inspection_id=request.form.get('inspection_id'),
+            project_id=int(request.form.get('project_id')),
+            inspection_date=request.form.get('inspection_date'),
+            inspection_officer=request.form.get('inspection_officer'),
+            physical_progress_pct=float(request.form.get('physical_progress_pct', 0.0)),
+            financial_progress_pct=float(request.form.get('financial_progress_pct', 0.0)),
+            quality_status=request.form.get('quality_status'),
+            issues_identified=request.form.get('issues_identified'),
+            corrective_action=request.form.get('corrective_action'),
+            next_inspection_date=request.form.get('next_inspection_date'),
+            remarks=request.form.get('remarks')
+        )
+        db.session.add(inspection)
+        db.session.commit()
+        flash(_('Inspection log added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding inspection log: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_monitoring'))
+
+@app.route('/mla-sdf/completion/add', methods=['POST'])
+@login_required
+def add_completion():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        register = CompletionAssetRegister(
+            project_id=int(request.form.get('project_id')),
+            completion_certificate_no=request.form.get('completion_certificate_no'),
+            completion_date=request.form.get('completion_date'),
+            final_cost=float(request.form.get('final_cost', 0.0)),
+            final_expenditure=float(request.form.get('final_expenditure', 0.0)),
+            asset_created=request.form.get('asset_created'),
+            asset_location=request.form.get('asset_location'),
+            asset_custodian_department=request.form.get('asset_custodian_department'),
+            handover_date=request.form.get('handover_date'),
+            maintenance_responsibility=request.form.get('maintenance_responsibility'),
+            maintenance_period=request.form.get('maintenance_period'),
+            asset_status=request.form.get('asset_status')
+        )
+        db.session.add(register)
+        db.session.commit()
+        flash(_('Completion and asset register record added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding completion record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_completion'))
 
 # --- Setup Script ---
 @app.cli.command("init-db")

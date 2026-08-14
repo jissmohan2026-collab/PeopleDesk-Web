@@ -9,9 +9,118 @@
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h5 class="fw-bold mb-0 text-dark">Constituency Fund Management</h5>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFundModal">
-                    <i class="fa-solid fa-plus me-2"></i>Add Fund Allocation
-                </button>
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="columnToggleDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <i class="fa-solid fa-columns me-2"></i>Columns
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="columnToggleDropdown" style="width: 240px; z-index: 1050;">
+                            <li>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="toggle-all" checked>
+                                    <label class="form-check-label fw-bold" for="toggle-all">Show All Columns</label>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-fy" data-column="1" checked>
+                                    <label class="form-check-label" for="toggle-fy">Financial Year</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-const" data-column="2" checked>
+                                    <label class="form-check-label" for="toggle-const">Constituency</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-mla" data-column="3" checked>
+                                    <label class="form-check-label" for="toggle-mla">MLA Name</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-ftype" data-column="4" checked>
+                                    <label class="form-check-label" for="toggle-ftype">Fund Type</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-alloc" data-column="5" checked>
+                                    <label class="form-check-label" for="toggle-alloc">Allocation</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-prevbal" data-column="6" checked>
+                                    <label class="form-check-label" for="toggle-prevbal">Previous Balance</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-avail" data-column="7" checked>
+                                    <label class="form-check-label" for="toggle-avail">Total Available</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-rec" data-column="8" checked>
+                                    <label class="form-check-label" for="toggle-rec">Amount Recommended</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-sanc" data-column="9" checked>
+                                    <label class="form-check-label" for="toggle-sanc">Amount Sanctioned</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-rel" data-column="10" checked>
+                                    <label class="form-check-label" for="toggle-rel">Amount Released</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-util" data-column="11" checked>
+                                    <label class="form-check-label" for="toggle-util">Amount Utilized</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-bal" data-column="12" checked>
+                                    <label class="form-check-label" for="toggle-bal">Balance Amount</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-totp" data-column="13" checked>
+                                    <label class="form-check-label" for="toggle-totp">Total Projects</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-pend" data-column="14" checked>
+                                    <label class="form-check-label" for="toggle-pend">Pending Projects</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-comp" data-column="15" checked>
+                                    <label class="form-check-label" for="toggle-comp">Completed Projects</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('download_fund_management') }}" class="btn btn-success">
+                        <i class="fa-solid fa-file-excel me-2"></i>Download XLSX
+                    </a>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFundModal">
+                        <i class="fa-solid fa-plus me-2"></i>Add Fund Allocation
+                    </button>
+                </div>
             </div>
             <div class="card-body p-0 mt-3">
                 <div class="table-responsive">
@@ -139,4 +248,53 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleColumnVisibility(colIdx, isVisible) {
+    const table = document.querySelector('table');
+    const th = table.querySelectorAll('thead tr th')[colIdx];
+    if (th) {
+        th.style.display = isVisible ? '' : 'none';
+    }
+    table.querySelectorAll('tbody tr').forEach(row => {
+        const td = row.querySelectorAll('td')[colIdx];
+        if (td) {
+            td.style.display = isVisible ? '' : 'none';
+        }
+    });
+}
+
+document.querySelectorAll('.col-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const colIdx = parseInt(this.getAttribute('data-column'));
+        toggleColumnVisibility(colIdx, this.checked);
+        
+        // Update show-all master check state
+        const allChecked = Array.from(document.querySelectorAll('.col-toggle')).every(c => c.checked);
+        document.getElementById('toggle-all').checked = allChecked;
+    });
+});
+
+document.getElementById('toggle-all').addEventListener('change', function() {
+    const isChecked = this.checked;
+    document.querySelectorAll('.col-toggle').forEach(checkbox => {
+        checkbox.checked = isChecked;
+        const colIdx = parseInt(checkbox.getAttribute('data-column'));
+        toggleColumnVisibility(colIdx, isChecked);
+    });
+});
+
+// Hide non-essential columns by default on page load (indices 6, 7, 8, 9, 10, 11, 13, 14)
+document.addEventListener("DOMContentLoaded", function() {
+    const hideIndices = [6, 7, 8, 9, 10, 11, 13, 14];
+    hideIndices.forEach(idx => {
+        const checkbox = document.querySelector(`.col-toggle[data-column="${idx}"]`);
+        if (checkbox) {
+            checkbox.checked = false;
+            toggleColumnVisibility(idx, false);
+        }
+    });
+    document.getElementById('toggle-all').checked = false;
+});
+</script>
 {% endblock %}

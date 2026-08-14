@@ -7,8 +7,84 @@
 <div class="row">
     <div class="col-12">
         <div class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h5 class="fw-bold mb-0 text-dark">Technical & Administrative Sanction Tracking</h5>
+                <div class="d-flex gap-2 align-items-center">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="columnToggleDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <i class="fa-solid fa-columns me-2"></i>Columns
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="columnToggleDropdown" style="width: 240px; z-index: 1050;">
+                            <li>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="toggle-all" checked>
+                                    <label class="form-check-label fw-bold" for="toggle-all">Show All Columns</label>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-dept" data-column="1" checked>
+                                    <label class="form-check-label" for="toggle-dept">Admin Dept</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-asno" data-column="2" checked>
+                                    <label class="form-check-label" for="toggle-asno">Admin Sanction No</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-asdate" data-column="3" checked>
+                                    <label class="form-check-label" for="toggle-asdate">Admin Sanction Date</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-tsno" data-column="4" checked>
+                                    <label class="form-check-label" for="toggle-tsno">Tech Sanction No</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-tsdate" data-column="5" checked>
+                                    <label class="form-check-label" for="toggle-tsdate">Tech Sanction Date</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-fin" data-column="6" checked>
+                                    <label class="form-check-label" for="toggle-fin">Financial Concurrence</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-est" data-column="7" checked>
+                                    <label class="form-check-label" for="toggle-est">Estimate Prepared</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-wo" data-column="8" checked>
+                                    <label class="form-check-label" for="toggle-wo">Work Order No</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-agr" data-column="9" checked>
+                                    <label class="form-check-label" for="toggle-agr">Agreement No</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('download_approvals') }}" class="btn btn-success">
+                        <i class="fa-solid fa-file-excel me-2"></i>Download XLSX
+                    </a>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addApprovalModal">
+                        <i class="fa-solid fa-plus me-2"></i>Add Approval Record
+                    </button>
+                </div>
             </div>
             <div class="card-body p-0 mt-3">
                 <div class="table-responsive">
@@ -61,4 +137,159 @@
         </div>
     </div>
 </div>
+
+<!-- Add Approval Modal -->
+<div class="modal fade" id="addApprovalModal" tabindex="-1" aria-labelledby="addApprovalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" id="addApprovalModalLabel">Add Approval & Sanction Tracking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('add_approval') }}" method="POST">
+                <div class="modal-body px-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Select Project</label>
+                        <select name="project_id" class="form-select" required>
+                            {% for project in projects %}
+                                <option value="{{ project.id }}">{{ project.project_name }} (ID: {{ project.id }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Administrative Department</label>
+                            <input type="text" name="administrative_department" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">MLA Recommendation</label>
+                            <input type="text" name="mla_recommendation" class="form-control" placeholder="Recommended / Approved">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Administrative Sanction No.</label>
+                            <input type="text" name="administrative_sanction_no" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Administrative Sanction Date</label>
+                            <input type="date" name="administrative_sanction_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Technical Sanction No.</label>
+                            <input type="text" name="technical_sanction_no" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Technical Sanction Date</label>
+                            <input type="date" name="technical_sanction_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Financial Concurrence No.</label>
+                            <input type="text" name="financial_concurrence_no" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Financial Concurrence Date</label>
+                            <input type="date" name="financial_concurrence_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" name="detailed_estimate_prepared" value="true" id="estPrepared">
+                                <label class="form-check-label fw-semibold" for="estPrepared">Detailed Estimate Prepared</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" name="tender_quotation_required" value="true" id="tenderReq">
+                                <label class="form-check-label fw-semibold" for="tenderReq">Tender/Quotation Required</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Tender Date</label>
+                            <input type="date" name="tender_date" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Work Order No.</label>
+                            <input type="text" name="work_order_no" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Work Order Date</label>
+                            <input type="date" name="work_order_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Agreement No.</label>
+                            <input type="text" name="agreement_no" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Agreement Date</label>
+                            <input type="date" name="agreement_date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pb-4 px-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleColumnVisibility(colIdx, isVisible) {
+    const table = document.querySelector('table');
+    const th = table.querySelectorAll('thead tr th')[colIdx];
+    if (th) {
+        th.style.display = isVisible ? '' : 'none';
+    }
+    table.querySelectorAll('tbody tr').forEach(row => {
+        const td = row.querySelectorAll('td')[colIdx];
+        if (td) {
+            td.style.display = isVisible ? '' : 'none';
+        }
+    });
+}
+
+document.querySelectorAll('.col-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const colIdx = parseInt(this.getAttribute('data-column'));
+        toggleColumnVisibility(colIdx, this.checked);
+        
+        // Update show-all master check state
+        const allChecked = Array.from(document.querySelectorAll('.col-toggle')).every(c => c.checked);
+        document.getElementById('toggle-all').checked = allChecked;
+    });
+});
+
+document.getElementById('toggle-all').addEventListener('change', function() {
+    const isChecked = this.checked;
+    document.querySelectorAll('.col-toggle').forEach(checkbox => {
+        checkbox.checked = isChecked;
+        const colIdx = parseInt(checkbox.getAttribute('data-column'));
+        toggleColumnVisibility(colIdx, isChecked);
+    });
+});
+
+// Hide non-essential columns by default on page load (indices 3, 5, 7, 9)
+document.addEventListener("DOMContentLoaded", function() {
+    const hideIndices = [3, 5, 7, 9];
+    hideIndices.forEach(idx => {
+        const checkbox = document.querySelector(`.col-toggle[data-column="${idx}"]`);
+        if (checkbox) {
+            checkbox.checked = false;
+            toggleColumnVisibility(idx, false);
+        }
+    });
+    document.getElementById('toggle-all').checked = false;
+});
+</script>
 {% endblock %}
