@@ -60,7 +60,7 @@
                         <tbody>
                             {% if vehicles %}
                                 {% for veh in vehicles %}
-                                <tr>
+                                <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detailVehicleModal{{ veh.id }}">
                                     <td class="ps-4 py-3 fw-bold">{{ veh.id }}</td>
                                     <td class="py-3">
                                         <div class="fw-bold text-dark">{{ veh.vehicle_number }}</div>
@@ -91,7 +91,8 @@
                                     <td class="pe-4 py-3 text-end">
                                         <button class="btn btn-sm btn-outline-primary" 
                                                 data-bs-toggle="modal" 
-                                                data-bs-target="#editVehicleModal{{ veh.id }}">
+                                                data-bs-target="#editVehicleModal{{ veh.id }}"
+                                                onclick="event.stopPropagation();">
                                             <i class="fa-solid fa-pen-to-square me-1"></i> Edit
                                         </button>
                                     </td>
@@ -152,6 +153,67 @@
                                                     <button type="submit" class="btn btn-primary px-4">Save Changes</button>
                                                 </div>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Detail Vehicle Modal -->
+                                <div class="modal fade" id="detailVehicleModal{{ veh.id }}" tabindex="-1" aria-labelledby="detailVehicleModalLabel{{ veh.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 rounded-4 shadow">
+                                            <div class="modal-header border-bottom-0 pt-4 px-4 bg-primary text-white rounded-top-4">
+                                                <h5 class="modal-title fw-bold" id="detailVehicleModalLabel{{ veh.id }}"><i class="fa-solid fa-car me-2"></i>Vehicle Details</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body px-4 py-3">
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Vehicle Number</span>
+                                                        <strong class="text-dark fs-5">{{ veh.vehicle_number }}</strong>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Status</span>
+                                                        {% if veh.status == 'Active' %}
+                                                            <span class="badge bg-success">Active</span>
+                                                        {% else %}
+                                                            <span class="badge bg-warning text-dark">Pending</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Model</span>
+                                                        <span class="text-dark">{{ veh.vehicle_model }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Year</span>
+                                                        <span class="text-dark">{{ veh.vehicle_year }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <span class="text-muted small d-block">Vehicle Type</span>
+                                                    <span class="badge bg-secondary text-capitalize">{{ veh.vehicle_type }}</span>
+                                                </div>
+                                                <hr>
+                                                <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-id-card me-2"></i>Driver Details</h6>
+                                                <div class="mb-3">
+                                                    <span class="text-muted small d-block">Driver Name</span>
+                                                    <strong class="text-dark">{{ veh.driver_name }}</strong>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">License Number</span>
+                                                        <span class="text-dark">{{ veh.driver_license }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Contract / Contact</span>
+                                                        <span class="text-dark">{{ veh.driver_contract or 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-top-0 pb-4 px-4">
+                                                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Close</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -90,7 +90,55 @@
                             </li>
                             <li>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-remarks" data-column="10" checked>
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-approval-date" data-column="10" checked>
+                                    <label class="form-check-label" for="toggle-approval-date">Approval Date</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-inst1" data-column="11" checked>
+                                    <label class="form-check-label" for="toggle-inst1">Installment 1</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-inst2" data-column="12" checked>
+                                    <label class="form-check-label" for="toggle-inst2">Installment 2</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-inst3" data-column="13" checked>
+                                    <label class="form-check-label" for="toggle-inst3">Installment 3</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-contractor-name" data-column="14" checked>
+                                    <label class="form-check-label" for="toggle-contractor-name">Contractor Name</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-contractor-addr" data-column="15" checked>
+                                    <label class="form-check-label" for="toggle-contractor-addr">Contractor Address</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-contractor-phone" data-column="16" checked>
+                                    <label class="form-check-label" for="toggle-contractor-phone">Contractor Phone</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-attachment" data-column="17" checked>
+                                    <label class="form-check-label" for="toggle-attachment">Attachment</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-remarks" data-column="18" checked>
                                     <label class="form-check-label" for="toggle-remarks">Remarks</label>
                                 </div>
                             </li>
@@ -122,6 +170,14 @@
                                 <th class="py-3">Length (m)</th>
                                 <th class="py-3">Est. Cost (₹)</th>
                                 <th class="py-3">Status</th>
+                                <th class="py-3">Approval Date</th>
+                                <th class="py-3">Inst. 1 (₹)</th>
+                                <th class="py-3">Inst. 2 (₹)</th>
+                                <th class="py-3">Inst. 3 (₹)</th>
+                                <th class="py-3">Contractor Name</th>
+                                <th class="py-3">Contractor Address</th>
+                                <th class="py-3">Contractor Phone</th>
+                                <th class="py-3">Attachment</th>
                                 <th class="py-3">Remarks</th>
                                 <th class="pe-4 py-3 text-end">Action</th>
                             </tr>
@@ -129,7 +185,7 @@
                         <tbody>
                             {% if roads %}
                                 {% for road in roads %}
-                                <tr>
+                                 <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detailRoadModal{{ road.id }}">
                                     <td class="ps-4 py-3 fw-bold">{{ loop.index }}</td>
                                     <td class="py-3 fw-semibold text-dark">{{ road.road_name }}</td>
                                     <td class="py-3">{{ road.constituency or '' }}</td>
@@ -150,11 +206,28 @@
                                             <span class="badge bg-secondary rounded-pill px-3 py-2">{{ road.status }}</span>
                                         {% endif %}
                                     </td>
+                                    <td class="py-3">{{ road.approval_date or '' }}</td>
+                                    <td class="py-3">{{ "{:,}".format(road.installment_1 or 0) }}</td>
+                                    <td class="py-3">{{ "{:,}".format(road.installment_2 or 0) }}</td>
+                                    <td class="py-3">{{ "{:,}".format(road.installment_3 or 0) }}</td>
+                                    <td class="py-3">{{ road.contractor_name or '' }}</td>
+                                    <td class="py-3 text-truncate" style="max-width: 150px;">{{ road.contractor_address or '' }}</td>
+                                    <td class="py-3">{{ road.contractor_phone or '' }}</td>
+                                    <td class="py-3">
+                                        {% if road.attachment_url %}
+                                            <a href="{{ road.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-info" onclick="event.stopPropagation();">
+                                                <i class="fa-solid fa-file-arrow-down"></i> View
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted small">None</span>
+                                        {% endif %}
+                                    </td>
                                     <td class="py-3 text-muted small">{{ road.remarks or '' }}</td>
                                     <td class="pe-4 py-3 text-end">
                                         <button class="btn btn-sm btn-outline-primary me-2" 
                                                 data-bs-toggle="modal" 
-                                                data-bs-target="#editRoadModal{{ road.id }}">
+                                                data-bs-target="#editRoadModal{{ road.id }}"
+                                                onclick="event.stopPropagation();">
                                             <i class="fa-solid fa-pen-to-square me-1"></i> Edit
                                         </button>
                                     </td>
@@ -168,7 +241,7 @@
                                                 <h5 class="modal-title fw-bold" id="editRoadModalLabel{{ road.id }}">Edit Project</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <form action="{{ url_for('edit_road', road_id=road.id) }}" method="POST">
+                                            <form action="{{ url_for('edit_road', road_id=road.id) }}" method="POST" enctype="multipart/form-data">
                                                 <div class="modal-body px-4">
                                                     <div class="mb-3">
                                                         <label class="form-label fw-semibold">Constituency</label>
@@ -215,6 +288,41 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Project Approval Date</label>
+                                                        <input type="date" name="approval_date" class="form-control" value="{{ road.approval_date or '' }}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Installment 1 (₹)</label>
+                                                        <input type="number" name="installment_1" class="form-control" value="{{ road.installment_1 or 0 }}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Installment 2 (₹)</label>
+                                                        <input type="number" name="installment_2" class="form-control" value="{{ road.installment_2 or 0 }}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Installment 3 (₹)</label>
+                                                        <input type="number" name="installment_3" class="form-control" value="{{ road.installment_3 or 0 }}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Contractor Name</label>
+                                                        <input type="text" name="contractor_name" class="form-control" value="{{ road.contractor_name or '' }}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Contractor Address</label>
+                                                        <textarea name="contractor_address" class="form-control" rows="2">{{ road.contractor_address or '' }}</textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Contractor Phone</label>
+                                                        <input type="text" name="contractor_phone" class="form-control" value="{{ road.contractor_phone or '' }}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Attachment File (Optional)</label>
+                                                        <input type="file" name="attachment" class="form-control">
+                                                        {% if road.attachment_url %}
+                                                            <div class="form-text text-success">Current attachment: <a href="{{ road.attachment_url }}" target="_blank">View File</a></div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="mb-3">
                                                         <label class="form-label fw-semibold">Remarks</label>
                                                         <textarea name="remarks" class="form-control" rows="2" placeholder="Enter remarks (optional)">{{ road.remarks or '' }}</textarea>
                                                     </div>
@@ -227,10 +335,118 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Detail Road Modal -->
+                                <div class="modal fade" id="detailRoadModal{{ road.id }}" tabindex="-1" aria-labelledby="detailRoadModalLabel{{ road.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 rounded-4 shadow">
+                                            <div class="modal-header border-bottom-0 pt-4 px-4 bg-primary text-white rounded-top-4">
+                                                <h5 class="modal-title fw-bold" id="detailRoadModalLabel{{ road.id }}"><i class="fa-solid fa-road me-2"></i>Project Details (IRRP/LRRP)</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body px-4 py-3">
+                                                <div class="mb-3">
+                                                    <span class="text-muted small d-block">Road Name</span>
+                                                    <strong class="text-dark fs-5">{{ road.road_name }}</strong>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Constituency</span>
+                                                        <strong class="text-dark">{{ road.constituency or 'N/A' }}</strong>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">MLA Name</span>
+                                                        <strong class="text-dark">{{ road.mla_name or 'N/A' }}</strong>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Local Self Govt</span>
+                                                        <span class="text-dark">{{ road.local_govt_name or 'N/A' }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Nature of Govt</span>
+                                                        <span class="text-dark">{{ road.local_govt_type or 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Width (m)</span>
+                                                        <span class="text-dark">{{ road.road_width or 0.0 }}</span>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Length (m)</span>
+                                                        <span class="text-dark">{{ road.road_length or 0.0 }}</span>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Est. Cost</span>
+                                                        <strong class="text-dark">₹{{ "{:,}".format(road.estimate_cost or 0) }}</strong>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Status</span>
+                                                        <span class="badge bg-secondary">{{ road.status }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Approval Date</span>
+                                                        <span class="text-dark">{{ road.approval_date or 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Inst. 1</span>
+                                                        <span class="text-dark">₹{{ "{:,}".format(road.installment_1 or 0) }}</span>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Inst. 2</span>
+                                                        <span class="text-dark">₹{{ "{:,}".format(road.installment_2 or 0) }}</span>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Inst. 3</span>
+                                                        <span class="text-dark">₹{{ "{:,}".format(road.installment_3 or 0) }}</span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-user-tie me-2"></i>Contractor Details</h6>
+                                                <div class="mb-3">
+                                                    <span class="text-muted small d-block">Contractor Name</span>
+                                                    <strong class="text-dark">{{ road.contractor_name or 'N/A' }}</strong>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Phone Number</span>
+                                                        <span class="text-dark">{{ road.contractor_phone or 'N/A' }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Address</span>
+                                                        <span class="text-dark d-block text-truncate" title="{{ road.contractor_address or '' }}">{{ road.contractor_address or 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                {% if road.attachment_url %}
+                                                    <div class="mb-3">
+                                                        <span class="text-muted small d-block">Attachment</span>
+                                                        <a href="{{ road.attachment_url }}" target="_blank" class="btn btn-sm btn-info text-white mt-1">
+                                                            <i class="fa-solid fa-download me-1"></i> Download / View Attachment
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="mb-2">
+                                                    <span class="text-muted small d-block">Remarks</span>
+                                                    <p class="text-dark mb-0">{{ road.remarks or 'No remarks.' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-top-0 pb-4 px-4">
+                                                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="12" class="text-center py-5 text-muted">
+                                    <td colspan="20" class="text-center py-5 text-muted">
                                         <i class="fa-solid fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
                                         No roads found matching the criteria.
                                     </td>
@@ -252,7 +468,7 @@
                 <h5 class="modal-title fw-bold" id="addRoadModalLabel">Add Project</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('add_road') }}" method="POST">
+            <form action="{{ url_for('add_road') }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body px-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Constituency</label>
@@ -294,6 +510,38 @@
                             <option value="Reject">Reject</option>
                             <option value="Other">Other</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Project Approval Date</label>
+                        <input type="date" name="approval_date" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Installment 1 (₹)</label>
+                        <input type="number" name="installment_1" class="form-control" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Installment 2 (₹)</label>
+                        <input type="number" name="installment_2" class="form-control" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Installment 3 (₹)</label>
+                        <input type="number" name="installment_3" class="form-control" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contractor Name</label>
+                        <input type="text" name="contractor_name" class="form-control" placeholder="Enter contractor name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contractor Address</label>
+                        <textarea name="contractor_address" class="form-control" rows="2" placeholder="Enter contractor address"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contractor Phone</label>
+                        <input type="text" name="contractor_phone" class="form-control" placeholder="Enter contractor phone">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Attachment File (Optional)</label>
+                        <input type="file" name="attachment" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Remarks</label>

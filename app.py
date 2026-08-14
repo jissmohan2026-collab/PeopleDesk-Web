@@ -670,6 +670,9 @@ def add_pending_work():
         file_status = request.form.get('file_status', '')
         department = request.form.get('department', '')
         remarks = request.form.get('remarks', '')
+        contractor_name = request.form.get('contractor_name', '')
+        contractor_address = request.form.get('contractor_address', '')
+        contractor_phone = request.form.get('contractor_phone', '')
         
         work = PendingWork(
             work_name=work_name,
@@ -683,7 +686,10 @@ def add_pending_work():
             status=status,
             file_status=file_status,
             department=department,
-            remarks=remarks
+            remarks=remarks,
+            contractor_name=contractor_name,
+            contractor_address=contractor_address,
+            contractor_phone=contractor_phone
         )
         db.session.add(work)
         db.session.commit()
@@ -714,6 +720,9 @@ def edit_pending_work(work_id):
         work.file_status = request.form.get('file_status', '')
         work.department = request.form.get('department', '')
         work.remarks = request.form.get('remarks', '')
+        work.contractor_name = request.form.get('contractor_name', '')
+        work.contractor_address = request.form.get('contractor_address', '')
+        work.contractor_phone = request.form.get('contractor_phone', '')
         
         db.session.commit()
         flash(_('Project Work updated successfully.'))
@@ -763,11 +772,11 @@ def download_pending_works():
     ws = wb.active
     ws.title = "Pending Works"
     
-    headers = ["SR (ID)", "Work Name", "Amount", "Installment 1", "Installment 2", "Installment 3", "Balance Amount", "Local Body", "Ward No", "Status", "File Status", "Department", "Remarks"]
+    headers = ["SR (ID)", "Work Name", "Amount", "Installment 1", "Installment 2", "Installment 3", "Balance Amount", "Local Body", "Ward No", "Status", "File Status", "Department", "Contractor Name", "Contractor Address", "Contractor Phone", "Remarks"]
     ws.append(headers)
     
     for idx, w in enumerate(works, start=1):
-        ws.append([idx, w.work_name, w.amount, w.installment_1 or 0, w.installment_2 or 0, w.installment_3 or 0, w.balance_amount or 0, w.local_body, w.ward_no, w.status, w.file_status, w.department, w.remarks])
+        ws.append([idx, w.work_name, w.amount, w.installment_1 or 0, w.installment_2 or 0, w.installment_3 or 0, w.balance_amount or 0, w.local_body, w.ward_no, w.status, w.file_status, w.department, w.contractor_name or '', w.contractor_address or '', w.contractor_phone or '', w.remarks])
         
     file_stream = BytesIO()
     wb.save(file_stream)
@@ -827,6 +836,23 @@ def add_road():
         estimate_cost = float(request.form.get('estimate_cost', 0.0))
         status = request.form.get('status', 'Pending')
         remarks = request.form.get('remarks', '')
+        approval_date = request.form.get('approval_date', '')
+        installment_1 = int(request.form.get('installment_1', 0))
+        installment_2 = int(request.form.get('installment_2', 0))
+        installment_3 = int(request.form.get('installment_3', 0))
+        contractor_name = request.form.get('contractor_name', '')
+        contractor_address = request.form.get('contractor_address', '')
+        contractor_phone = request.form.get('contractor_phone', '')
+
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
         
         road = Road(
             constituency=constituency,
@@ -838,14 +864,22 @@ def add_road():
             road_length=road_length,
             estimate_cost=estimate_cost,
             status=status,
-            remarks=remarks
+            remarks=remarks,
+            approval_date=approval_date,
+            installment_1=installment_1,
+            installment_2=installment_2,
+            installment_3=installment_3,
+            contractor_name=contractor_name,
+            contractor_address=contractor_address,
+            contractor_phone=contractor_phone,
+            attachment_url=attachment_url
         )
         db.session.add(road)
         db.session.commit()
-        flash(_('Road added successfully.'))
+        flash(_('Project added successfully.'))
     except Exception as e:
         db.session.rollback()
-        flash(f'Error adding road: {str(e)}', 'danger')
+        flash(f'Error adding project: {str(e)}', 'danger')
         
     return redirect(url_for('roads'))
 
@@ -867,12 +901,28 @@ def edit_road(road_id):
         road.estimate_cost = float(request.form.get('estimate_cost', 0.0))
         road.status = request.form.get('status')
         road.remarks = request.form.get('remarks', '')
+        road.approval_date = request.form.get('approval_date', '')
+        road.installment_1 = int(request.form.get('installment_1', 0))
+        road.installment_2 = int(request.form.get('installment_2', 0))
+        road.installment_3 = int(request.form.get('installment_3', 0))
+        road.contractor_name = request.form.get('contractor_name', '')
+        road.contractor_address = request.form.get('contractor_address', '')
+        road.contractor_phone = request.form.get('contractor_phone', '')
+
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    road.attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
         
         db.session.commit()
-        flash(_('Road updated successfully.'))
+        flash(_('Project updated successfully.'))
     except Exception as e:
         db.session.rollback()
-        flash(f'Error updating road: {str(e)}', 'danger')
+        flash(f'Error updating project: {str(e)}', 'danger')
         
     return redirect(url_for('roads'))
 
@@ -900,11 +950,11 @@ def download_roads():
     ws = wb.active
     ws.title = "Roads"
     
-    headers = ["SR (ID)", "Road Name", "Constituency", "MLA Name", "Local Self Govt", "Nature of Self Govt", "Width (m)", "Length (m)", "Estimate Cost (₹)", "Status", "Remarks"]
+    headers = ["SR (ID)", "Road Name", "Constituency", "MLA Name", "Local Self Govt", "Nature of Self Govt", "Width (m)", "Length (m)", "Estimate Cost (₹)", "Status", "Approval Date", "Installment 1", "Installment 2", "Installment 3", "Contractor Name", "Contractor Address", "Contractor Phone", "Attachment URL", "Remarks"]
     ws.append(headers)
     
     for idx, r in enumerate(roads_list, start=1):
-        ws.append([idx, r.road_name, r.constituency, r.mla_name, r.local_govt_name, r.local_govt_type, r.road_width, r.road_length, r.estimate_cost, r.status, r.remarks])
+        ws.append([idx, r.road_name, r.constituency, r.mla_name, r.local_govt_name, r.local_govt_type, r.road_width, r.road_length, r.estimate_cost, r.status, r.approval_date or '', r.installment_1 or 0, r.installment_2 or 0, r.installment_3 or 0, r.contractor_name or '', r.contractor_address or '', r.contractor_phone or '', r.attachment_url or '', r.remarks])
         
     file_stream = BytesIO()
     wb.save(file_stream)

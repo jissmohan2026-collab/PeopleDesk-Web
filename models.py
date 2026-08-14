@@ -70,6 +70,9 @@ class PendingWork(db.Model):
     balance_amount = db.Column(db.Integer, nullable=True, default=0)
     file_status = db.Column(db.String(100), nullable=True)
     department = db.Column(db.String(100), nullable=True)
+    contractor_name = db.Column(db.String(255), nullable=True)
+    contractor_address = db.Column(db.Text, nullable=True)
+    contractor_phone = db.Column(db.String(50), nullable=True)
 
 class Vehicle(db.Model):
     __tablename__ = 'vehicles'
@@ -105,4 +108,12 @@ class Road(db.Model):
     estimate_cost = db.Column(db.Float, nullable=True, default=0.0)
     status = db.Column(db.String(50), nullable=False, default='Pending')
     remarks = db.Column(db.Text, nullable=True)
+    approval_date = db.Column(db.String(100), nullable=True)
+    installment_1 = db.Column(db.Integer, nullable=True, default=0)
+    installment_2 = db.Column(db.Integer, nullable=True, default=0)
+    installment_3 = db.Column(db.Integer, nullable=True, default=0)
+    contractor_name = db.Column(db.String(255), nullable=True)
+    contractor_address = db.Column(db.Text, nullable=True)
+    contractor_phone = db.Column(db.String(50), nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
 

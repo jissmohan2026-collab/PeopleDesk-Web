@@ -102,7 +102,25 @@
                             </li>
                             <li>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-remarks" data-column="12" checked>
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-contractor-name" data-column="12" checked>
+                                    <label class="form-check-label" for="toggle-contractor-name">Contractor Name</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-contractor-addr" data-column="13" checked>
+                                    <label class="form-check-label" for="toggle-contractor-addr">Contractor Address</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-contractor-phone" data-column="14" checked>
+                                    <label class="form-check-label" for="toggle-contractor-phone">Contractor Phone</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-remarks" data-column="15" checked>
                                     <label class="form-check-label" for="toggle-remarks">Remarks</label>
                                 </div>
                             </li>
@@ -136,6 +154,9 @@
                                 <th class="py-3">Status</th>
                                 <th class="py-3">File Status</th>
                                 <th class="py-3">Department</th>
+                                <th class="py-3">Contractor Name</th>
+                                <th class="py-3">Contractor Address</th>
+                                <th class="py-3">Contractor Phone</th>
                                 <th class="py-3">Remarks</th>
                                 <th class="pe-4 py-3 text-end">Action</th>
                             </tr>
@@ -143,7 +164,7 @@
                         <tbody>
                             {% if works %}
                                 {% for work in works %}
-                                <tr>
+                                 <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detailWorkModal{{ work.id }}">
                                     <td class="ps-4 py-3 fw-bold">{{ loop.index }}</td>
                                     <td class="py-3 fw-semibold text-dark">{{ work.work_name }}</td>
                                     <td class="py-3">{{ "{:,}".format(work.amount) }}</td>
@@ -166,11 +187,15 @@
                                     </td>
                                     <td class="py-3">{{ work.file_status or '' }}</td>
                                     <td class="py-3">{{ work.department or '' }}</td>
+                                    <td class="py-3">{{ work.contractor_name or '' }}</td>
+                                    <td class="py-3 text-truncate" style="max-width: 150px;">{{ work.contractor_address or '' }}</td>
+                                    <td class="py-3">{{ work.contractor_phone or '' }}</td>
                                     <td class="py-3 text-muted small">{{ work.remarks or '' }}</td>
                                     <td class="pe-4 py-3 text-end">
                                         <button class="btn btn-sm btn-outline-primary me-2" 
                                                 data-bs-toggle="modal" 
-                                                data-bs-target="#editWorkModal{{ work.id }}">
+                                                data-bs-target="#editWorkModal{{ work.id }}"
+                                                onclick="event.stopPropagation();">
                                             <i class="fa-solid fa-pen-to-square me-1"></i> Edit
                                         </button>
                                     </td>
@@ -239,6 +264,18 @@
                                                         <input type="text" name="department" class="form-control" value="{{ work.department or '' }}" placeholder="Enter department">
                                                     </div>
                                                     <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Contractor Name</label>
+                                                        <input type="text" name="contractor_name" class="form-control" value="{{ work.contractor_name or '' }}" placeholder="Enter contractor name">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Contractor Address</label>
+                                                        <textarea name="contractor_address" class="form-control" rows="2" placeholder="Enter contractor address">{{ work.contractor_address or '' }}</textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Contractor Phone</label>
+                                                        <input type="text" name="contractor_phone" class="form-control" value="{{ work.contractor_phone or '' }}" placeholder="Enter contractor phone">
+                                                    </div>
+                                                    <div class="mb-3">
                                                         <label class="form-label fw-semibold">Remarks</label>
                                                         <textarea name="remarks" class="form-control" rows="2" placeholder="Enter remarks (optional)">{{ work.remarks or '' }}</textarea>
                                                     </div>
@@ -251,10 +288,100 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Detail Work Modal -->
+                                <div class="modal fade" id="detailWorkModal{{ work.id }}" tabindex="-1" aria-labelledby="detailWorkModalLabel{{ work.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 rounded-4 shadow">
+                                            <div class="modal-header border-bottom-0 pt-4 px-4 bg-primary text-white rounded-top-4">
+                                                <h5 class="modal-title fw-bold" id="detailWorkModalLabel{{ work.id }}"><i class="fa-solid fa-circle-info me-2"></i>Project Details</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body px-4 py-3">
+                                                <div class="mb-3">
+                                                    <span class="text-muted small d-block">Work Name</span>
+                                                    <strong class="text-dark fs-5">{{ work.work_name }}</strong>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Amount Allotted</span>
+                                                        <strong class="text-dark">₹{{ "{:,}".format(work.amount) }}</strong>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Balance Amount</span>
+                                                        <strong class="text-danger">₹{{ "{:,}".format(work.balance_amount or 0) }}</strong>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Inst. 1</span>
+                                                        <span class="text-dark">₹{{ "{:,}".format(work.installment_1 or 0) }}</span>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Inst. 2</span>
+                                                        <span class="text-dark">₹{{ "{:,}".format(work.installment_2 or 0) }}</span>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span class="text-muted small d-block">Inst. 3</span>
+                                                        <span class="text-dark">₹{{ "{:,}".format(work.installment_3 or 0) }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Local Body</span>
+                                                        <span class="text-dark">{{ work.local_body }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Ward No</span>
+                                                        <span class="text-dark">{{ work.ward_no }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Status</span>
+                                                        <span class="badge bg-secondary">{{ work.status }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">File Status</span>
+                                                        <span class="text-dark">{{ work.file_status or 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <span class="text-muted small d-block">Department</span>
+                                                    <span class="text-dark">{{ work.department or 'N/A' }}</span>
+                                                </div>
+                                                <hr>
+                                                <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-user-tie me-2"></i>Contractor Details</h6>
+                                                <div class="mb-3">
+                                                    <span class="text-muted small d-block">Contractor Name</span>
+                                                    <strong class="text-dark">{{ work.contractor_name or 'N/A' }}</strong>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Phone Number</span>
+                                                        <span class="text-dark">{{ work.contractor_phone or 'N/A' }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted small d-block">Address</span>
+                                                        <span class="text-dark d-block text-truncate" title="{{ work.contractor_address or '' }}">{{ work.contractor_address or 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="mb-2">
+                                                    <span class="text-muted small d-block">Remarks</span>
+                                                    <p class="text-dark mb-0">{{ work.remarks or 'No remarks.' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-top-0 pb-4 px-4">
+                                                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="14" class="text-center py-5 text-muted">
+                                    <td colspan="17" class="text-center py-5 text-muted">
                                         <i class="fa-solid fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
                                         No project works found matching the criteria.
                                     </td>
@@ -326,6 +453,18 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Department</label>
                         <input type="text" name="department" class="form-control" placeholder="Enter department">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contractor Name</label>
+                        <input type="text" name="contractor_name" class="form-control" placeholder="Enter contractor name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contractor Address</label>
+                        <textarea name="contractor_address" class="form-control" rows="2" placeholder="Enter contractor address"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contractor Phone</label>
+                        <input type="text" name="contractor_phone" class="form-control" placeholder="Enter contractor phone">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Remarks</label>
