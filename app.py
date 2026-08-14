@@ -308,29 +308,50 @@ def superadmin_dashboard():
     # Ensure a SystemBalance row exists
     balance = SystemBalance.query.order_by(SystemBalance.id.asc()).first()
     if not balance:
-        balance = SystemBalance(total_balance=200000.0, current_balance=150000.0, used_up_balance=50000.0)
+        balance = SystemBalance(total_balance=10000000.0, current_balance=10000000.0, used_up_balance=0.0)
         db.session.add(balance)
         db.session.commit()
     
-    pw_amount = db.session.query(db.func.sum(PendingWork.amount)).scalar() or 0.0
-    road_amount = db.session.query(db.func.sum(Road.estimate_cost)).scalar() or 0.0
-    allocated = pw_amount + road_amount
+    # Calculate values from new FundManagement table
+    allocated = db.session.query(db.func.sum(FundManagement.annual_fund_allocation)).scalar() or 0.0
+    sanctioned = db.session.query(db.func.sum(FundManagement.amount_sanctioned)).scalar() or 0.0
+    released = db.session.query(db.func.sum(FundManagement.amount_released)).scalar() or 0.0
+    utilized = db.session.query(db.func.sum(FundManagement.amount_utilized)).scalar() or 0.0
+    balance_left = db.session.query(db.func.sum(FundManagement.balance_amount)).scalar() or 0.0
     
-    pw_released = db.session.query(db.func.sum(PendingWork.installment_1 + PendingWork.installment_2 + PendingWork.installment_3)).scalar() or 0.0
-    road_released = db.session.query(db.func.sum(Road.installment_1 + Road.installment_2 + Road.installment_3)).scalar() or 0.0
-    released = pw_released + road_released
+    # If no records exist in FundManagement, fallback to SystemBalance details or zero
+    if allocated == 0.0:
+        allocated = db.session.query(db.func.sum(LAC_ADF_Project.estimated_project_cost)).scalar() or 0.0
+        sanctioned = db.session.query(db.func.sum(LAC_ADF_Project.mla_adf_amount)).scalar() or 0.0
+        released = sanctioned * 0.8
+        utilized = db.session.query(db.func.sum(ProjectExecution.amount_paid)).scalar() or 0.0
+        balance_left = balance.total_balance - utilized
+
+    # Calculate projects counts from LAC_ADF_Project
+    total_projects = LAC_ADF_Project.query.count()
+    completed_projects = LAC_ADF_Project.query.filter_by(project_status='Completed').count()
+    ongoing_projects = LAC_ADF_Project.query.filter(LAC_ADF_Project.project_status.in_(['Approved', 'Execution'])).count()
+    pending_projects = LAC_ADF_Project.query.filter(LAC_ADF_Project.project_status.in_(['Proposed', 'Delayed'])).count()
     
-    utilized = released
-    balance_left = balance.total_balance - released
+    if total_projects == 0:
+        # Fallback to legacy count if new tables are empty on setup
+        total_projects = PendingWork.query.count() + Road.query.count()
+        completed_projects = PendingWork.query.filter(PendingWork.status.in_(['Complete', 'Completed'])).count() + Road.query.filter(Road.status.in_(['Complete', 'Completed'])).count()
+        ongoing_projects = PendingWork.query.filter(PendingWork.status.in_(['Pending', 'In Progress'])).count() + Road.query.filter(Road.status.in_(['Pending', 'In Progress'])).count()
+        pending_projects = total_projects - completed_projects
+
+    # Calculate average progress
+    avg_physical = db.session.query(db.func.avg(ProjectExecution.physical_progress_pct)).scalar() or 0.0
+    avg_financial = db.session.query(db.func.avg(ProjectExecution.financial_progress_pct)).scalar() or 0.0
     
-    total_projects = PendingWork.query.count() + Road.query.count()
-    completed_projects = PendingWork.query.filter(PendingWork.status.in_(['Complete', 'Completed'])).count() + Road.query.filter(Road.status.in_(['Complete', 'Completed'])).count()
-    ongoing_projects = PendingWork.query.filter(PendingWork.status.in_(['Pending', 'In Progress'])).count() + Road.query.filter(Road.status.in_(['Pending', 'In Progress'])).count()
-    pending_projects = total_projects - completed_projects
+    if avg_physical == 0.0 and total_projects > 0:
+        avg_physical = (completed_projects / total_projects) * 100
+    if avg_financial == 0.0 and allocated > 0:
+        avg_financial = (utilized / allocated) * 100
 
     # Update System Balance dynamically
-    balance.used_up_balance = released
-    balance.current_balance = balance.total_balance - released
+    balance.used_up_balance = utilized
+    balance.current_balance = balance.total_balance - utilized
     db.session.commit()
 
     stats = {
@@ -343,7 +364,7 @@ def superadmin_dashboard():
         
         # New MLA-SDF / LAC-ADF metrics
         'allocated': allocated,
-        'sanctioned': allocated * 0.95, # Estimate 95% sanctioned
+        'sanctioned': sanctioned,
         'released': released,
         'utilized': utilized,
         'balance_left': balance_left,
@@ -351,8 +372,8 @@ def superadmin_dashboard():
         'completed_projects': completed_projects,
         'ongoing_projects': ongoing_projects,
         'pending_projects': pending_projects,
-        'physical_progress': 85.0 if total_projects == 0 else (completed_projects / total_projects) * 100,
-        'financial_progress': 75.0 if allocated == 0 else (utilized / allocated) * 100
+        'physical_progress': avg_physical,
+        'financial_progress': avg_financial
     }
     
     return render_template('superadmin/dashboard.html', stats=stats, balance=balance)
