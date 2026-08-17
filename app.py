@@ -2029,12 +2029,6 @@ def add_report():
     return redirect(url_for('mla_sdf_reports'))
 
 
-    except Exception as e:
-        db.session.rollback()
-        flash(f'Error deleting attachment: {str(e)}', 'danger')
-    return redirect(url_for('mla_sdf_reports'))
-
-
 @app.route('/mla-sdf/reports/download')
 @login_required
 def download_reports():
