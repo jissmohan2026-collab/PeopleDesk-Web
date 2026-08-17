@@ -266,8 +266,13 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer border-top-0 pt-0 pb-4 px-4 justify-content-end">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer border-top-0 pt-0 pb-4 px-4 d-flex justify-content-between gap-2">
+                <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">Close</button>
+                {% if current_user.role == 'superadmin' %}
+                    <form id="modal-delete-proposal-form" action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this project? This will cascade delete execution, approvals, payments, monitoring and completion records associated with it.');" class="flex-grow-1">
+                        <button type="submit" class="btn btn-danger w-100"><i class="fa-solid fa-trash me-1"></i>Delete</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -467,6 +472,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 attachContainer.innerHTML = `<a href="${attachUrl}" target="_blank" class="btn btn-sm btn-primary"><i class="fa-solid fa-file-pdf"></i> View Attachment</a>`;
             } else {
                 attachContainer.innerText = 'No attachment uploaded';
+            }
+
+            const recId = this.getAttribute('data-id');
+            const deleteForm = document.getElementById('modal-delete-proposal-form');
+            if (deleteForm) {
+                deleteForm.action = `/mla-sdf/proposals/delete/${recId}`;
             }
 
             const myModal = new bootstrap.Modal(document.getElementById('projectDetailsModal'));
