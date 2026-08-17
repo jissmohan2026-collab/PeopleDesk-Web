@@ -267,7 +267,8 @@ footer .social-icons a:hover {
   box-shadow: 2px 0 10px rgba(0,0,0,0.05);
   padding: 20px;
   position: fixed;
-  height: 100vh;
+  top: 59px;
+  height: calc(100vh - 59px);
   z-index: 100;
   overflow-y: auto;
 }
