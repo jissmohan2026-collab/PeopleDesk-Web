@@ -576,6 +576,54 @@ def superadmin_delete_application(con_id):
     flash(_('Application deleted successfully.'), 'success')
     return redirect(url_for('superadmin_dashboard'))
 
+
+@app.route('/superadmin/pending_work/delete/<int:work_id>', methods=['POST'])
+@login_required
+def delete_pending_work(work_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    work = PendingWork.query.get_or_404(work_id)
+    try:
+        db.session.delete(work)
+        db.session.commit()
+        flash(_('Pending work record deleted successfully.'), 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('pending_works'))
+
+
+@app.route('/superadmin/road/delete/<int:road_id>', methods=['POST'])
+@login_required
+def delete_road(road_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    road = Road.query.get_or_404(road_id)
+    try:
+        db.session.delete(road)
+        db.session.commit()
+        flash(_('Road record deleted successfully.'), 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('roads'))
+
+
+@app.route('/superadmin/vehicle/delete/<int:vehicle_id>', methods=['POST'])
+@login_required
+def delete_vehicle(vehicle_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    vehicle = Vehicle.query.get_or_404(vehicle_id)
+    try:
+        db.session.delete(vehicle)
+        db.session.commit()
+        flash(_('Vehicle record deleted successfully.'), 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('vehicles'))
+
 @app.route('/superadmin/edit_application/<int:con_id>', methods=['GET', 'POST'])
 @login_required
 def superadmin_edit_application(con_id):
