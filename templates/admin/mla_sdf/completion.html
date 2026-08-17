@@ -147,18 +147,21 @@
                                     <span class="badge bg-success">{{ reg.asset_status }}</span>
                                 </td>
                                 <td class="py-3 text-end pe-4 action-column">
-                                    {% if reg.attachment_url %}
-                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        {% if reg.attachment_url %}
                                             <a href="{{ reg.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
                                                 <i class="fa-solid fa-file-pdf"></i>
                                             </a>
-                                            <form action="{{ url_for('delete_completion_attachment', rec_id=reg.id) }}" method="POST" onsubmit="return confirm('Are you sure?');" class="d-inline" onclick="event.stopPropagation();">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            <form action="{{ url_for('delete_completion_attachment', rec_id=reg.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this attachment?');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-file-circle-xmark"></i></button>
                                             </form>
-                                        </div>
-                                    {% else %}
-                                        <span class="text-muted small">No File</span>
-                                    {% endif %}
+                                        {% endif %}
+                                        {% if current_user.role == 'superadmin' %}
+                                            <form action="{{ url_for('delete_completion', rec_id=reg.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this completion/asset record?');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}

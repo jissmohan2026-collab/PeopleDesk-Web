@@ -13,6 +13,76 @@
 </head>
 <body>
 
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 py-2 border-bottom border-primary border-3" style="background: linear-gradient(135deg, #0b2265 0%, #001244 100%) !important;">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+                <i class="fa-solid fa-clipboard-check text-primary fs-4"></i>
+                <span class="text-white">{{ _('SuperAdmin ATS') }}</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbarMenu" aria-controls="topNavbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="topNavbarMenu">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-2" href="{{ url_for('superadmin_dashboard') }}">
+                            <i class="fa-solid fa-gauge me-1"></i> {{ _('Overview') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-2" href="{{ url_for('superadmin_applications') }}">
+                            <i class="fa-solid fa-file-alt me-1"></i> {{ _('Applications') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-2" href="{{ url_for('superadmin_users') }}">
+                            <i class="fa-solid fa-users me-1"></i> {{ _('Manage Users') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-2" href="{{ url_for('superadmin_departments') }}">
+                            <i class="fa-solid fa-building me-1"></i> {{ _('Manage Departments') }}
+                        </a>
+                    </li>
+                    <!-- Project Menu Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white py-2" href="#" id="projectMenuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-folder me-1"></i> {{ _('Project Menu') }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="projectMenuDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('pending_works') }}"><i class="fa-solid fa-circle-notch me-2"></i> {{ _('ADF/SDF') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('roads') }}"><i class="fa-solid fa-road me-2"></i> {{ _('IRRP/LRRP') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('vehicles') }}"><i class="fa-solid fa-car me-2"></i> {{ _('Vehicle Management') }}</a></li>
+                        </ul>
+                    </li>
+                    <!-- MLA-SDF / LAC-ADF Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white py-2" href="#" id="mlaSdfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-file-invoice-dollar me-1"></i> {{ _('MLA-SDF / LAC-ADF') }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="mlaSdfDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_fund_management') }}"><i class="fa-solid fa-chart-line me-2"></i> {{ _('Fund Management') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_proposals') }}"><i class="fa-solid fa-lightbulb me-2"></i> {{ _('Project Management') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_approvals') }}"><i class="fa-solid fa-check-double me-2"></i> {{ _('Approvals') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_execution') }}"><i class="fa-solid fa-gears me-2"></i> {{ _('Project Execution') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_payments') }}"><i class="fa-solid fa-credit-card me-2"></i> {{ _('Payments') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_monitoring') }}"><i class="fa-solid fa-eye me-2"></i> {{ _('Monitoring') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_documents') }}"><i class="fa-solid fa-file-pdf me-2"></i> {{ _('Documents') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_completion') }}"><i class="fa-solid fa-clipboard-check me-2"></i> {{ _('Completion') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_asset_register') }}"><i class="fa-solid fa-warehouse me-2"></i> {{ _('Asset Register') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_reports') }}"><i class="fa-solid fa-square-poll-vertical me-2"></i> {{ _('Reports') }}</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_minutes') }}"><i class="fa-solid fa-book me-2"></i> {{ _('Meeting Minutes Book') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_contacts') }}"><i class="fa-solid fa-phone me-2"></i> {{ _('Department Contacts') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mla_sdf_photos') }}"><i class="fa-solid fa-images me-2"></i> {{ _('Photo Gallery') }}</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="dashboard-layout">
         <!-- SuperAdmin Sidebar -->
         <div class="sidebar d-flex flex-column bg-dark text-white">
@@ -75,34 +145,43 @@
                     <div class="collapse" id="sdfAdfSubmenu">
                         <ul class="nav flex-column ms-3 mt-1 small">
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_fund_management') }}" class="nav-link text-white py-1"><i class="fa-solid fa-chart-line me-2"></i> Fund Management</a>
+                                <a href="{{ url_for('mla_sdf_fund_management') }}" class="nav-link text-white py-1"><i class="fa-solid fa-chart-line me-2"></i> {{ _('Fund Management') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_proposals') }}" class="nav-link text-white py-1"><i class="fa-solid fa-lightbulb me-2"></i> Project Management</a>
+                                <a href="{{ url_for('mla_sdf_proposals') }}" class="nav-link text-white py-1"><i class="fa-solid fa-lightbulb me-2"></i> {{ _('Project Management') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_approvals') }}" class="nav-link text-white py-1"><i class="fa-solid fa-check-double me-2"></i> Approvals</a>
+                                <a href="{{ url_for('mla_sdf_approvals') }}" class="nav-link text-white py-1"><i class="fa-solid fa-check-double me-2"></i> {{ _('Approvals') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_execution') }}" class="nav-link text-white py-1"><i class="fa-solid fa-gears me-2"></i> Project Execution</a>
+                                <a href="{{ url_for('mla_sdf_execution') }}" class="nav-link text-white py-1"><i class="fa-solid fa-gears me-2"></i> {{ _('Project Execution') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_payments') }}" class="nav-link text-white py-1"><i class="fa-solid fa-credit-card me-2"></i> Payments</a>
+                                <a href="{{ url_for('mla_sdf_payments') }}" class="nav-link text-white py-1"><i class="fa-solid fa-credit-card me-2"></i> {{ _('Payments') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_monitoring') }}" class="nav-link text-white py-1"><i class="fa-solid fa-eye me-2"></i> Monitoring</a>
+                                <a href="{{ url_for('mla_sdf_monitoring') }}" class="nav-link text-white py-1"><i class="fa-solid fa-eye me-2"></i> {{ _('Monitoring') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_documents') }}" class="nav-link text-white py-1"><i class="fa-solid fa-file-pdf me-2"></i> Documents</a>
+                                <a href="{{ url_for('mla_sdf_documents') }}" class="nav-link text-white py-1"><i class="fa-solid fa-file-pdf me-2"></i> {{ _('Documents') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_completion') }}" class="nav-link text-white py-1"><i class="fa-solid fa-clipboard-check me-2"></i> Completion</a>
+                                <a href="{{ url_for('mla_sdf_completion') }}" class="nav-link text-white py-1"><i class="fa-solid fa-clipboard-check me-2"></i> {{ _('Completion') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_asset_register') }}" class="nav-link text-white py-1"><i class="fa-solid fa-warehouse me-2"></i> Asset Register</a>
+                                <a href="{{ url_for('mla_sdf_asset_register') }}" class="nav-link text-white py-1"><i class="fa-solid fa-warehouse me-2"></i> {{ _('Asset Register') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('mla_sdf_reports') }}" class="nav-link text-white py-1"><i class="fa-solid fa-square-poll-vertical me-2"></i> Reports</a>
+                                <a href="{{ url_for('mla_sdf_reports') }}" class="nav-link text-white py-1"><i class="fa-solid fa-square-poll-vertical me-2"></i> {{ _('Reports') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('mla_sdf_minutes') }}" class="nav-link text-white py-1"><i class="fa-solid fa-book me-2"></i> {{ _('Meeting Minutes Book') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('mla_sdf_contacts') }}" class="nav-link text-white py-1"><i class="fa-solid fa-phone me-2"></i> {{ _('Department Contacts') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('mla_sdf_photos') }}" class="nav-link text-white py-1"><i class="fa-solid fa-images me-2"></i> {{ _('Photo Gallery') }}</a>
                             </li>
                         </ul>
                     </div>

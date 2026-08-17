@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_babel import Babel, _
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
-from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle, SystemBalance, Road, FundManagement, LAC_ADF_Project, ApprovalSanctionTracking, ProjectExecution, PaymentUtilization, MonitoringInspection, CompletionAssetRegister, MLA_SDF_Document, MLA_SDF_Report
+from models import db, bcrypt, User, Department, Consignment, PendingWork, Vehicle, SystemBalance, Road, FundManagement, LAC_ADF_Project, ApprovalSanctionTracking, ProjectExecution, PaymentUtilization, MonitoringInspection, CompletionAssetRegister, MLA_SDF_Document, MLA_SDF_Report, MeetingMinutes, DepartmentContact, PhotoGallery
 import uuid
 from datetime import datetime
 import os
@@ -2029,16 +2029,6 @@ def add_report():
     return redirect(url_for('mla_sdf_reports'))
 
 
-@app.route('/mla-sdf/reports/delete_attachment/<int:rec_id>', methods=['POST'])
-@login_required
-def delete_report_attachment(rec_id):
-    if current_user.role not in ['admin', 'superadmin']:
-        return redirect(url_for('index'))
-    rec = MLA_SDF_Report.query.get_or_404(rec_id)
-    try:
-        rec.attachment_url = None
-        db.session.commit()
-        flash(_('Attachment deleted successfully.'))
     except Exception as e:
         db.session.rollback()
         flash(f'Error deleting attachment: {str(e)}', 'danger')
@@ -2065,6 +2055,405 @@ def download_reports():
     response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     response.headers["Content-Disposition"] = f"attachment; filename={filename}"
     return response
+
+
+# --- Meeting Minutes Book Routes ---
+@app.route('/mla-sdf/minutes')
+@login_required
+def mla_sdf_minutes():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    minutes_list = MeetingMinutes.query.all()
+    return render_template('admin/mla_sdf/meeting_minutes.html', base_template=base_template, minutes_list=minutes_list)
+
+
+@app.route('/mla-sdf/minutes/add', methods=['POST'])
+@login_required
+def add_minutes():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        attachment_url = None
+        if 'attachment' in request.files:
+            file = request.files['attachment']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    attachment_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'File upload failed: {str(e)}', 'danger')
+
+        minutes_rec = MeetingMinutes(
+            title=request.form.get('title'),
+            meeting_date=request.form.get('meeting_date'),
+            venue=request.form.get('venue'),
+            agenda=request.form.get('agenda'),
+            minutes=request.form.get('minutes'),
+            attachment_url=attachment_url
+        )
+        db.session.add(minutes_rec)
+        db.session.commit()
+        flash(_('Meeting Minutes added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding minutes: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_minutes'))
+
+
+@app.route('/mla-sdf/minutes/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_minutes(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = MeetingMinutes.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Minutes record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_minutes'))
+
+
+@app.route('/mla-sdf/minutes/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_minutes_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = MeetingMinutes.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_minutes'))
+
+
+@app.route('/mla-sdf/minutes/download')
+@login_required
+def download_minutes():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    minutes_list = MeetingMinutes.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Meeting Minutes"
+    headers = ["ID", "Title", "Meeting Date", "Venue", "Agenda", "Minutes Text", "Attachment URL"]
+    ws.append(headers)
+    for m in minutes_list:
+        ws.append([m.id, m.title, m.meeting_date, m.venue, m.agenda, m.minutes, m.attachment_url])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"Meeting_Minutes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+
+# --- Department Contacts Routes ---
+@app.route('/mla-sdf/contacts')
+@login_required
+def mla_sdf_contacts():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    contacts = DepartmentContact.query.all()
+    return render_template('admin/mla_sdf/department_contacts.html', base_template=base_template, contacts=contacts)
+
+
+@app.route('/mla-sdf/contacts/add', methods=['POST'])
+@login_required
+def add_contact():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        contact = DepartmentContact(
+            department_name=request.form.get('department_name'),
+            designation=request.form.get('designation'),
+            phone_number=request.form.get('phone_number'),
+            email=request.form.get('email'),
+            address=request.form.get('address')
+        )
+        db.session.add(contact)
+        db.session.commit()
+        flash(_('Contact added successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding contact: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_contacts'))
+
+
+@app.route('/mla-sdf/contacts/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_contact(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = DepartmentContact.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Contact deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting contact: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_contacts'))
+
+
+@app.route('/mla-sdf/contacts/download')
+@login_required
+def download_contacts():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    contacts = DepartmentContact.query.all()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Department Contacts"
+    headers = ["ID", "Department Name", "Designation", "Phone Number", "Email", "Address"]
+    ws.append(headers)
+    for c in contacts:
+        ws.append([c.id, c.department_name, c.designation, c.phone_number, c.email, c.address])
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    filename = f"Department_Contacts_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    response = Response(file_stream.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+
+# --- Photo Gallery Routes ---
+@app.route('/mla-sdf/photos')
+@login_required
+def mla_sdf_photos():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    base_template = 'dash_base_admin.html' if current_user.role == 'superadmin' else 'dash_base.html'
+    photos = PhotoGallery.query.all()
+    return render_template('admin/mla_sdf/photo_gallery.html', base_template=base_template, photos=photos)
+
+
+@app.route('/mla-sdf/photos/add', methods=['POST'])
+@login_required
+def add_photo():
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    try:
+        photo_url = None
+        if 'photo' in request.files:
+            file = request.files['photo']
+            if file.filename != '':
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    photo_url = upload_result.get('secure_url')
+                except Exception as e:
+                    flash(f'Photo upload failed: {str(e)}', 'danger')
+
+        if not photo_url:
+            flash(_('Please select a photo to upload.'), 'danger')
+            return redirect(url_for('mla_sdf_photos'))
+
+        photo_rec = PhotoGallery(
+            title=request.form.get('title'),
+            event_name=request.form.get('event_name'),
+            photo_url=photo_url,
+            uploaded_date=datetime.now().strftime('%Y-%m-%d %H:%M')
+        )
+        db.session.add(photo_rec)
+        db.session.commit()
+        flash(_('Photo uploaded successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding photo: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_photos'))
+
+
+@app.route('/mla-sdf/photos/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_photo(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = PhotoGallery.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Photo deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting photo: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_photos'))
+
+
+# --- Delete Row Endpoints for MLA-SDF Models ---
+@app.route('/mla-sdf/fund-management/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_fund_management(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = FundManagement.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Fund management record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_fund_management'))
+
+
+@app.route('/mla-sdf/proposals/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_proposal(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = LAC_ADF_Project.query.get_or_404(rec_id)
+    try:
+        # Cascade clean relations to keep DB consistent
+        ApprovalSanctionTracking.query.filter_by(project_id=rec.id).delete()
+        ProjectExecution.query.filter_by(project_id=rec.id).delete()
+        PaymentUtilization.query.filter_by(project_id=rec.id).delete()
+        MonitoringInspection.query.filter_by(project_id=rec.id).delete()
+        CompletionAssetRegister.query.filter_by(project_id=rec.id).delete()
+        MLA_SDF_Document.query.filter_by(project_id=rec.id).delete()
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Project proposal record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_proposals'))
+
+
+@app.route('/mla-sdf/approvals/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_approval(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = ApprovalSanctionTracking.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Approval record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_approvals'))
+
+
+@app.route('/mla-sdf/execution/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_execution(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = ProjectExecution.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Execution record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_execution'))
+
+
+@app.route('/mla-sdf/payments/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_payment(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = PaymentUtilization.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Payment record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_payments'))
+
+
+@app.route('/mla-sdf/monitoring/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_monitoring(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = MonitoringInspection.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Monitoring inspection record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_monitoring'))
+
+
+@app.route('/mla-sdf/documents/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_document(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = MLA_SDF_Document.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Document record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_documents'))
+
+
+@app.route('/mla-sdf/completion/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_completion(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = CompletionAssetRegister.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Completion and asset register record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_completion'))
+
+
+@app.route('/mla-sdf/reports/delete/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_report(rec_id):
+    if current_user.role != 'superadmin':
+        return redirect(url_for('index'))
+    rec = MLA_SDF_Report.query.get_or_404(rec_id)
+    try:
+        db.session.delete(rec)
+        db.session.commit()
+        flash(_('Report record deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_reports'))
+
+
+@app.route('/mla-sdf/reports/delete_attachment/<int:rec_id>', methods=['POST'])
+@login_required
+def delete_report_attachment(rec_id):
+    if current_user.role not in ['admin', 'superadmin']:
+        return redirect(url_for('index'))
+    rec = MLA_SDF_Report.query.get_or_404(rec_id)
+    try:
+        rec.attachment_url = None
+        db.session.commit()
+        flash(_('Attachment deleted successfully.'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting attachment: {str(e)}', 'danger')
+    return redirect(url_for('mla_sdf_reports'))
 
 
 # --- Setup Script ---

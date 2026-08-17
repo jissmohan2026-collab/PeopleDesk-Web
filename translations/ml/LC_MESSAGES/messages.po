@@ -1250,3 +1250,43 @@ msgstr "വിശദമായ വിവരണം"
 msgid "Describe your issue or request in detail..."
 msgstr "നിങ്ങളുടെ പ്രശ്നം അല്ലെങ്കിൽ അഭ്യർത്ഥന വിശദമായി വിവരിക്കുക..."
 
+
+msgid "Fund Management"
+msgstr "ഫണ്ട് മാനേജ്മെന്റ്"
+
+msgid "Project Management"
+msgstr "പദ്ധതി നിർവ്വഹണം"
+
+msgid "Approvals"
+msgstr "അംഗീകാരങ്ങൾ"
+
+msgid "Project Execution"
+msgstr "പദ്ധതി നടപ്പിലാക്കൽ"
+
+msgid "Payments"
+msgstr "പേയ്‌മെന്റുകൾ"
+
+msgid "Monitoring"
+msgstr "മേൽനോട്ടം"
+
+msgid "Documents"
+msgstr "രേഖകൾ"
+
+msgid "Completion"
+msgstr "പൂർത്തീകരണം"
+
+msgid "Asset Register"
+msgstr "ആസ്തി രജിസ്റ്റർ"
+
+msgid "Reports"
+msgstr "റിപ്പോർട്ടുകൾ"
+
+msgid "Meeting Minutes Book"
+msgstr "യോഗ വിവരങ്ങൾ"
+
+msgid "Department Contacts"
+msgstr "വകുപ്പ് ബന്ധപ്പെടൽ വിവരങ്ങൾ"
+
+msgid "Photo Gallery"
+msgstr "ചിത്രശാല"
+

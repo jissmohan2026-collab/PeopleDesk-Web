@@ -188,13 +188,18 @@
                                 <td class="py-3"><span class="badge bg-warning text-dark">{{ fund.pending_projects }}</span></td>
                                 <td class="py-3"><span class="badge bg-success">{{ fund.completed_projects }}</span></td>
                                 <td class="py-3 text-end pe-4 action-column">
-                                    {% if fund.attachment_url %}
-                                        <a href="{{ fund.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                        </a>
-                                    {% else %}
-                                        <span class="text-muted small">No File</span>
-                                    {% endif %}
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        {% if fund.attachment_url %}
+                                            <a href="{{ fund.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                                                <i class="fa-solid fa-file-pdf"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if current_user.role == 'superadmin' %}
+                                            <form action="{{ url_for('delete_fund_management', rec_id=fund.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}

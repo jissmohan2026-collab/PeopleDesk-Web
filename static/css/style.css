@@ -295,3 +295,21 @@ footer .social-icons a:hover {
 .badge-status-approved { background: #28a745; color: #fff; }
 .badge-status-completed { background: #007bff; color: #fff; }
 .badge-status-closed { background: #6c757d; color: #fff; }
+
+/* Responsive adjustments to hide sidebar on smaller viewports and shift main content */
+@media (max-width: 991.98px) {
+  .sidebar {
+    display: none !important;
+  }
+  .main-content {
+    margin-left: 0 !important;
+    padding: 15px !important;
+    width: 100% !important;
+  }
+  .dashboard-layout {
+    display: block !important;
+  }
+}
+body {
+  overflow-x: hidden;
+}

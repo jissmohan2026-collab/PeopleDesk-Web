@@ -149,20 +149,25 @@
                                     <span class="badge bg-info">{{ project.project_status }}</span>
                                 </td>
                                 <td class="py-3 text-end pe-4 action-column">
-                                    {% if project.attachment_url %}
-                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        {% if project.attachment_url %}
                                             <a href="{{ project.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
                                                 <i class="fa-solid fa-file-pdf"></i> View
                                             </a>
                                             <form action="{{ url_for('delete_proposal_attachment', project_id=project.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this attachment?');" class="d-inline" onclick="event.stopPropagation();">
                                                 <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fa-solid fa-file-circle-xmark"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        {% if current_user.role == 'superadmin' %}
+                                            <form action="{{ url_for('delete_proposal', rec_id=project.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this project? This will cascade delete execution, approvals, payments, monitoring and completion records associated with it.');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
-                                        </div>
-                                    {% else %}
-                                        <span class="text-muted small">No File</span>
-                                    {% endif %}
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}

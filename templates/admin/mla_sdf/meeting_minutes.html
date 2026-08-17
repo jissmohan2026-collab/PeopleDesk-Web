@@ -1,0 +1,282 @@
+{% extends base_template %}
+
+{% block title %}{{ _('Meeting Minutes Book - MLA-SDF / LAC-ADF') }}{% endblock %}
+{% block header %}{{ _('Meeting Minutes Book') }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h5 class="fw-bold mb-0 text-dark">{{ _('Official Meeting Proceedings & Minutes') }}</h5>
+                <div class="d-flex gap-2 align-items-center">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="columnToggleDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <i class="fa-solid fa-columns me-2"></i>{{ _('Columns') }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="columnToggleDropdown" style="width: 240px; z-index: 1050;">
+                            <li>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="toggle-all" checked>
+                                    <label class="form-check-label fw-bold" for="toggle-all">{{ _('Show All Columns') }}</label>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-title" data-column="1" checked>
+                                    <label class="form-check-label" for="toggle-title">{{ _('Meeting Title') }}</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-date" data-column="2" checked>
+                                    <label class="form-check-label" for="toggle-date">{{ _('Date') }}</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-venue" data-column="3" checked>
+                                    <label class="form-check-label" for="toggle-venue">{{ _('Venue') }}</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-agenda" data-column="4" checked>
+                                    <label class="form-check-label" for="toggle-agenda">{{ _('Agenda') }}</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input col-toggle" type="checkbox" id="toggle-attach" data-column="5" checked>
+                                    <label class="form-check-label" for="toggle-attach">{{ _('Attachment') }}</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('download_minutes') }}" class="btn btn-success">
+                        <i class="fa-solid fa-file-excel me-2"></i>{{ _('Download XLSX') }}
+                    </a>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMinutesModal">
+                        <i class="fa-solid fa-plus me-2"></i>{{ _('Add Meeting minutes') }}
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0 mt-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">ID</th>
+                                <th class="py-3">{{ _('Meeting Title') }}</th>
+                                <th class="py-3">{{ _('Date') }}</th>
+                                <th class="py-3">{{ _('Venue') }}</th>
+                                <th class="py-3">{{ _('Agenda') }}</th>
+                                <th class="py-3">{{ _('Attachment') }}</th>
+                                <th class="py-3 text-end pe-4">{{ _('Actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in minutes_list %}
+                            <tr class="minutes-row cursor-pointer" data-id="{{ m.id }}"
+                                data-title="{{ m.title }}"
+                                data-date="{{ m.meeting_date or 'N/A' }}"
+                                data-venue="{{ m.venue or 'N/A' }}"
+                                data-agenda="{{ m.agenda or 'N/A' }}"
+                                data-minutes="{{ m.minutes or 'N/A' }}"
+                                data-attachment="{{ m.attachment_url or '' }}">
+                                <td class="ps-4 py-3 fw-bold">{{ m.id }}</td>
+                                <td class="py-3 fw-semibold text-dark">{{ m.title }}</td>
+                                <td class="py-3 text-muted">{{ m.meeting_date or 'N/A' }}</td>
+                                <td class="py-3">{{ m.venue or 'N/A' }}</td>
+                                <td class="py-3 text-truncate" style="max-width: 200px;">{{ m.agenda or 'N/A' }}</td>
+                                <td class="py-3">
+                                    {% if m.attachment_url %}
+                                        <a href="{{ m.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                                            <i class="fa-solid fa-file-pdf"></i> {{ _('View PDF') }}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted small">{{ _('No File') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3 text-end pe-4 action-column">
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        {% if current_user.role == 'superadmin' %}
+                                            <form action="{{ url_for('delete_minutes', rec_id=m.id) }}" method="POST" onsubmit="return confirm('{{ _('Are you sure you want to delete this meeting minutes record?') }}');" class="d-inline" onclick="event.stopPropagation();">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fa-solid fa-trash"></i> {{ _('Delete Row') }}
+                                                </button>
+                                            </form>
+                                            {% if m.attachment_url %}
+                                                <form action="{{ url_for('delete_minutes_attachment', rec_id=m.id) }}" method="POST" onsubmit="return confirm('{{ _('Are you sure you want to delete this attachment?') }}');" class="d-inline" onclick="event.stopPropagation();">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fa-solid fa-file-circle-xmark"></i> {{ _('Delete PDF') }}
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted small">{{ _('View Only') }}</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="minutesDetailsModal" tabindex="-1" aria-labelledby="minutesDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="minutesDetailsModalLabel">{{ _('Meeting Proceedings Summary') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="text-muted d-block small uppercase fw-bold">{{ _('Meeting Title') }}</span>
+                        <span id="detail-title" class="fw-semibold text-dark">-</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="text-muted d-block small uppercase fw-bold">{{ _('Date') }}</span>
+                        <span id="detail-date" class="text-dark">-</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="text-muted d-block small uppercase fw-bold">{{ _('Venue') }}</span>
+                        <span id="detail-venue" class="text-dark">-</span>
+                    </div>
+                    <hr>
+                    <div class="col-12">
+                        <span class="text-muted d-block small uppercase fw-bold">{{ _('Agenda Topics') }}</span>
+                        <p id="detail-agenda" class="text-dark mb-0 whitespace-pre-wrap">-</p>
+                    </div>
+                    <hr>
+                    <div class="col-12">
+                        <span class="text-muted d-block small uppercase fw-bold">{{ _('Discussion & Minutes') }}</span>
+                        <p id="detail-minutes" class="text-dark mb-0 whitespace-pre-wrap">-</p>
+                    </div>
+                    <div class="col-12 mt-3" id="detail-attach-container">
+                        <!-- Attachment Link -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Minutes Modal -->
+<div class="modal fade" id="addMinutesModal" tabindex="-1" aria-labelledby="addMinutesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" id="addMinutesModalLabel">{{ _('Add Meeting Minutes') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('add_minutes') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body px-4">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label fw-semibold">{{ _('Meeting Title') }}</label>
+                            <input type="text" name="title" class="form-control" placeholder="e.g. Q3 Constituency Review Meeting" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">{{ _('Meeting Date') }}</label>
+                            <input type="date" name="meeting_date" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Venue') }}</label>
+                        <input type="text" name="venue" class="form-control" placeholder="e.g. Conference Hall, Collectorate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Agenda') }}</label>
+                        <textarea name="agenda" class="form-control" rows="3" placeholder="List agenda topics..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Discussion Minutes') }}</label>
+                        <textarea name="minutes" class="form-control" rows="4" placeholder="Enter detailed minutes/decisions..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('PDF Attachment') }}</label>
+                        <input type="file" name="attachment" class="form-control" accept=".pdf">
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pb-4 px-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary px-4">{{ _('Save Minutes') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleColumnVisibility(colIdx, isVisible) {
+    const table = document.querySelector('table');
+    const th = table.querySelectorAll('thead tr th')[colIdx];
+    if (th) {
+        th.style.display = isVisible ? '' : 'none';
+    }
+    table.querySelectorAll('tbody tr').forEach(row => {
+        const td = row.querySelectorAll('td')[colIdx];
+        if (td) {
+            td.style.display = isVisible ? '' : 'none';
+        }
+    });
+}
+
+document.querySelectorAll('.col-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const colIdx = parseInt(this.getAttribute('data-column'));
+        toggleColumnVisibility(colIdx, this.checked);
+        
+        const allChecked = Array.from(document.querySelectorAll('.col-toggle')).every(c => c.checked);
+        document.getElementById('toggle-all').checked = allChecked;
+    });
+});
+
+document.getElementById('toggle-all').addEventListener('change', function() {
+    const isChecked = this.checked;
+    document.querySelectorAll('.col-toggle').forEach(checkbox => {
+        checkbox.checked = isChecked;
+        const colIdx = parseInt(checkbox.getAttribute('data-column'));
+        toggleColumnVisibility(colIdx, isChecked);
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Row Click details
+    document.querySelectorAll('.minutes-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.action-column')) return;
+            
+            document.getElementById('detail-title').innerText = this.getAttribute('data-title');
+            document.getElementById('detail-date').innerText = this.getAttribute('data-date');
+            document.getElementById('detail-venue').innerText = this.getAttribute('data-venue');
+            document.getElementById('detail-agenda').innerText = this.getAttribute('data-agenda');
+            document.getElementById('detail-minutes').innerText = this.getAttribute('data-minutes');
+
+            const attachUrl = this.getAttribute('data-attachment');
+            const attachContainer = document.getElementById('detail-attach-container');
+            if (attachUrl) {
+                attachContainer.innerHTML = `<span class="text-muted d-block small uppercase fw-bold">{{ _('Attachment') }}</span><a href="${attachUrl}" target="_blank" class="btn btn-sm btn-primary mt-1"><i class="fa-solid fa-file-pdf"></i> {{ _('View Attachment') }}</a>`;
+            } else {
+                attachContainer.innerHTML = '';
+            }
+
+            const detailsModal = new bootstrap.Modal(document.getElementById('minutesDetailsModal'));
+            detailsModal.show();
+        });
+    });
+});
+</script>
+{% endblock %}

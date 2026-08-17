@@ -284,3 +284,33 @@ class MLA_SDF_Report(db.Model):
     attachment_url = db.Column(db.String(500), nullable=True)
 
 
+class MeetingMinutes(db.Model):
+    __tablename__ = 'meeting_minutes'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    meeting_date = db.Column(db.String(100), nullable=True)
+    venue = db.Column(db.String(255), nullable=True)
+    agenda = db.Column(db.Text, nullable=True)
+    minutes = db.Column(db.Text, nullable=True)
+    attachment_url = db.Column(db.String(500), nullable=True)
+
+
+class DepartmentContact(db.Model):
+    __tablename__ = 'department_contacts'
+    id = db.Column(db.Integer, primary_key=True)
+    department_name = db.Column(db.String(255), nullable=False)
+    designation = db.Column(db.String(255), nullable=True)
+    phone_number = db.Column(db.String(50), nullable=True)
+    email = db.Column(db.String(100), nullable=True)
+    address = db.Column(db.Text, nullable=True)
+
+
+class PhotoGallery(db.Model):
+    __tablename__ = 'photo_gallery'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    event_name = db.Column(db.String(255), nullable=True)
+    photo_url = db.Column(db.String(500), nullable=False)
+    uploaded_date = db.Column(db.String(100), nullable=True)
+
+
